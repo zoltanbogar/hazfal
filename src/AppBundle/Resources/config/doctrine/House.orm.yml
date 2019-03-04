@@ -1,0 +1,52 @@
+AppBundle\Entity\House:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\HouseRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        countryCode:
+            type: string
+            length: '2'
+        region:
+            type: string
+            length: 255
+        postalCode:
+            type: string
+            length: 255
+            column: PostalCode
+        city:
+            type: string
+            length: 255
+            column: City
+        street:
+            type: string
+            length: 255
+            column: Street
+        building:
+            type: string
+            length: 255
+            column: Building
+        unit:
+            type: string
+            length: 255
+            column: Unit
+        hrsz:
+            type: string
+            length: 255
+        gpsLatitude:
+            type: string
+            length: 255
+            column: GpsLatitude
+        gpsLongitude:
+            type: string
+            length: 255
+            column: GpsLongitude
+    lifecycleCallbacks: {  }
