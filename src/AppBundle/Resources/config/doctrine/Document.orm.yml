@@ -1,0 +1,18 @@
+AppBundle\Entity\Document:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\DocumentRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        filename:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

@@ -1,0 +1,26 @@
+AppBundle\Entity\Payment:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\PaymentRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        paymentDate:
+            type: datetime
+            column: payment_date
+        bookingDate:
+            type: datetime
+            column: booking_date
+        receiptNumber:
+            type: string
+            length: 255
+            column: receipt_number
+        value:
+            type: integer
+        status:
+            type: smallint
+    lifecycleCallbacks: {  }

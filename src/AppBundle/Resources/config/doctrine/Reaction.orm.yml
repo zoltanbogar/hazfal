@@ -1,0 +1,18 @@
+AppBundle\Entity\Reaction:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\ReactionRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        reactionType:
+            type: smallint
+            column: reaction_type
+        createdAt:
+            type: datetime
+            column: created_at
+    lifecycleCallbacks: {  }

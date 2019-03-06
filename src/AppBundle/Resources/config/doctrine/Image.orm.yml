@@ -1,0 +1,15 @@
+AppBundle\Entity\Image:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\ImageRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        filename:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

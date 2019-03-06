@@ -1,0 +1,21 @@
+AppBundle\Entity\Post:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\PostRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        subject:
+            type: string
+            length: 255
+        content:
+            type: text
+        isUrgent:
+            type: boolean
+            nullable: true
+            column: is_urgent
+    lifecycleCallbacks: {  }

@@ -1,0 +1,17 @@
+AppBundle\Entity\Tenant:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\TenantRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        localContactNumber:
+            type: string
+            length: 255
+            nullable: true
+            column: local_contact_number
+    lifecycleCallbacks: {  }

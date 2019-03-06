@@ -1,0 +1,19 @@
+AppBundle\Entity\Malfunction:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\MalfunctionRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        subject:
+            type: string
+            length: 255
+        content:
+            type: text
+        status:
+            type: smallint
+    lifecycleCallbacks: {  }

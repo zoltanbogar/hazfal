@@ -1,0 +1,26 @@
+AppBundle\Entity\Notification:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\NotificationRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            type: smallint
+        content:
+            type: text
+        seenAt:
+            type: datetime
+            column: seen_at
+        pushSeenAt:
+            type: string
+            length: 255
+            column: push_seen_at
+        createdAt:
+            type: datetime
+            column: created_at
+    lifecycleCallbacks: {  }

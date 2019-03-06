@@ -1,6 +1,6 @@
 AppBundle\Entity\House:
     type: entity
-    table: null
+    table: house
     repositoryClass: AppBundle\Repository\HouseRepository
     id:
         id:
@@ -9,44 +9,53 @@ AppBundle\Entity\House:
             generator:
                 strategy: AUTO
     fields:
+        houseUserId:
+            type: integer
+            column: house_user_id
         name:
             type: string
             length: 255
         countryCode:
             type: string
             length: '2'
+            column: country_code
         region:
             type: string
             length: 255
         postalCode:
             type: string
             length: 255
-            column: PostalCode
+            column: postal_code
         city:
             type: string
             length: 255
-            column: City
+            column: city
         street:
             type: string
             length: 255
-            column: Street
+            column: street
         building:
             type: string
             length: 255
-            column: Building
         unit:
             type: string
             length: 255
-            column: Unit
         hrsz:
             type: string
             length: 255
         gpsLatitude:
             type: string
             length: 255
-            column: GpsLatitude
+            column: gps_latitude
         gpsLongitude:
             type: string
             length: 255
-            column: GpsLongitude
+            column: gps_longitude
+    manyToOne:
+        houseUser:
+            targetEntity: HouseUser
+            inversedBy: houses
+            joinColumn:
+                name: house_user_id
+                referencedColumnName: id
     lifecycleCallbacks: {  }

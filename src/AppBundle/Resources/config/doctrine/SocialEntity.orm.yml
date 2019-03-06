@@ -1,0 +1,17 @@
+AppBundle\Entity\SocialEntity:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\SocialEntityRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            type: smallint
+        createdAt:
+            type: datetime
+            column: created_at
+    lifecycleCallbacks: {  }

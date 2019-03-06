@@ -1,0 +1,68 @@
+AppBundle\Entity\User:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\UserRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        lastLogin:
+            type: datetime
+            nullable: true
+            column: last_login
+        registrationDate:
+            type: datetime
+            column: registration_date
+        deletedAt:
+            type: datetime
+            nullable: true
+            column: deleted_at
+        firstName:
+            type: string
+            length: 255
+            column: first_name
+        lastName:
+            type: string
+            length: 255
+            column: last_name
+        dateOfBirth:
+            type: date
+            column: date_of_birth
+        placeOfBirth:
+            type: string
+            length: 255
+            column: place_of_birth
+        bio:
+            type: text
+            column: Bio
+        sex:
+            type: integer
+            column: Sex
+        phoneNumber:
+            type: string
+            length: 255
+            column: phone_number
+        localPhoneNumber:
+            type: string
+            length: 255
+            column: local_phone_number
+        idNumber:
+            type: integer
+            nullable: true
+            column: id_number
+        officialAddress:
+            type: string
+            length: 255
+            column: official_address
+        currentLocation:
+            type: string
+            length: 255
+            column: current_location
+    oneToOne:
+        houseUser:
+            targetEntity: HouseUser
+            mappedBy: User
+    lifecycleCallbacks: {  }

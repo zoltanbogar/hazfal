@@ -1,0 +1,35 @@
+AppBundle\Entity\Bill:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\BillRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        amount:
+            type: integer
+        status:
+            type: smallint
+        details:
+            type: text
+        createdAt:
+            type: datetime
+            column: created_at
+        issuedAt:
+            type: datetime
+            column: issued_at
+        dueDate:
+            type: datetime
+            column: due_date
+        receiptNumber:
+            type: string
+            length: 255
+            column: receipt_number
+        issuedForMonth:
+            type: string
+            length: 255
+            column: issued_for_month
+    lifecycleCallbacks: {  }
