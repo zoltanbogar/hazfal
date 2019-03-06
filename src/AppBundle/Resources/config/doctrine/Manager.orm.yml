@@ -1,13 +1,7 @@
 AppBundle\Entity\Manager:
     type: entity
-    table: null
+    table: manager
     repositoryClass: AppBundle\Repository\ManagerRepository
-    id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
     fields:
         website:
             type: string

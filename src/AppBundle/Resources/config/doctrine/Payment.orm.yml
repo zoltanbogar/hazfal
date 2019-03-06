@@ -1,6 +1,6 @@
 AppBundle\Entity\Payment:
     type: entity
-    table: null
+    table: payment
     repositoryClass: AppBundle\Repository\PaymentRepository
     id:
         id:
@@ -9,6 +9,12 @@ AppBundle\Entity\Payment:
             generator:
                 strategy: AUTO
     fields:
+        unitId:
+            type: integer
+            column: unit_id
+        paymentMethodId:
+            type: integer
+            column: payment_method_id
         paymentDate:
             type: datetime
             column: payment_date
@@ -23,4 +29,17 @@ AppBundle\Entity\Payment:
             type: integer
         status:
             type: smallint
+    manyToOne:
+        paymentMethod:
+            targetEntity: PaymentMethod
+            inversedBy: payments
+            joinColumn:
+                name: payment_method_id
+                referencedColumnName: id
+        unit:
+            targetEntity: Unit
+            inversedBy: payments
+            joinColumn:
+                name: unit_id
+                referencedColumnName: id
     lifecycleCallbacks: {  }

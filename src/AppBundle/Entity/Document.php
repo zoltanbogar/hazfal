@@ -5,12 +5,27 @@ namespace AppBundle\Entity;
 /**
  * Document
  */
-class Document
+class Document extends SocialEntity
 {
+
+    private $documentType;
+    private $user;
+    private $house;
+
     /**
      * @var int
      */
-    private $id;
+    private $documentTypeId;
+
+    /**
+     * @var int
+     */
+    private $userId;
+
+    /**
+     * @var int
+     */
+    private $houseId;
 
     /**
      * @var string
@@ -22,16 +37,6 @@ class Document
      */
     private $filename;
 
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set name.

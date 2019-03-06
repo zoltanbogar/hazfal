@@ -1,6 +1,6 @@
 AppBundle\Entity\Image:
     type: entity
-    table: null
+    table: image
     repositoryClass: AppBundle\Repository\ImageRepository
     id:
         id:

@@ -5,12 +5,14 @@ namespace AppBundle\Entity;
 /**
  * Comment
  */
-class Comment
+class Comment extends SocialEntity
 {
+    private $user;
+
     /**
-     * @var int
+     * @var integer
      */
-    private $id;
+    private $userId;
 
     /**
      * @var string
@@ -31,17 +33,6 @@ class Comment
      * @var \DateTime|null
      */
     private $deletedAt;
-
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set content.

@@ -58,4 +58,8 @@ AppBundle\Entity\House:
             joinColumn:
                 name: house_user_id
                 referencedColumnName: id
+    oneToMany:
+        documents:
+            targetEntity: Document
+            mappedBy: house
     lifecycleCallbacks: {  }

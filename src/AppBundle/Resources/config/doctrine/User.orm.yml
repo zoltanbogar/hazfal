@@ -1,6 +1,6 @@
 AppBundle\Entity\User:
     type: entity
-    table: null
+    table: user
     repositoryClass: AppBundle\Repository\UserRepository
     id:
         id:
@@ -61,8 +61,21 @@ AppBundle\Entity\User:
             type: string
             length: 255
             column: current_location
+    oneToMany:
+        bills:
+            targetEntity: Bill
+            mappedBy: user
+        documents:
+            targetEntity: Document
+            mappedBy: user
+        comments:
+            targetEntity: Comment
+            mappedBy: user
+        notifications:
+            targetEntity: Notification
+            mappedBy: user
     oneToOne:
         houseUser:
             targetEntity: HouseUser
-            mappedBy: User
+            mappedBy: user
     lifecycleCallbacks: {  }

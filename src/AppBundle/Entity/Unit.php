@@ -7,6 +7,8 @@ namespace AppBundle\Entity;
  */
 class Unit
 {
+    private $payments;
+
     /**
      * @var int
      */

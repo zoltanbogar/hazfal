@@ -1,6 +1,6 @@
 AppBundle\Entity\PaymentMethod:
     type: entity
-    table: null
+    table: payment_method
     repositoryClass: AppBundle\Repository\PaymentMethodRepository
     id:
         id:
@@ -17,4 +17,8 @@ AppBundle\Entity\PaymentMethod:
             length: 255
         description:
             type: text
+    oneToMany:
+        payments:
+            targetEntity: Payment
+            mappedBy: paymentMethod
     lifecycleCallbacks: {  }

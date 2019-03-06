@@ -1,6 +1,6 @@
 AppBundle\Entity\Bill:
     type: entity
-    table: null
+    table: bill
     repositoryClass: AppBundle\Repository\BillRepository
     id:
         id:
@@ -9,6 +9,8 @@ AppBundle\Entity\Bill:
             generator:
                 strategy: AUTO
     fields:
+        userId:
+            type: integer
         amount:
             type: integer
         status:
@@ -32,4 +34,11 @@ AppBundle\Entity\Bill:
             type: string
             length: 255
             column: issued_for_month
+    manyToOne:
+        user:
+            targetEntity: User
+            inversedBy: bills
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
     lifecycleCallbacks: {  }

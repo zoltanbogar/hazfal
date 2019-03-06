@@ -1,6 +1,17 @@
 AppBundle\Entity\SocialEntity:
     type: entity
-    table: null
+    inheritanceType: SINGLE_TABLE
+    discriminatorColumn:
+        name: type
+        type: string
+    discriminatorMap:
+        socialEntity: SocialEntity
+        post: Post
+        comment: Comment
+        document: Document
+        malfunction: Malfunction
+        reaction: Reaction
+    table: social_entity
     repositoryClass: AppBundle\Repository\SocialEntityRepository
     id:
         id:
@@ -9,8 +20,6 @@ AppBundle\Entity\SocialEntity:
             generator:
                 strategy: AUTO
     fields:
-        type:
-            type: smallint
         createdAt:
             type: datetime
             column: created_at

@@ -1,6 +1,6 @@
 AppBundle\Entity\ImportSource:
     type: entity
-    table: null
+    table: import_source
     repositoryClass: AppBundle\Repository\ImportSourceRepository
     id:
         id:

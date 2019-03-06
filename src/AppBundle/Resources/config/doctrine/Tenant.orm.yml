@@ -1,13 +1,7 @@
 AppBundle\Entity\Tenant:
     type: entity
-    table: null
+    table: tenant
     repositoryClass: AppBundle\Repository\TenantRepository
-    id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
     fields:
         localContactNumber:
             type: string

@@ -7,10 +7,18 @@ namespace AppBundle\Entity;
  */
 class House
 {
+    private $houseUser;
+    private $documents;
+
     /**
      * @var int
      */
     private $id;
+
+    /**
+     * @var int
+     */
+    private $houseUserId;
 
     /**
      * @var string

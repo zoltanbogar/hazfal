@@ -5,12 +5,8 @@ namespace AppBundle\Entity;
 /**
  * Malfunction
  */
-class Malfunction
+class Malfunction extends SocialEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
 
     /**
      * @var string
@@ -27,16 +23,6 @@ class Malfunction
      */
     private $status;
 
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set subject.

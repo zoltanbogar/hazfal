@@ -7,10 +7,21 @@ namespace AppBundle\Entity;
  */
 class Payment
 {
+    private $unit;
+    private $paymentMethod;
+
     /**
      * @var int
      */
     private $id;
+    /**
+     * @var int
+     */
+    private $unitId;
+    /**
+     * @var int
+     */
+    private $paymentMethodId;
 
     /**
      * @var \DateTime

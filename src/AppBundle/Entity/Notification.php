@@ -7,10 +7,16 @@ namespace AppBundle\Entity;
  */
 class Notification
 {
+    private $user;
     /**
      * @var int
      */
     private $id;
+
+    /**
+     * @var int
+     */
+    private $userId;
 
     /**
      * @var int

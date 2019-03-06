@@ -7,6 +7,13 @@ namespace AppBundle\Entity;
  */
 class User
 {
+    private $houseUser;
+
+    private $bills;
+    private $documents;
+    private $comments;
+    private $notifications;
+
     /**
      * @var int
      */

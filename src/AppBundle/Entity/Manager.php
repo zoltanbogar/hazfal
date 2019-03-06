@@ -5,12 +5,8 @@ namespace AppBundle\Entity;
 /**
  * Manager
  */
-class Manager
+class Manager extends HouseUser
 {
-    /**
-     * @var int
-     */
-    private $id;
 
     /**
      * @var string
@@ -22,16 +18,6 @@ class Manager
      */
     private $logoImage;
 
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set website.

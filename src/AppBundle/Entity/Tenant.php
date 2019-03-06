@@ -5,28 +5,14 @@ namespace AppBundle\Entity;
 /**
  * Tenant
  */
-class Tenant
+class Tenant extends HouseUser
 {
-    /**
-     * @var int
-     */
-    private $id;
 
     /**
      * @var string|null
      */
     private $localContactNumber;
 
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set localContactNumber.

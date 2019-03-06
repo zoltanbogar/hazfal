@@ -5,12 +5,8 @@ namespace AppBundle\Entity;
 /**
  * Post
  */
-class Post
+class Post extends SocialEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
 
     /**
      * @var string
@@ -28,15 +24,6 @@ class Post
     private $isUrgent;
 
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set subject.

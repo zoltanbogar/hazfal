@@ -1,6 +1,6 @@
 AppBundle\Entity\Unit:
     type: entity
-    table: null
+    table: unit
     repositoryClass: AppBundle\Repository\UnitRepository
     id:
         id:
@@ -27,4 +27,8 @@ AppBundle\Entity\Unit:
             type: string
             length: 255
             column: house_share
+    oneToMany:
+        payments:
+            targetEntity: Payment
+            mappedBy: unit
     lifecycleCallbacks: {  }

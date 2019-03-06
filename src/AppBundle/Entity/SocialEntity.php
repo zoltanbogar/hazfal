@@ -13,11 +13,6 @@ class SocialEntity
     private $id;
 
     /**
-     * @var int
-     */
-    private $type;
-
-    /**
      * @var \DateTime
      */
     private $createdAt;
@@ -33,29 +28,6 @@ class SocialEntity
         return $this->id;
     }
 
-    /**
-     * Set type.
-     *
-     * @param int $type
-     *
-     * @return SocialEntity
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type.
-     *
-     * @return int
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 
     /**
      * Set createdAt.

@@ -7,6 +7,9 @@ namespace AppBundle\Entity;
  */
 class PaymentMethod
 {
+
+    private $payments;
+
     /**
      * @var int
      */

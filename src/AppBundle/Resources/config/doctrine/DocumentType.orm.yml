@@ -1,6 +1,6 @@
 AppBundle\Entity\DocumentType:
     type: entity
-    table: null
+    table: document_type
     repositoryClass: AppBundle\Repository\DocumentTypeRepository
     id:
         id:
@@ -12,4 +12,8 @@ AppBundle\Entity\DocumentType:
         name:
             type: string
             length: 255
+    oneToMany:
+        documents:
+            targetEntity: Document
+            mappedBy: documentType
     lifecycleCallbacks: {  }

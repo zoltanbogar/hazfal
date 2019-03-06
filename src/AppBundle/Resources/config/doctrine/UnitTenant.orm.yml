@@ -1,6 +1,6 @@
 AppBundle\Entity\UnitTenant:
     type: entity
-    table: null
+    table: unit_tenant
     repositoryClass: AppBundle\Repository\UnitTenantRepository
     id:
         id:

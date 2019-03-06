@@ -7,10 +7,17 @@ namespace AppBundle\Entity;
  */
 class Bill
 {
+    private $user;
+
     /**
      * @var int
      */
     private $id;
+
+    /**
+     * @var int
+     */
+    private $userId;
 
     /**
      * @var int

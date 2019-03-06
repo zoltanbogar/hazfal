@@ -1,6 +1,14 @@
 AppBundle\Entity\HouseUser:
     type: entity
-    table: null
+    table: house_user
+    inheritanceType: SINGLE_TABLE
+    discriminatorColumn:
+        name: type
+        type: smallint
+    discriminatorMap:
+        houseUser: HouseUser
+        tenant: Tenant
+        manager: Manager
     repositoryClass: AppBundle\Repository\HouseUserRepository
     id:
         id:
@@ -12,8 +20,6 @@ AppBundle\Entity\HouseUser:
         userId:
             type: integer
             column: user_id
-        type:
-            type: smallint
         email:
             type: string
             length: 255

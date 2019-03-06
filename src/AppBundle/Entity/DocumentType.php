@@ -7,6 +7,7 @@ namespace AppBundle\Entity;
  */
 class DocumentType
 {
+    private $documents;
     /**
      * @var int
      */
