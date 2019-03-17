@@ -1,0 +1,39 @@
+AppBundle\Entity\HouseUser:
+  exclusion_policy: ALL
+  properties:
+    email:
+      expose: true
+      groups:
+        - default
+    mailing_address:
+      expose: true
+      groups:
+        - default
+    phone_number:
+      expose: true
+      groups:
+        - default
+    first_name:
+      expose: true
+      groups:
+        - default
+    last_name:
+      expose: true
+      groups:
+        - default
+    company_name:
+      expose: true
+      groups:
+        - default
+    company_address:
+      expose: true
+      groups:
+        - default
+    company_tax_number:
+      expose: true
+      groups:
+        - default
+    created_at:
+      expose: true
+      groups:
+        - default

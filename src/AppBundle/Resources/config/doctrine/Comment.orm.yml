@@ -1,25 +1,21 @@
 AppBundle\Entity\Comment:
-    type: entity
-    table: comment
-    repositoryClass: AppBundle\Repository\CommentRepository
-    fields:
-        userId:
-            type: integer
-            column: user_id
-        content:
-            type: text
-        modifiedAt:
-            type: datetime
-            column: modified_at
-        deletedAt:
-            type: datetime
-            nullable: true
-            column: deleted_at
-    manyToOne:
-        user:
-            targetEntity: User
-            inversedBy: comments
-            joinColumn:
-                name: user_id
-                referencedColumnName: id
-    lifecycleCallbacks: {  }
+  type: entity
+  table: comments
+  repositoryClass: AppBundle\Repository\CommentRepository
+  fields:
+    content:
+      type: text
+  manyToOne:
+    user:
+      targetEntity: User
+      inversedBy: comments
+      joinColumn:
+        name: user_id
+        referencedColumnName: id
+    socialEntity:
+      targetEntity: SocialEntity
+      inversedBy: comments
+      joinColumn:
+        name: social_entity_id
+        referencedColumnName: id
+  lifecycleCallbacks: {  }

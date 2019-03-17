@@ -1,4 +1,12 @@
 services:
-#    api.example:
-#        class: ApiBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+  #  _defaults:
+  #    autowire: true
+  #    autoconfigure: true
+  #    public: true
+
+  #  ApiBundle\:
+  #    resource: '../../../ApiBundle/*'
+  #    exclude: '../../../ApiBundle/{Entity,Repository}'
+  response_handler:
+    class: ApiBundle\Service\ResponseHandler
+    arguments: ['@jms_serializer']

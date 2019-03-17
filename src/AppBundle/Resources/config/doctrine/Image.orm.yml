@@ -1,15 +1,22 @@
 AppBundle\Entity\Image:
-    type: entity
-    table: image
-    repositoryClass: AppBundle\Repository\ImageRepository
+  type: entity
+  table: image
+  repositoryClass: AppBundle\Repository\ImageRepository
+  id:
     id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
-    fields:
-        filename:
-            type: string
-            length: 255
-    lifecycleCallbacks: {  }
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    filename:
+      type: string
+      length: 255
+  manyToOne:
+    socialEntity:
+      targetEntity: Image
+      inversedBy: images
+      joinColumn:
+        name: social_entity_id
+        referencedColumnName: id
+  lifecycleCallbacks: {  }
