@@ -65,4 +65,33 @@ class Comment extends SocialEntity
     {
         return $this->user;
     }
+    /**
+     * @var \AppBundle\Entity\SocialEntity
+     */
+    private $socialEntity;
+
+
+    /**
+     * Set socialEntity.
+     *
+     * @param \AppBundle\Entity\SocialEntity|null $socialEntity
+     *
+     * @return Comment
+     */
+    public function setSocialEntity(\AppBundle\Entity\SocialEntity $socialEntity = null)
+    {
+        $this->socialEntity = $socialEntity;
+
+        return $this;
+    }
+
+    /**
+     * Get socialEntity.
+     *
+     * @return \AppBundle\Entity\SocialEntity|null
+     */
+    public function getSocialEntity()
+    {
+        return $this->socialEntity;
+    }
 }

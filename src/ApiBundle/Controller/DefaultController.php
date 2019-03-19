@@ -8,6 +8,7 @@ use AppBundle\Entity\Comment;
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
 use AppBundle\Entity\Malfunction;
+use AppBundle\Entity\PaymentMethod;
 use AppBundle\Entity\Post;
 use AppBundle\Entity\SocialEntity;
 use AppBundle\Entity\Unit;
@@ -158,6 +159,11 @@ class DefaultController extends Controller
     {
         if (!$request->get("user_id")) {
             //TODO return logged in user
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+
+            return $this->container->get('response_handler')->successHandler($user, $request->query->all());
+
+            return $user;
         }
 
         $numUserID = $request->get("user_id");
@@ -619,9 +625,20 @@ class DefaultController extends Controller
         return $this->container->get('response_handler')->successHandler($tblBills, $request->query->all());
     }
 
+    public function getPaymentMethodsAction(Request $request)
+    {
+        $objPaymentMethod = $this->getDoctrine()->getRepository(PaymentMethod::class)->findAll();
+
+        if (!$objPaymentMethod) {
+            return $this->container->get('response_handler')->errorHandler("payment_method_not_exists", "Not found", 404);
+        }
+
+        return $this->container->get('response_handler')->successHandler($objPaymentMethod, $request->query->all());
+    }
+
     public function getRegistrationByTokenAction(Request $request)
     {
-        if (!$request->get("token") || !$request->get("email") || !$request->get("password")) {
+        if (!$request->get("token") || !$request->get("username") || !$request->get("first_name")) {
             return $this->container->get('response_handler')->errorHandler("invalid_params", "Invalid parameters", 422);
         }
 
@@ -643,9 +660,32 @@ class DefaultController extends Controller
             return $this->container->get('response_handler')->errorHandler("user_already_registered", "Invalid parameters", 422);
         }
 
-        $userManager = $this->container->get('fos_user.user_manager');
-        var_dump($objUser);
+        $entityManager = $this->getDoctrine()->getManager();
+        $strDateOfBirth = new \DateTime($request->get("date_of_birth"));
+        $objUser = new User();
+        $objUser->setFirstName($request->get("first_name"));
+        $objUser->setLastName($request->get("last_name"));
+        $objUser->setRegistrationDate(new \DateTime('now'));
+        $objUser->setDateOfBirth($strDateOfBirth);
+        $objUser->setPlaceOfBirth($request->get("place_of_birth"));
+        $objUser->setBio($request->get("bio"));
+        $objUser->setSex($request->get("sex"));
+        $objUser->setPhoneNumber($request->get("phone_number"));
+        $objUser->setLocalPhoneNumber($request->get("local_phone_number"));
+        $objUser->setOfficialAddress($request->get("official_address"));
+        $objUser->setCurrentLocation($request->get("current_location"));
+        $objUser->setJoinToken($request->get("token"));
+        $objUser->setApiKey(substr(base64_encode(sha1(mt_rand())), 0, 64));
+        $objUser->setUsername($request->get("username"));
 
-        return $this->container->get('response_handler')->successHandler($objHouseUser, $request->query->all());
+        $entityManager->persist($objUser);
+        $entityManager->flush();
+
+        $objHouseUser->setUser($objUser);
+
+        $entityManager->persist($objHouseUser);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler($objUser, $request->query->all());
     }
 }

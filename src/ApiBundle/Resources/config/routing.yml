@@ -83,6 +83,10 @@ api_get_register_user:
   path: /registration
   defaults: { _controller: ApiBundle:Default:getRegistrationByToken }
   methods: POST
+api_get_payment_methods:
+  path: /payment-methods
+  defaults: { _controller: ApiBundle:Default:getPaymentMethods }
+  methods: GET
 
 login:
   path:     /login

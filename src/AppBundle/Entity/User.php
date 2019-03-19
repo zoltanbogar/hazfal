@@ -2,10 +2,13 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use FOS\UserBundle\Model\User as BaseUser;
+
 /**
  * User
  */
-class User
+class User extends BaseUser //implements UserInterface
 {
     /**
      * @var int
@@ -140,7 +143,7 @@ class User
      *
      * @return User
      */
-    public function setLastLogin($lastLogin = null)
+    public function setLastLogin($lastLogin = NULL)
     {
         $this->lastLogin = $lastLogin;
 
@@ -188,7 +191,7 @@ class User
      *
      * @return User
      */
-    public function setDeletedAt($deletedAt = null)
+    public function setDeletedAt($deletedAt = NULL)
     {
         $this->deletedAt = $deletedAt;
 
@@ -404,7 +407,7 @@ class User
      *
      * @return User
      */
-    public function setIdNumber($idNumber = null)
+    public function setIdNumber($idNumber = NULL)
     {
         $this->idNumber = $idNumber;
 
@@ -500,7 +503,7 @@ class User
      *
      * @return User
      */
-    public function setHouseUser(\AppBundle\Entity\HouseUser $houseUser = null)
+    public function setHouseUser(\AppBundle\Entity\HouseUser $houseUser = NULL)
     {
         $this->houseUser = $houseUser;
 
@@ -659,5 +662,77 @@ class User
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * @var string
+     */
+    private $apiKey;
+
+
+    /**
+     * Set apiKey.
+     *
+     * @param string $apiKey
+     *
+     * @return User
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
+     * Get apiKey.
+     *
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function getPassword()
+    {
+    }
+
+    public function getSalt()
+    {
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    /**
+     * @var string
+     */
+    private $username;
+
+
+    /**
+     * Set username.
+     *
+     * @param string $username
+     *
+     * @return User
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
     }
 }

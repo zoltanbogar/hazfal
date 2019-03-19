@@ -4,6 +4,13 @@ security:
 
   # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
   providers:
+    api_key_user_provider:
+      id: AppBundle\Security\ApiKeyUserProvider
+    doctrine:
+      entity:
+        class: AppBundle:User
+        property: apiKey
+
     in_memory:
       memory: ~
 
@@ -12,8 +19,15 @@ security:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
-
     main:
+      simple_preauth:
+        authenticator: AppBundle\Security\ApiKeyAuthenticator
+      provider: api_key_user_provider
+
+      guard:
+        authenticators:
+          - AppBundle\Security\TokenAuthenticator
+
       anonymous: ~
       json_login:
         check_path: /login
