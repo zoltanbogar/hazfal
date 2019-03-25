@@ -4,14 +4,21 @@ namespace ApiBundle\Controller;
 
 use ApiBundle\Service\ResponseHandler;
 
+use AppBundle\Entity\Bill;
 use AppBundle\Entity\Comment;
+use AppBundle\Entity\Document;
+use AppBundle\Entity\DocumentType;
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
 use AppBundle\Entity\Malfunction;
+use AppBundle\Entity\Manager;
+use AppBundle\Entity\Payment;
 use AppBundle\Entity\PaymentMethod;
 use AppBundle\Entity\Post;
 use AppBundle\Entity\SocialEntity;
+use AppBundle\Entity\Tenant;
 use AppBundle\Entity\Unit;
+use AppBundle\Entity\UnitTenant;
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -687,5 +694,446 @@ class DefaultController extends Controller
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler($objUser, $request->query->all());
+    }
+
+    public function loginAction(Request $request)
+    {
+        $email = $request->get('email');
+        $password = $request->get('password');
+
+        $userManager = $this->get('fos_user.user_manager');
+
+        if (!$email || !$password) {
+            return $this->container->get('response_handler')->errorHandler("missing_credentials", "Invalid parameters", 422);
+        }
+
+        $objUser = $this->getDoctrine()->getRepository(User::class)->findBy(['email' => $email]);
+        if (!$objUser) {
+            $objUser = $this->getDoctrine()->getRepository(User::class)->findBy(['username' => $email]);
+        }
+
+        if (!$objUser) {
+            return $this->container->get('response_handler')->errorHandler("user_not_found", "Not found", 404);
+        } else {
+            if (count($objUser) > 1) {
+                return $this->container->get('response_handler')->errorHandler("more_than_one_house_user_found", "Not found", 404);
+            }
+        }
+
+        $objUser = $objUser[0];
+
+        //return $this->container->get('response_handler')->successHandler($objUser, $request->query->all());
+        $factory = $this->get('security.encoder_factory');
+        $encoder = $factory->getEncoder($objUser);
+
+        $isValidPassword = $encoder->isPasswordValid($objUser->getPassword(), $password, $objUser->getSalt());
+
+        if (!$isValidPassword) {
+            return $this->container->get('response_handler')->errorHandler("invalid_credentials", "Invalid parameters", 422);
+        }
+
+        var_dump("wow you have made it");
+    }
+
+    public function postImportHouseAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'name' => 'required',
+                'region' => 'required',
+                'postal_code' => 'required|numeric',
+                'city' => 'required',
+                'street' => 'required',
+                'building' => 'required',
+                'unit' => 'required',
+                'lot_number' => 'required|numeric',
+                'gps_latitude' => 'required|numeric',
+                'gps_longitude' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if (!$validator) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objHouse = new House();
+        $objHouse->setName($request->get('name'));
+        $objHouse->setCountryCode($request->get('country_code') ?? 'HU');
+        $objHouse->setRegion($request->get('region'));
+        $objHouse->setPostalCode($request->get('postal_code'));
+        $objHouse->setCity($request->get('city'));
+        $objHouse->setStreet($request->get('street'));
+        $objHouse->setBuilding($request->get('building'));
+        $objHouse->setUnit($request->get('unit'));
+        $objHouse->setLotNumber($request->get('lot_number'));
+        $objHouse->setGpsLatitude($request->get('gps_latitude'));
+        $objHouse->setGpsLongitude($request->get('gps_longitude'));
+        $objHouse->setStatus(1);
+        $objHouse->setCreatedAt(new \DateTime('now'));
+        $objHouse->setUpdatedAt(new \DateTime('now'));
+
+        $entityManager->persist($objHouse);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "House with id: ".$objHouse->getId()." and name: ".$objHouse->getName()." has been created!",
+            $request->query->all()
+        );
+    }
+
+    public function postImportUnitAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'building' => 'required',
+                'floor' => 'required|numeric',
+                'door' => 'required|numeric',
+                'floor_area' => 'required|numeric',
+                'type' => 'required|numeric',
+                'balance' => 'required|numeric',
+                'house_share' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if (!$validator) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        //TODO validálni a duplikáció elkerülésének érdekében
+        /*if (!$request->get('house_id') || !is_numeric($request->get('house_id'))) {
+            return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+        }
+        if (!$request->get('unit_tenant_id') || !is_numeric($request->get('unit_tenant_id'))) {
+            return $this->container->get('response_handler')->errorHandler("invalid_unit_floor_area", "Invalid parameters", 422);
+        }*/
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objUnit = new Unit();
+        if ($request->get('house_id')) {
+            $numHouseID = $request->get("house_id");
+            $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+            if (!$objHouse) {
+                return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+            }
+            $objUnit->setHouse($objHouse);
+        }
+        $objUnit->setBuilding($request->get('building'));
+        $objUnit->setFloor($request->get('floor'));
+        $objUnit->setDoor($request->get('door'));
+        $objUnit->setFloorArea($request->get('floor_area'));
+        $objUnit->setType($request->get('type'));
+        $objUnit->setBalance($request->get('balance'));
+        $objUnit->setHouseShare($request->get('house_share'));
+        if ($request->get('unit_tenant_id')) {
+            $numUnitTenantID = $request->get("unit_tenant_id");
+            $objUnitTenant = $this->getDoctrine()->getRepository(UnitTenant::class)->find($numUnitTenantID);
+            if (!$objUnitTenant) {
+                return $this->container->get('response_handler')->errorHandler("invalid_unit_tenant_id", "Invalid parameters", 422);
+            }
+            $objUnit->setUnitTenant($objUnitTenant);
+        }
+        $objUnit->setCreatedAt(new \DateTime('now'));
+        $objUnit->setUpdatedAt(new \DateTime('now'));
+
+        $entityManager->persist($objUnit);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Unit with id: ".$objUnit->getId()." has been created!",
+            $request->query->all()
+        );
+    }
+
+    public function postImportHouseUserAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'email' => 'required',
+                'mailing_address' => 'required',
+                'phone_number' => 'required',
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'company_name' => 'required',
+                'company_address' => 'required',
+                'company_tax_number' => 'required',
+                'local_contact_number' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if (!$validator) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objHouseUser = new Tenant();
+        if ($request->get('user_id')) {
+            $numUserID = $request->get("user_id");
+            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+            if (!$objUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setUser($objUser);
+        }
+        if ($request->get('house_id')) {
+            $numHouseID = $request->get("house_id");
+            $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+            if (!$objHouse) {
+                return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setHouse($objHouse);
+        }
+        $objHouseUser->setEmail($request->get('email'));
+        $objHouseUser->setMailingAddress($request->get('mailing_address'));
+        $objHouseUser->setPhoneNumber($request->get('phone_number'));
+        $objHouseUser->setFirstName($request->get('first_name'));
+        $objHouseUser->setLastName($request->get('last_name'));
+        $objHouseUser->setCompanyName($request->get('company_name'));
+        $objHouseUser->setCompanyAddress($request->get('company_address'));
+        $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setCreatedAt(new \DateTime('now'));
+        $objHouseUser->setUpdatedAt(new \DateTime('now'));
+        $objHouseUser->setLocalContactNumber($request->get('local_contact_number'));
+
+        $entityManager->persist($objHouseUser);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Tenant has been created!",
+            $request->query->all()
+        );
+    }
+
+    public function postImportManagerAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'email' => 'required',
+                'mailing_address' => 'required',
+                'phone_number' => 'required',
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'company_name' => 'required',
+                'company_address' => 'required',
+                'company_tax_number' => 'required',
+                'website' => 'required',
+                'logo_image' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if (!$validator) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objHouseUser = new Manager();
+        if ($request->get('user_id')) {
+            $numUserID = $request->get("user_id");
+            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+            if (!$objUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setUser($objUser);
+        }
+        if ($request->get('house_id')) {
+            $numHouseID = $request->get("house_id");
+            $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+            if (!$objHouse) {
+                return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setHouse($objHouse);
+        }
+        $objHouseUser->setEmail($request->get('email'));
+        $objHouseUser->setMailingAddress($request->get('mailing_address'));
+        $objHouseUser->setPhoneNumber($request->get('phone_number'));
+        $objHouseUser->setFirstName($request->get('first_name'));
+        $objHouseUser->setLastName($request->get('last_name'));
+        $objHouseUser->setCompanyName($request->get('company_name'));
+        $objHouseUser->setCompanyAddress($request->get('company_address'));
+        $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setCreatedAt(new \DateTime('now'));
+        $objHouseUser->setUpdatedAt(new \DateTime('now'));
+        $objHouseUser->setWebsite($request->get('website'));
+        $objHouseUser->setLogoImage($request->get('logo_image'));
+
+        $entityManager->persist($objHouseUser);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Manager has been created!",
+            $request->query->all()
+        );
+    }
+
+    public function postImportDocumentAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'type' => 'required',
+                'user_id' => 'required|numeric',
+                'document_type_id' => 'required|numeric',
+                'house_id' => 'required|numeric',
+                'name' => 'required',
+                'filename' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if (!$validator) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        //TODO validálni a duplikáció elkerülésének érdekében
+        if ($request->get('type') !== 'document') {
+            return $this->container->get('response_handler')->errorHandler("invalid_entity_type", "Invalid parameters", 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objDocument = new Document();
+        if ($request->get('user_id')) {
+            $numUserID = $request->get("user_id");
+            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+            if (!$objUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+            }
+            $objDocument->setUser($objUser);
+        }
+        if ($request->get('house_id')) {
+            $numHouseID = $request->get("house_id");
+            $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+            if (!$objHouse) {
+                return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+            }
+            $objDocument->setHouse($objHouse);
+        }
+        if ($request->get('document_type_id')) {
+            $numTypeID = $request->get('document_type_id');
+            $objDocumentType = $this->getDoctrine()->getRepository(DocumentType::class)->find($numTypeID);
+            if (!$objDocumentType) {
+                return $this->container->get('response_handler')->errorHandler("invalid_document_type", "Invalid parameters", 422);
+            }
+            $objDocument->setDocumentType($objDocumentType);
+        }
+        $objDocument->setName($request->get('name'));
+        $objDocument->setFilename($request->get('filename'));
+        $objDocument->setCreatedAt(new \DateTime('now'));
+        $objDocument->setUpdatedAt(new \DateTime('now'));
+
+        $entityManager->persist($objDocument);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Document has been created!",
+            $request->query->all()
+        );
+    }
+
+    public function postImportBillAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'unit_id' => 'required|numeric',
+                'amount' => 'required|numeric',
+                'receipt_number' => 'required|numeric',
+                'issued_for_month' => 'required|numeric',
+                'bill_category' => 'required',
+                'details' => 'required',
+                'issued_at' => 'required|date',
+                'due_date' => 'required|date',
+                'api_key' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if (!$validator) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objDocument = new Bill();
+        if ($request->get('unit_id')) {
+            $numUnitID = $request->get("unit_id");
+            $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+            if (!$objUnit) {
+                return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+            }
+            $objDocument->setUnit($objUnit);
+        }
+        $objDocument->setAmount($request->get('amount'));
+        $objDocument->setBillCategory($request->get('bill_category'));
+        $objDocument->setStatus(1);
+        $objDocument->setDetails($request->get('details'));
+        $objDocument->setReceiptNumber($request->get('receipt_number'));
+        $objDocument->setIssuedForMonth($request->get('issued_for_month'));
+        $objDocument->setCreatedAt(new \DateTime('now'));
+        $objDocument->setIssuedAt(new \DateTime($request->get('issued_at')));
+        $objDocument->setDueDate(new \DateTime($request->get('due_date')));
+
+        $entityManager->persist($objDocument);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Bill has been created!",
+            $request->query->all()
+        );
+    }
+
+    public function getExportPaymentsAction(Request $request)
+    {
+        $objPayment = NULL;
+        if ($request->query->get('payment_month')) {
+            $objPayment = $this->getDoctrine()->getRepository(Payment::class)->findAllInMonth($request->query->get('payment_month'));
+        } else if ($request->query->get('start_date') && $request->query->get('end_date')) {
+            $objPayment = $this->getDoctrine()->getRepository(Payment::class)->findAllInInterval(
+                $request->query->get('start_date'),
+                $request->query->get('end_date')
+            );
+        } else if ($request->query->get('start_date')) {
+            $objPayment = $this->getDoctrine()->getRepository(Payment::class)->findAllAfterMonth($request->query->get('start_date'));
+        } else if ($request->query->get('end_date')) {
+            $objPayment = $this->getDoctrine()->getRepository(Payment::class)->findAllBeforeMonth($request->query->get('end_date'));
+        }
+
+        if (!$objPayment) {
+            return $this->container->get('response_handler')->errorHandler("no_payment_found", "Not found", 404);
+        }
+
+        return $this->container->get('response_handler')->successHandler($objPayment, []);
     }
 }

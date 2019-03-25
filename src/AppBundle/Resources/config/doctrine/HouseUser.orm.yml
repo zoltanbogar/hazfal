@@ -52,9 +52,11 @@ AppBundle\Entity\HouseUser:
       type: string
       length: 255
       column: registration_token
+      nullable: true
     inviteSentAt:
       type: datetime
       column: invite_sent_at
+      nullable: true
     deletedAt:
       type: datetime
       nullable: true

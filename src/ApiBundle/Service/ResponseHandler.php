@@ -19,7 +19,7 @@ class ResponseHandler
             "unset",
             "no",
             "hide",
-            "false"
+            "false",
         ];
     }
 
@@ -30,8 +30,8 @@ class ResponseHandler
             "error" => [
                 "type" => $type,
                 "code" => $statusCode,
-                "message" => $message
-            ]
+                "message" => $message,
+            ],
         ];
 
         $response = new Response($this->serializer->serialize($tblResponse, self::RESPONSE_FORMAT), $statusCode);
@@ -40,7 +40,7 @@ class ResponseHandler
         return $response;
     }
 
-    public function successHandler($objResponseData, $additionalQueryData, $statusCode = Response::HTTP_OK)
+    public function successHandler($objResponseData, $additionalQueryData = [], $statusCode = Response::HTTP_OK)
     {
         $serializedResponse = $this->serializer->serialize($objResponseData, self::RESPONSE_FORMAT);
         $objResponseData = $this->controlResult($serializedResponse, $additionalQueryData);

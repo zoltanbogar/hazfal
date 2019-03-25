@@ -87,7 +87,46 @@ api_get_payment_methods:
   path: /payment-methods
   defaults: { _controller: ApiBundle:Default:getPaymentMethods }
   methods: GET
+api_post_import_house:
+  path: /import/house
+  defaults: { _controller: ApiBundle:Default:postImportHouse }
+  methods: POST
+api_post_import_unit:
+  path: /import/unit
+  defaults: { _controller: ApiBundle:Default:postImportUnit }
+  methods: POST
+api_post_import_house_user:
+  path: /import/house-user
+  defaults: { _controller: ApiBundle:Default:postImportHouseUser }
+  methods: POST
+api_post_import_manager:
+  path: /import/manager
+  defaults: { _controller: ApiBundle:Default:postImportManager }
+  methods: POST
+api_post_import_document:
+  path: /import/document
+  defaults: { _controller: ApiBundle:Default:postImportDocument }
+  methods: POST
+api_post_import_bill:
+  path: /import/bill
+  defaults: { _controller: ApiBundle:Default:postImportBill }
+  methods: POST
+api_get_export_payments:
+  path: /export/payments
+  defaults: { _controller: ApiBundle:Default:getExportPayments }
+  methods: GET
+#login:
+#  path:     /login
+#  defaults: { _controller: ApiBundle:Security:login }
 
-login:
-  path:     /login
-  defaults: { _controller: ApiBundle:Security:login }
+
+api_login_check:
+  path: /api/login_check
+  methods: POST
+
+
+
+cashback_cloud_api_login:
+  path: /login
+  methods: POST
+  defaults: { _controller: ApiBundle:Default:login }

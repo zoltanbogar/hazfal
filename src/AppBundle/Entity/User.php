@@ -8,17 +8,17 @@ use FOS\UserBundle\Model\User as BaseUser;
 /**
  * User
  */
-class User extends BaseUser //implements UserInterface
+class User extends BaseUser// implements UserInterface
 {
     /**
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \DateTime|null
      */
-    private $lastLogin;
+    //protected $lastLogin;
 
     /**
      * @var \DateTime
@@ -143,22 +143,22 @@ class User extends BaseUser //implements UserInterface
      *
      * @return User
      */
-    public function setLastLogin($lastLogin = NULL)
+    /*public function setLastLogin($lastLogin = NULL)
     {
         $this->lastLogin = $lastLogin;
 
         return $this;
-    }
+    }*/
 
     /**
      * Get lastLogin.
      *
      * @return \DateTime|null
      */
-    public function getLastLogin()
+    /*public function getLastLogin()
     {
         return $this->lastLogin;
-    }
+    }*/
 
     /**
      * Set registrationDate.
@@ -719,7 +719,7 @@ class User extends BaseUser //implements UserInterface
     /**
      * @var string
      */
-    private $username;
+    //protected $username;
 
 
     /**
@@ -729,10 +729,10 @@ class User extends BaseUser //implements UserInterface
      *
      * @return User
      */
-    public function setUsername($username)
+    /*public function setUsername($username)
     {
         $this->username = $username;
 
         return $this;
-    }
+    }*/
 }
