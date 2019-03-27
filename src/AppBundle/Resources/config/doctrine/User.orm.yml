@@ -86,6 +86,9 @@ AppBundle\Entity\User:
     payments:
       targetEntity: Payment
       mappedBy: user
+    orders:
+      targetEntity: Order
+      mappedBy: user
   oneToOne:
     houseUser:
       targetEntity: HouseUser

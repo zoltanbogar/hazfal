@@ -40,6 +40,9 @@ AppBundle\Entity\Unit:
     bills:
       targetEntity: Bill
       mappedBy: unit
+    orders:
+      targetEntity: Order
+      mappedBy: unit
   manyToOne:
     house:
       targetEntity: House

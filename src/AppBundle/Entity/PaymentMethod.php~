@@ -157,4 +157,45 @@ class PaymentMethod
     {
         return $this->payments;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $orders;
+
+
+    /**
+     * Add order.
+     *
+     * @param \AppBundle\Entity\Order $order
+     *
+     * @return PaymentMethod
+     */
+    public function addOrder(\AppBundle\Entity\Order $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order.
+     *
+     * @param \AppBundle\Entity\Order $order
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeOrder(\AppBundle\Entity\Order $order)
+    {
+        return $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
 }

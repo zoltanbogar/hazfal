@@ -12,6 +12,7 @@ use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
 use AppBundle\Entity\Malfunction;
 use AppBundle\Entity\Manager;
+use AppBundle\Entity\Order;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\PaymentMethod;
 use AppBundle\Entity\Post;
@@ -1086,26 +1087,26 @@ class DefaultController extends Controller
         //TODO validálni a duplikáció elkerülésének érdekében
 
         $entityManager = $this->getDoctrine()->getManager();
-        $objDocument = new Bill();
+        $objBill = new Bill();
         if ($request->get('unit_id')) {
             $numUnitID = $request->get("unit_id");
             $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
             if (!$objUnit) {
                 return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
             }
-            $objDocument->setUnit($objUnit);
+            $objBill->setUnit($objUnit);
         }
-        $objDocument->setAmount($request->get('amount'));
-        $objDocument->setBillCategory($request->get('bill_category'));
-        $objDocument->setStatus(1);
-        $objDocument->setDetails($request->get('details'));
-        $objDocument->setReceiptNumber($request->get('receipt_number'));
-        $objDocument->setIssuedForMonth($request->get('issued_for_month'));
-        $objDocument->setCreatedAt(new \DateTime('now'));
-        $objDocument->setIssuedAt(new \DateTime($request->get('issued_at')));
-        $objDocument->setDueDate(new \DateTime($request->get('due_date')));
+        $objBill->setAmount($request->get('amount'));
+        $objBill->setBillCategory($request->get('bill_category'));
+        $objBill->setStatus(1);
+        $objBill->setDetails($request->get('details'));
+        $objBill->setReceiptNumber($request->get('receipt_number'));
+        $objBill->setIssuedForMonth($request->get('issued_for_month'));
+        $objBill->setCreatedAt(new \DateTime('now'));
+        $objBill->setIssuedAt(new \DateTime($request->get('issued_at')));
+        $objBill->setDueDate(new \DateTime($request->get('due_date')));
 
-        $entityManager->persist($objDocument);
+        $entityManager->persist($objBill);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
@@ -1135,5 +1136,182 @@ class DefaultController extends Controller
         }
 
         return $this->container->get('response_handler')->successHandler($objPayment, []);
+    }
+
+    public function successfulBorgunPaymentAction(Request $request)
+    {
+        if ($request->get('status') !== 'OK') {
+            return $this->container->get('response_handler')->errorHandler("status_not_ok", "Invalid parameters", 400);
+        }
+
+        $orderID = $request->get('orderid');
+        $authorizationCode = $request->get('authorizationcode');
+        $cerditCardNumber = $request->get('creditcardnumber');
+        $amount = $request->get('amount');
+        $currency = $request->get('currency');
+        $orderHash = $request->get('orderhash');
+        $merchantID = $request->get('marchantid');
+        $buyerName = $request->get('buyername');
+        $buyerEmail = $request->get('buyeremail');
+        $step = $request->get('step');
+        $isDebit = $request->get('isdebit');
+
+        $objOrder = $this->getDoctrine()->getRepository(Order::class)->findBy(
+            [
+                'orderId' => $orderID,
+                'isPaid' => 0,
+                'checkHash' => $orderHash,
+            ]
+        );
+
+        if (!$objOrder || count($objOrder) > 1) {
+            return $this->container->get('response_handler')->errorHandler("status_not_ok", "Invalid parameters", 400);
+            //mit csinálunk, ha nem egyezik?
+        }
+
+        $objOrder = $objOrder[0];
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objPayment = new Payment();
+        if (TRUE) { //FIXME
+            $numPaymentMethodID = 1; //$request->get("unit_id");
+            $objPaymentMethod = $this->getDoctrine()->getRepository(PaymentMethod::class)->find($numPaymentMethodID);
+            if (!$objPaymentMethod) {
+                return $this->container->get('response_handler')->errorHandler("invalid_payment_method_id", "Invalid parameters", 422);
+            }
+            $objPayment->setPaymentMethod($objPaymentMethod);
+        }
+        $objPayment->setPaymentDate(new \DateTime('now'));
+        $objPayment->setBookingDate(new \DateTime('now'));
+        $objPayment->setReceiptNumber($orderID);
+        $objPayment->setAmount($amount);
+        $objPayment->setStatus(1);
+        $objPayment->setUnit($objOrder->getUnit());
+        //FIXME save houseuser
+        //FIXME save user
+
+        $entityManager->persist($objPayment);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler("Payment saved!", []);
+    }
+
+    public function initBorgunPaymentAction(Request $request)
+    {
+        $param = $request->get('bills');
+        if (!$param) {
+            return $this->container->get('response_handler')->errorHandler("no_bill_found", "Not found", 404);
+        }
+        if (!$request->get('unit_id') || !is_numeric($request->get('unit_id'))) {
+            return $this->container->get('response_handler')->errorHandler("no_unit_id_found", "Not found", 404);
+        }
+        $tblParam = json_decode($param, TRUE);
+        $tblItems = [];
+        $numSumAmount = 0;
+
+        foreach ($tblParam as $rowParam) {
+            $objBill = $this->getDoctrine()->getRepository(Bill::class)->findBy(
+                [
+                    'amount' => $rowParam["amount"],
+                    'id' => $rowParam["id"],
+                ]
+            );
+
+            if (!$objBill || count($objBill) > 1) {
+                //logolni a csalást
+                return $this->container->get('response_handler')->errorHandler("status_not_ok", "Invalid parameters", 400);
+            }
+
+            $objBill = $objBill[0];
+            $tblItems[] = [
+                'itemdescription_0' => $objBill->getDetails(),
+                'itemcount_0' => 1,
+                'itemunitamount_0' => $objBill->getAmount(),
+                'itemamount_0' => $objBill->getAmount(),
+            ];
+            $numSumAmount += (int)$objBill->getAmount();
+        }
+
+        $repository = $this->getDoctrine()->getRepository(Order::class);
+        $count = $repository->countAll();
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objOrder = new Order();
+        $objOrder->setOrderId(str_pad(++$count, 12, 0, STR_PAD_LEFT));
+        $objOrder->setIsPaid(0);
+        $objOrder->setCart(json_encode($tblItems));
+        $objOrder->setCreatedAt(new \DateTime('now'));
+        $objOrder->setUpdatedAt(new \DateTime('now'));
+        if (TRUE) { //FIXME
+            $numUserID = 1; //$request->get("unit_id");
+            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+            if (!$objUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_user", "Invalid parameters", 422);
+            }
+            $objOrder->setUser($objUser);
+        }
+        if (TRUE) { //FIXME
+            $numPaymentMethodID = 1; //$request->get("unit_id");
+            $objPaymentMethod = $this->getDoctrine()->getRepository(PaymentMethod::class)->find($numPaymentMethodID);
+            if (!$objPaymentMethod) {
+                return $this->container->get('response_handler')->errorHandler("invalid_payment_method_id", "Invalid parameters", 422);
+            }
+            $objOrder->setPaymentMethod($objPaymentMethod);
+        }
+
+        $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($request->get('unit_id'));
+        if (!$objUnit) {
+            return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+        }
+        $objOrder->setUnit($objUnit);
+
+        $entityManager->persist($objOrder);
+        $entityManager->flush();
+
+        $postURL = $this->getParameter('borgun_url');
+        $merchantID = $this->getParameter('borgun_merchantid');
+        $paymentGatewayID = $this->getParameter('borgun_paymentgatewayid');
+        $successURL = $this->getParameter('borgun_returnurlsuccess');
+        $successAPIURL = $this->getParameter('borgun_returnurlsuccessserver');
+        $cancelURL = $this->getParameter('borgun_returnurlcancel');
+        $errorURL = $this->getParameter('borgun_returnurlerror');
+        $secretKey = $this->getParameter('borgun_secret');
+        $defaultCurrency = $this->getParameter('borgun_default_curreny');
+        $defaultLanguage = $this->getParameter('borgun_default_language');
+
+        $strOrderID = $objOrder->getOrderId();
+
+        $message = utf8_encode($merchantID.'|'.$successURL.'|'.$successAPIURL.'|'.$strOrderID.'|'.$numSumAmount.'|'.$defaultCurrency);
+
+        $checkhash = hash_hmac('sha256', $message, $secretKey);
+
+        $objOrder->setCheckHash($checkhash);
+
+        $entityManager->persist($objOrder);
+        $entityManager->flush();
+
+        $response = [
+            'action' => $postURL,
+            'merchantid' => $merchantID,
+            'paymentgatewayid' => $paymentGatewayID,
+            'checkhash' => $checkhash,
+            'orderid' => $strOrderID,
+            'currency' => $defaultCurrency,
+            'language' => $defaultLanguage,
+            'buyername' => 'Frici',
+            'buyeremail' => 'frici@myemail.com',
+            'returnurlsuccess' => $successURL,
+            'returnurlsuccessserver' => $successAPIURL,
+            'returnurlcancel' => $cancelURL,
+            'returnurlerror' => $errorURL,
+            'pagetype ' => 0,
+            'skipreceiptpage ' => 0,
+            'merchantemail' => 'info@hazfal.hu',
+            'items' => $tblItems,
+        ];
+
+        return $this->container->get('response_handler')->successHandler($response, []);
     }
 }

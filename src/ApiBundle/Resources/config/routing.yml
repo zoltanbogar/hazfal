@@ -115,6 +115,13 @@ api_get_export_payments:
   path: /export/payments
   defaults: { _controller: ApiBundle:Default:getExportPayments }
   methods: GET
+
+api_payments_borgun_success:
+  path: /payments/borgun/success
+  defaults: { _controller: ApiBundle:Default:successfulBorgunPayment }
+api_payments_borgun_init:
+  path: /payments/borgun/init-payment
+  defaults: { _controller: ApiBundle:Default:initBorgunPayment }
 #login:
 #  path:     /login
 #  defaults: { _controller: ApiBundle:Security:login }
