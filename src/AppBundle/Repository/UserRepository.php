@@ -10,4 +10,33 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findUserByUsername($strUserName)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.username = :username')
+            ->setParameter('username', $strUserName)
+            ->orderBy('u.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findUserByEmail($strEmail)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.email = :email')
+            ->setParameter('email', $strEmail)
+            ->orderBy('u.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findUserByApiKey($strApiKey)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.apiKey = :apiKey')
+            ->setParameter('apiKey', $strApiKey)
+            ->orderBy('u.id', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

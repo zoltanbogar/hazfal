@@ -7,21 +7,12 @@ use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
+use AppBundle\Security\ApiKeyAuthenticator;
+
 use AppBundle\Entity\User as UserEntity;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
-    public function getUsernameForApiKey($apiKey)
-    {
-        // Look up the username based on the token in the database, via
-        // an API call, or do something entirely different
-        //$username = //...;
-        return $apiKey;
-        $username = $this->getDoctrine()->getRepository(UserEntity::class)->findBy(['apiKey' => $apiKey]);
-
-        return $username;
-    }
-
     public function loadUserByUsername($username)
     {
         return new User(
@@ -29,7 +20,7 @@ class ApiKeyUserProvider implements UserProviderInterface
             NULL,
             // the roles for the user - you may choose to determine
             // these dynamically somehow based on the user
-            ['ROLE_API']
+            ['ROLE_USER']
         );
     }
 

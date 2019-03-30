@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6dbc486d0e8e35c452a99891851e7ae9",
+    "content-hash": "5ec1e023b4a2be6a5bd78d685c0f9f4c",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -4167,6 +4167,52 @@
                 "templating"
             ],
             "time": "2019-01-14T15:00:48+00:00"
+        },
+        {
+            "name": "twilio/sdk",
+            "version": "5.30.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twilio/twilio-php.git",
+                "reference": "e54f54597849344edd40f86e12b17c1ac815e65b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/e54f54597849344edd40f86e12b17c1ac815e65b",
+                "reference": "e54f54597849344edd40f86e12b17c1ac815e65b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "apigen/apigen": "^4.1",
+                "phpunit/phpunit": "4.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Twilio\\": "Twilio/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Twilio API Team",
+                    "email": "api@twilio.com"
+                }
+            ],
+            "description": "A PHP wrapper for Twilio's API",
+            "homepage": "http://github.com/twilio/twilio-php",
+            "keywords": [
+                "api",
+                "sms",
+                "twilio"
+            ],
+            "time": "2019-03-15T20:38:12+00:00"
         },
         {
             "name": "willdurand/jsonp-callback-validator",

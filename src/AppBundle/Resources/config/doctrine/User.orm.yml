@@ -45,6 +45,7 @@ AppBundle\Entity\User:
       type: string
       length: 255
       column: phone_number
+      nullable: true
     localPhoneNumber:
       type: string
       length: 255
@@ -69,6 +70,14 @@ AppBundle\Entity\User:
       type: string
       length: 255
       column: api_key
+    phoneConformationSentAt:
+      type: datetime
+      nullable: true
+      column: phone_confirm_sent_at
+    phoneConformationCode:
+      type: string
+      nullable: true
+      column: phone_confirm_code
     #username:
     #  type: string
     #  length: 255

@@ -14,8 +14,8 @@ services:
     class: ApiBundle\Service\ValidationHandler
     arguments: ['@response_handler', '@doctrine.orm.entity_manager']
 
-  #api.tokens.action_listener:
-  #  class: ApiBundle\EventListener\TokenListener
-  #  arguments: ['@doctrine.orm.default_entity_manager']
-  #  tags:
-  #    - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+  api.tokens.action_listener:
+    class: ApiBundle\EventListener\TokenListener
+    arguments: ['@doctrine.orm.default_entity_manager']
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
