@@ -4,7 +4,6 @@ security:
 
   encoders:
     FOS\UserBundle\Model\UserInterface: sha512
-    #AppBundle\Entity\User: bcrypt
     #CashbackCloud\CommonBundle\Entity\Translator: plaintext
 
   # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded

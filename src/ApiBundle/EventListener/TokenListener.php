@@ -25,9 +25,6 @@ class TokenListener
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
-        /*if (!is_array($controller)) {
-            return;
-        }*/
         if ($controller[0] instanceof SecurityController) {
             return;
         }

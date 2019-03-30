@@ -13,7 +13,6 @@ services:
   validation_handler:
     class: ApiBundle\Service\ValidationHandler
     arguments: ['@response_handler', '@doctrine.orm.entity_manager']
-
   api.tokens.action_listener:
     class: ApiBundle\EventListener\TokenListener
     arguments: ['@doctrine.orm.default_entity_manager']

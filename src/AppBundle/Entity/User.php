@@ -778,6 +778,7 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->orders;
     }
+
     /**
      * @var \DateTime|null
      */
@@ -796,7 +797,7 @@ class User extends BaseUser// implements UserInterface
      *
      * @return User
      */
-    public function setPhoneConformationSentAt($phoneConformationSentAt = null)
+    public function setPhoneConformationSentAt($phoneConformationSentAt = NULL)
     {
         $this->phoneConformationSentAt = $phoneConformationSentAt;
 
@@ -820,7 +821,7 @@ class User extends BaseUser// implements UserInterface
      *
      * @return User
      */
-    public function setPhoneConformationCode($phoneConformationCode = null)
+    public function setPhoneConformationCode($phoneConformationCode = NULL)
     {
         $this->phoneConformationCode = $phoneConformationCode;
 

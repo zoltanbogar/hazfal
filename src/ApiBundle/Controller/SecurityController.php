@@ -54,8 +54,6 @@ class SecurityController extends Controller
         $token = new UsernamePasswordToken($objUser, $objUser->getPassword(), $objUser->getApiKey(), $objUser->getRoles());
         $this->get('security.token_storage')->setToken($token);
 
-        // If the firewall name is not main, then the set value would be instead:
-        // $this->get('session')->set('_security_XXXFIREWALLNAMEXXX', serialize($token));
         $this->get('session')->set('_security_main', serialize($token));
 
         // Fire the login event manually
