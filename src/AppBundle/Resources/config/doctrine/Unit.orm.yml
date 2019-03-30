@@ -1,34 +1,59 @@
 AppBundle\Entity\Unit:
-    type: entity
-    table: unit
-    repositoryClass: AppBundle\Repository\UnitRepository
+  type: entity
+  table: unit
+  repositoryClass: AppBundle\Repository\UnitRepository
+  id:
     id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
-    fields:
-        building:
-            type: string
-            length: 255
-        floor:
-            type: smallint
-        door:
-            type: smallint
-        floorArea:
-            type: float
-            column: floor_area
-        type:
-            type: smallint
-        balance:
-            type: integer
-        houseShare:
-            type: string
-            length: 255
-            column: house_share
-    oneToMany:
-        payments:
-            targetEntity: Payment
-            mappedBy: unit
-    lifecycleCallbacks: {  }
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    building:
+      type: string
+      length: 255
+    floor:
+      type: smallint
+    door:
+      type: smallint
+    floorArea:
+      type: float
+      column: floor_area
+    type:
+      type: smallint
+    balance:
+      type: integer
+    houseShare:
+      type: string
+      length: 255
+      column: house_share
+    createdAt:
+      type: datetime
+      column: created_at
+    updatedAt:
+      type: datetime
+      column: updated_at
+  oneToMany:
+    payments:
+      targetEntity: Payment
+      mappedBy: unit
+    bills:
+      targetEntity: Bill
+      mappedBy: unit
+    orders:
+      targetEntity: Order
+      mappedBy: unit
+  manyToOne:
+    house:
+      targetEntity: House
+      inversedBy: units
+      joinColumn:
+        name: house_id
+        referencedColumnName: id
+    unitTenant:
+      targetEntity: UnitTenant
+      inversedBy: units
+      joinColumn:
+        name: unit_tenant_id
+        referencedColumnName: id
+  lifecycleCallbacks: {  }

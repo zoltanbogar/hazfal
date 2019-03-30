@@ -1,11 +1,15 @@
 AppBundle\Entity\Tenant:
-    type: entity
-    table: tenant
-    repositoryClass: AppBundle\Repository\TenantRepository
-    fields:
-        localContactNumber:
-            type: string
-            length: 255
-            nullable: true
-            column: local_contact_number
-    lifecycleCallbacks: {  }
+  type: entity
+  table: tenant
+  repositoryClass: AppBundle\Repository\TenantRepository
+  fields:
+    localContactNumber:
+      type: string
+      length: 255
+      nullable: true
+      column: local_contact_number
+  oneToOne:
+    unitTenant:
+      targetEntity: UnitTenant
+      mappedBy: tenant
+  lifecycleCallbacks: {  }

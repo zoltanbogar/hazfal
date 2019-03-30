@@ -1,0 +1,19 @@
+AppBundle\Entity\PaymentMethod:
+  exclusion_policy: ALL
+  properties:
+    id:
+      expose: true
+      groups:
+        - default
+    name:
+      expose: true
+      groups:
+        - default
+    slug:
+      expose: true
+      groups:
+        - default
+    description:
+      expose: true
+      groups:
+        - default

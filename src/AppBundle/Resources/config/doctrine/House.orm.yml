@@ -1,65 +1,80 @@
 AppBundle\Entity\House:
-    type: entity
-    table: house
-    repositoryClass: AppBundle\Repository\HouseRepository
+  type: entity
+  table: houses
+  repositoryClass: AppBundle\Repository\HouseRepository
+  id:
     id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
-    fields:
-        houseUserId:
-            type: integer
-            column: house_user_id
-        name:
-            type: string
-            length: 255
-        countryCode:
-            type: string
-            length: '2'
-            column: country_code
-        region:
-            type: string
-            length: 255
-        postalCode:
-            type: string
-            length: 255
-            column: postal_code
-        city:
-            type: string
-            length: 255
-            column: city
-        street:
-            type: string
-            length: 255
-            column: street
-        building:
-            type: string
-            length: 255
-        unit:
-            type: string
-            length: 255
-        hrsz:
-            type: string
-            length: 255
-        gpsLatitude:
-            type: string
-            length: 255
-            column: gps_latitude
-        gpsLongitude:
-            type: string
-            length: 255
-            column: gps_longitude
-    manyToOne:
-        houseUser:
-            targetEntity: HouseUser
-            inversedBy: houses
-            joinColumn:
-                name: house_user_id
-                referencedColumnName: id
-    oneToMany:
-        documents:
-            targetEntity: Document
-            mappedBy: house
-    lifecycleCallbacks: {  }
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      length: 255
+    countryCode:
+      type: string
+      length: '2'
+      column: country_code
+    region:
+      type: string
+      length: 255
+    postalCode:
+      type: string
+      length: 255
+      column: postal_code
+    city:
+      type: string
+      length: 255
+      column: city
+    street:
+      type: string
+      length: 255
+      column: street
+    building:
+      type: string
+      length: 255
+    unit:
+      type: string
+      length: 255
+    lotNumber:
+      type: string
+      length: 255
+      column: lot_number
+    gpsLatitude:
+      type: string
+      length: 255
+      column: gps_latitude
+    gpsLongitude:
+      type: string
+      length: 255
+      column: gps_longitude
+    status:
+      type: smallint
+    deletedAt:
+      type: datetime
+      nullable: true
+      column: deleted_at
+    createdAt:
+      type: datetime
+      column: created_at
+    updatedAt:
+      type: datetime
+      column: updated_at
+  oneToMany:
+    documents:
+      targetEntity: Document
+      mappedBy: house
+    units:
+      targetEntity: Unit
+      mappedBy: house
+    houseUsers:
+      targetEntity: HouseUser
+      mappedBy: house
+    posts:
+      targetEntity: Post
+      mappedBy: house
+    malfunctions:
+      targetEntity: Malfunction
+      mappedBy: house
+  lifecycleCallbacks: {  }
