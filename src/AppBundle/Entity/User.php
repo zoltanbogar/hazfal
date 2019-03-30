@@ -706,10 +706,12 @@ class User extends BaseUser// implements UserInterface
 
     public function getPassword()
     {
+        return $this->password;
     }
 
     public function getSalt()
     {
+        return $this->salt;
     }
 
     public function eraseCredentials()
@@ -775,5 +777,64 @@ class User extends BaseUser// implements UserInterface
     public function getOrders()
     {
         return $this->orders;
+    }
+
+    /**
+     * @var \DateTime|null
+     */
+    private $phoneConformationSentAt;
+
+    /**
+     * @var string|null
+     */
+    private $phoneConformationCode;
+
+
+    /**
+     * Set phoneConformationSentAt.
+     *
+     * @param \DateTime|null $phoneConformationSentAt
+     *
+     * @return User
+     */
+    public function setPhoneConformationSentAt($phoneConformationSentAt = NULL)
+    {
+        $this->phoneConformationSentAt = $phoneConformationSentAt;
+
+        return $this;
+    }
+
+    /**
+     * Get phoneConformationSentAt.
+     *
+     * @return \DateTime|null
+     */
+    public function getPhoneConformationSentAt()
+    {
+        return $this->phoneConformationSentAt;
+    }
+
+    /**
+     * Set phoneConformationCode.
+     *
+     * @param string|null $phoneConformationCode
+     *
+     * @return User
+     */
+    public function setPhoneConformationCode($phoneConformationCode = NULL)
+    {
+        $this->phoneConformationCode = $phoneConformationCode;
+
+        return $this;
+    }
+
+    /**
+     * Get phoneConformationCode.
+     *
+     * @return string|null
+     */
+    public function getPhoneConformationCode()
+    {
+        return $this->phoneConformationCode;
     }
 }

@@ -2,66 +2,46 @@
 
 namespace ApiBundle\EventListener;
 
-use CashbackCloud\ApiBundle\Controller\ApiController;
-//use CashbackCloud\ApiBundle\ErrorHandler\BasicErrorMessage;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\User;
+
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
+use ApiBundle\Controller\SecurityController;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class TokenListener
 {
-    private $em;
+    private $entityManager;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     public function onKernelController(FilterControllerEvent $event)
     {
-        /**@var Controller $controller */
         $controller = $event->getController();
-        if (!is_array($controller)) {
+        if ($controller[0] instanceof SecurityController) {
             return;
         }
-        $host = $event->getRequest()->getHost();
-        $api = strpos($host, "api");
-        if ($api !== FALSE) {
-            if ($event->getRequest()->headers->get('accept') == "application/json") {
-                if ($event->getRequest()->get('req_auth')) {
-                    $token = $event->getRequest()->headers->get('access-token');
-                    if (!$token) {
-                        throw new \Exception("blabla");//BasicErrorMessage::MISSING_ACCESS_KEY['info'],BasicErrorMessage::MISSING_ACCESS_KEY['code']);
+        $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');
 
 
-                        //throw new AccessDeniedException(BasicErrorMessage::MISSING_ACCESS_KEY['info'],null,BasicErrorMessage::MISSING_ACCESS_KEY['code']);
-                    }
-                    //new Response(dump($token));die();
-                    //$user = $this->em->getRepository('CashbackCloudApiBundle:ApiAccessToken')
-                    //    ->getUserByToken($token);
-
-                    //if (!$user) {
-                    //    throw new \Exception(
-                    //        "blabla"
-                    //);//throw new AccessDeniedHttpException(BasicErrorMessage::INVALID_ACCESS_KEY['info'],null,BasicErrorMessage::INVALID_ACCESS_KEY['code']);
-                    //}
-                    //new Response(dump($controller,$controller instanceof  ApiController));die();
-                    //if ($controller[0] instanceof ApiController)
-                    //    $controller[0]->setUser($user);
-                }
-            } else {
-                if ($event->getRequest()->get("code")) {
-
-                } else {
-                    throw new BadRequestHttpException("bad request");
-                }
-            }
+        if (!$token) {
+            throw new AccessDeniedHttpException('No token provided!');
         }
+
+        $user = $this->entityManager->getRepository(User::class)->findUserByApiKey($token);
+
+        if (!$user) {
+            throw new AccessDeniedHttpException('Access Denied!');
+        }
+
+        return;
     }
 
     public function onKernelResponse()

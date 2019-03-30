@@ -706,10 +706,12 @@ class User extends BaseUser// implements UserInterface
 
     public function getPassword()
     {
+        return $this->password;
     }
 
     public function getSalt()
     {
+        return $this->salt;
     }
 
     public function eraseCredentials()
