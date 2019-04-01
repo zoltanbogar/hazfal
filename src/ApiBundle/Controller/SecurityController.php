@@ -59,8 +59,35 @@ class SecurityController extends Controller
         // Fire the login event manually
         $event = new InteractiveLoginEvent($request, $token);
         $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
+        
+        $userData = [];
+        $userData['id'] = $objUser->getId();
+        $userData['accessToken'] = $objUser->getApiKey();
+        $userData['name'] = $objUser->getLastName()." ".$objUser->getFirstName();
+        $userData['profileUrl'] = "/assets/images/profile.jpg" ;
+        $userData['houses'] = [];
+        $units = [];
 
-        return $this->container->get('response_handler')->successHandler($objUser, $request->query->all());
+        $houseUser = $objUser->getHouseUser();
+        if($houseUser) {
+            $house = $houseUser->getHouse();
+            $tenant = $houseUser->getUnitTenant();
+            foreach ($tenant->getUnits() as $unit) {
+                $units[] = [
+                    'id' => $unit->getId(),
+                    'address' => $unit->getBuilding().". ".$unit->getFloor()." em. ".$unit->getDoor()." ajtó",
+                    'type' => $unit->getType()
+                ];
+            }
+            $userData['houses'][] = [
+                'id' => $house->getId(),
+                'address' => $house->getPostalCode(). " ".$house->getCity().", ".$house->getStreet()." ".$house->getBuilding(),
+                'units' => $units
+            ];
+            
+        }
+
+        return $this->container->get('response_handler')->successHandler($userData, $request->query->all());
     }
 
     public function getRegistrationByTokenAction(Request $request)
