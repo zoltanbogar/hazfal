@@ -15,6 +15,9 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+use Ranvis\Identicon\Tile;
+use Ranvis\Identicon\Identicon;
+
 class SecurityController extends Controller
 {
     public function loginAction(Request $request)
@@ -129,6 +132,34 @@ class SecurityController extends Controller
 
         $entityManager->flush();
 
+        $identiconDir = 'images/identicon';
+        $identiconFile = $user->getId() . '.png';
+        if (!file_exists($identiconDir)) {
+            mkdir($identiconDir, 0777, TRUE);
+        }
+
+        $tile = new Tile();
+        $minHashLenght = 0;
+
+        do {
+            $numTiles = rand(3, 8);
+            $numColors = rand(2, 4);
+            $identicon = new Identicon(256, $tile, $numTiles, $numColors, TRUE);
+            $minHashLenght = $identicon->getMinimumHashLength();
+        } while ($minHashLenght >= 33);
+
+        $hash = md5($user->getId() . $user->getSalt());
+        try {
+            $draw = $identicon->draw($hash);
+            $draw->save($identiconDir . '/' . $identiconFile);
+        } catch (\Exception $objException) {
+            $numTiles = 7;
+            $numColors = 2;
+            $identicon = new Identicon(256, $tile, $numTiles, $numColors, TRUE);
+            $draw = $identicon->draw($hash);
+            $draw->save($identiconDir . '/' . $identiconFile);
+        }
+
         $defaultEncoder = new MessageDigestPasswordEncoder('sha512', TRUE, 5000);
 
         $encoders = [
@@ -138,6 +169,7 @@ class SecurityController extends Controller
         $encoder = $encoderFactory->getEncoder($user);
         $encodedPassword = $encoder->encodePassword($request->get("password"), $user->getSalt());
         $user->setPassword($encodedPassword);
+        $user->setProfileImage($identiconFile);
         $userManager->updateUser($user);
         $entityManager->flush();
 
