@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
+            new AdminBundle\AdminBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], TRUE)) {

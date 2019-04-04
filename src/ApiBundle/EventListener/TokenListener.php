@@ -5,11 +5,13 @@ namespace ApiBundle\EventListener;
 use AppBundle\Entity\User;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\TwigBundle\Controller\ExceptionController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use ApiBundle\Controller\SecurityController;
+use AdminBundle\Controller\SecurityController as AdminSecurityController;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
@@ -25,11 +27,13 @@ class TokenListener
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
-        if ($controller[0] instanceof SecurityController) {
+        if ($controller[0] instanceof SecurityController || $controller[0] instanceof AdminSecurityController) {
+            return;
+        } else if ($controller[0] instanceof ExceptionController) {
             return;
         }
-        $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');
 
+        $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');
 
         if (!$token) {
             throw new AccessDeniedHttpException('No token provided!');
