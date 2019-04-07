@@ -19,6 +19,8 @@ class ValidationHandler
         $this->tblError = [
             404 => 'Not found!',
             422 => 'Invalid parameters!',
+            1 => 'max',
+            2 => 'min',
         ];
     }
 
@@ -33,6 +35,20 @@ class ValidationHandler
             }
             if (in_array('numeric', $rowRule)) {
                 if (!is_numeric($request->get($strParameter))) {
+                    return $this->getError($strParameter, 422);
+                }
+            }
+            if (($key = $this->strposInArray($rowRule, 'min')) !== FALSE) {
+                $minNumber = str_replace('min:', '', $rowRule[$key]);
+                $paramLength = strlen($request->get($strParameter));
+                if ((int)$minNumber > $paramLength) {
+                    return $this->getError($strParameter, 422);
+                }
+            }
+            if (($key = $this->strposInArray($rowRule, 'max')) !== FALSE) {
+                $maxNumber = str_replace('max:', '', $rowRule[$key]);
+                $paramLength = strlen($request->get($strParameter));
+                if ((int)$maxNumber < $paramLength) {
                     return $this->getError($strParameter, 422);
                 }
             }
@@ -69,9 +85,21 @@ class ValidationHandler
     {
         return [
             'hasError' => TRUE,
-            'errorLabel' => $strParameter.'_error',
+            'errorLabel' => $strParameter . '_error',
             'errorText' => $this->tblError[$numCode],
             'errorCode' => $numCode,
+            'strParameter' => $strParameter,
         ];
+    }
+
+    private function strposInArray($rowRule, $substring)
+    {
+        foreach ($rowRule as $key => $rule) {
+            if (strpos($rule, $substring) !== FALSE) {
+                return $key;
+            }
+        }
+
+        return FALSE;
     }
 }

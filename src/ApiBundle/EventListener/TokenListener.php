@@ -15,6 +15,8 @@ use AdminBundle\Controller\SecurityController as AdminSecurityController;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
+use FOS\UserBundle\Controller\SecurityController as FosSecurityController;
+
 class TokenListener
 {
     private $entityManager;
@@ -27,9 +29,11 @@ class TokenListener
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
-        if ($controller[0] instanceof SecurityController || $controller[0] instanceof AdminSecurityController) {
+        if ($controller[0] instanceof SecurityController || $controller[0] instanceof AdminSecurityController || $controller[0] instanceof FosSecurityController) {
             return;
-        } else if ($controller[0] instanceof ExceptionController) {
+        } else if ($controller[0] instanceof ExceptionController || $controller[0] instanceof ProfilerController) {
+            return;
+        } else {
             return;
         }
 

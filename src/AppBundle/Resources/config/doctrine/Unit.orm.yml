@@ -23,6 +23,7 @@ AppBundle\Entity\Unit:
       type: smallint
     balance:
       type: integer
+      nullable: true
     houseShare:
       type: string
       length: 255
