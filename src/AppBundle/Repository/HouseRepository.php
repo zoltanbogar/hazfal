@@ -10,4 +10,9 @@ namespace AppBundle\Repository;
  */
 class HouseRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function findAllByHouseId($houseId)
+    {
+        return $this->findBy(array('id' => $houseId), array('createdAt' => 'desc'));
+    }
 }

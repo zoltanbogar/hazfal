@@ -105,14 +105,14 @@ class FinanceController extends Controller
         foreach ($objUnit as $key => $data) {
             $tblUnit[] = [
                 'id' => $data->getId(),
-                'address' => $data->getBuilding()." ".$data->getFloor()." ".$data->getDoor(),
+                'address' => $data->getBuilding().". ".$data->getFloor()." em. ".$data->getDoor()." ajtó",
                 'building' => $data->getBuilding(),
                 'floor' => $data->getFloor(),
                 'door' => $data->getDoor(),
-                'type' => $data->getType(), //FIXME ez egy szám, kell egy dictionary, hogy mi minek felel meg, pl. 1 = Lakás, 2 = Garázs
+                'type' => $data->getType() == 1 ? "Lakás" : "Garázs", //FIXME ez egy szám, kell egy dictionary, hogy mi minek felel meg, pl. 1 = Lakás, 2 = Garázs
                 //'date' => $data->getDate(),
-                'date' => new \DateTime('now'), //FIXME valami dátumot kell visszadani
-                'balance' => $data->getBalance(),
+                'date' => date('Y.m.d'), //new \DateTime('now'),//FIXME valami dátumot kell visszadani
+                'balance' => -1*$data->getBalance(),
             ];
         }
 
@@ -152,8 +152,9 @@ class FinanceController extends Controller
                 }
             }
             $tblBills[] = [
+                'id' => $data->getId(),
                 'name' => $data->getBillCategory(),
-                'date' => new \DateTime('now'), //FIXME valami dátumot kell visszadani
+                'date' => $data->getCreatedAt()->format('Y.m.d'),//new \DateTime('now'), //FIXME valami dátumot kell visszadani
                 'amount' => $data->getAmount(),
                 'itemDetails' => [
                     'invoiceNumber' => $data->getReceiptNumber(),
@@ -181,7 +182,7 @@ class FinanceController extends Controller
             }
             $tblPayments[] = [
                 'name' => $data->getPaymentMethod()->getName(),
-                'date' => new \DateTime('now'), //FIXME valami dátumot kell visszadani
+                'date' => $data->getPaymentDate()->format('Y.m.d'),//new \DateTime('now'), //FIXME valami dátumot kell visszadani
                 'amount' => $data->getAmount(),
                 'itemDetails' => [
                     'invoiceNumber' => $data->getReceiptNumber(),
@@ -203,14 +204,14 @@ class FinanceController extends Controller
 
         $tblUnit = [
             'id' => $objUnit->getId(),
-            'address' => $objUnit->getBuilding()." ".$objUnit->getFloor()." ".$objUnit->getDoor(),
+            'address' => $objUnit->getBuilding()." ép. ".$objUnit->getFloor().". em. ".$objUnit->getDoor(),
             'building' => $objUnit->getBuilding(),
             'floor' => $objUnit->getFloor(),
             'door' => $objUnit->getDoor(),
             'type' => $objUnit->getType(), //FIXME ez egy szám, kell egy dictionary, hogy mi minek felel meg, pl. 1 = Lakás, 2 = Garázs
             //'date' => $data->getDate(),
-            'date' => new \DateTime('now'), //FIXME valami dátumot kell visszadani
-            'balance' => $objUnit->getBalance(),
+            'date' => date('Y.m.d'), //new \DateTime('now'), //FIXME valami dátumot kell visszadani
+            'balance' => -1*$objUnit->getBalance(),
             'balanceItems' => [
                 'bills' => $tblBills,
                 'payments' => $tblPayments,

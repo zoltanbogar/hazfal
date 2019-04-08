@@ -25,6 +25,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use Doctrine\Common\Collections\Criteria;
+
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -58,6 +60,7 @@ class SocialEntityController extends Controller
 
     public function getPostsByHouseIdAction(Request $request)
     {
+        error_log(1);
         if (!$request->get("house_id")) {
             return $this->container->get('response_handler')->errorHandler("no_house_id_provided", "Invalid parameters", 422);
         }
@@ -65,16 +68,20 @@ class SocialEntityController extends Controller
         $numHouseID = $request->get("house_id");
         $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
 
+        error_log(2);
         if (!$objHouse) {
             return $this->container->get('response_handler')->errorHandler("house_not_exists", "Not found", 404);
         }
+        $criteria = Criteria::create();
+        $criteria->orderBy(['id' => 'DESC']);
+        $objPost = $objHouse->getPosts()->matching($criteria);
 
-        $objPost = $objHouse->getPosts();
-
+        error_log(3);
         if (!$objPost) {
             return $this->container->get('response_handler')->errorHandler("post_not_exists", "Not found", 404);
         }
 
+        error_log(4);
         return $this->container->get('response_handler')->successHandler($objPost, $request->query->all());
     }
 
@@ -102,28 +109,28 @@ class SocialEntityController extends Controller
 
     public function postPostToHouseAction(Request $request)
     {
-        if ($request->query->get('type') === NULL) {
+        if ($request->get('type') === NULL) {
             return $this->container->get('response_handler')->errorHandler("type_not_exists", "Not found", 404);
         }
 
-        $type = $request->query->get('type');
-
+        $type = $request->get('type');
+        
         if ($type !== "post") {
             return $this->container->get('response_handler')->errorHandler("no_valid_type_provided", "Invalid parameters", 422);
         }
-
-        if (!$request->query->get('subject') || !$request->query->get('content') || !$request->query->get('house_id')) {
+        
+        if (!$request->get('subject') || !$request->get('content') || !$request->get('house_id')) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
 
         $entityManager = $this->getDoctrine()->getManager();
 
         $objPost = new Post();
-        $objPost->setSubject($request->query->get('subject'));
-        $objPost->setContent($request->query->get('content'));
-        $objPost->setIsUrgent($request->query->get('is_urgent') ?? 0);
+        $objPost->setSubject($request->get('subject'));
+        $objPost->setContent($request->get('content'));
+        $objPost->setIsUrgent($request->get('is_urgent') ?? 0);
 
-        $objHouse = $entityManager->find(House::class, $request->query->get('house_id'));
+        $objHouse = $entityManager->find(House::class, $request->get('house_id'));
         $objPost->setHouse($objHouse);
         $objPost->setCreatedAt(new \DateTime('now'));
         $objPost->setUpdatedAt(new \DateTime('now'));
@@ -136,7 +143,15 @@ class SocialEntityController extends Controller
             return $this->container->get('response_handler')->errorHandler("cannot_save_post", $objException->getMessage(), 500);
         }
 
-        return $this->container->get('response_handler')->successHandler($objPost, $request->query->all());
+        $criteria = Criteria::create();
+        $criteria->orderBy(['id' => 'DESC']);
+        $objPosts = $objHouse->getPosts()->matching($criteria);
+
+        if (!$objPosts) {
+            return $this->container->get('response_handler')->errorHandler("post_not_exists", "Not found", 404);
+        }
+
+        return $this->container->get('response_handler')->successHandler($objPosts, $request->query->all());
     }
 
     public function postMalfunctionToHouseAction(Request $request)
