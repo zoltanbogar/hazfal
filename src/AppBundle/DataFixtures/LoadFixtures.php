@@ -77,7 +77,7 @@ class LoadFixtures extends Fixture
             $objTenant->setCompanyName('Epam Systems Kft.');
             $objTenant->setCompanyAddress('6723 Szeged, Felso-Tisza part 25.');
             $objTenant->setCompanyTaxNumber('asdasdasdas');
-            $objTenant->setRegistrationToken(str_pad($i, 8, '0', STR_PAD_LEFT));
+            $objTenant->setRegistrationToken(str_pad(($i + 20), 8, '0', STR_PAD_LEFT));
             $objTenant->setInviteSentAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
             $objTenant->setDeletedAt(NULL);
             $objTenant->setCreatedAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
