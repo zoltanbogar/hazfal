@@ -1,0 +1,151 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.strParameter }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    Sikeres mentés!
+                </div>
+                <br/>
+            {% endif %}
+            <form action="{{ isNew ? path('admin_post_unit_add') : path('admin_post_unit_edit', {'unitId': objUnit.id}) }}"
+                  method="post">
+                <div class="row gap-20 masonry pos-r">
+                    <div class="masonry-sizer col-md-6"></div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Általános</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputId">Id</label>
+                                    <input type="text" class="form-control" name="inputId" id="inputId"
+                                           aria-describedby="inputId" value="{{ objUnit.id }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputHouse">Ház</label>
+                                    {% if isEditable == TRUE %}
+                                        <select class="form-control" name="inputHouse" id="inputHouse">
+                                            {% for house in objHouses %}
+                                                <option value="{{ house.id }}" {{ objUnit.house and (objUnit.house.id == house.id) ? 'selected="selected"' : '' }}>{{ house.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        <input type="text" class="form-control" id="inputHouse" name="inputHouse"
+                                               aria-describedby="inputHouse"
+                                               value="{{ objUnit.house.name }}" {{ isEditable ?: 'disabled' }}>
+                                    {% endif %}
+                                </div>
+                                {#<div class="form-group">
+                                    <label for="inputIsActive">Aktív</label>
+                                    <input type="text" class="form-control" id="inputIsActive" name="inputIsActive"
+                                           aria-describedby="inputIsActive"
+                                           value="{{ objUnit.deletedAt ? 'Nem aktív' : 'Aktív' }}" {{ isEditable ?: 'disabled' }}>
+                                </div>#}
+                                <div class="form-group">
+                                    <label for="inputBalance">Egyenleg</label>
+                                    <input type="text" class="form-control" id="inputBalance" name="inputBalance"
+                                           aria-describedby="inputBalance"
+                                           value="{{ objUnit.balance }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputTenant">Lakó</label>
+                                    {% if isEditable == TRUE %}
+                                        <select class="form-control" name="inputTenant" id="inputTenant">
+                                            {% for tenant in objTenant %}
+                                                <option value="{{ tenant.id }}" {{ (objUnit.unitTenant and objUnit.unitTenant.tenant and objUnit.unitTenant.tenant.id == tenant.id) ? 'selected="selected"' : '' }}>{{ tenant.firstName ~ " " ~ tenant.lastName }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        <input type="text" class="form-control" id="inputTenant"
+                                               name="inputTenant"
+                                               placeholder="Lakó"
+                                               value="{{ objUnit.unitTenant.tenant ? objUnit.unitTenant.tenant.firstName ~ " " ~ objUnit.unitTenant.tenant.lastName : NULL }}" {{ isEditable ?: 'disabled' }}>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputHouseShare">Tulajdonrész</label>
+                                    <input type="text" class="form-control" id="inputHouseShare" name="inputHouseShare"
+                                           aria-describedby="inputHouseShare"
+                                           value="{{ objUnit.houseShare }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Cím</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputBuilding">Épület</label>
+                                    <input type="text" class="form-control" id="inputBuilding" name="inputBuilding"
+                                           placeholder="2"
+                                           value="{{ objUnit.building }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputFloor">Emelet</label>
+                                    <input type="text" class="form-control" id="inputFloor" name="inputFloor"
+                                           placeholder="I."
+                                           value="{{ objUnit.floor }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputDoor">Ajtó</label>
+                                    <input type="text" class="form-control" id="inputDoor" name="inputDoor"
+                                           placeholder="9."
+                                           value="{{ objUnit.door }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputFloorArea">Terület</label>
+                                    <input type="text" class="form-control" id="inputFloorArea" name="inputFloorArea"
+                                           placeholder="65"
+                                           value="{{ objUnit.floorArea }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputType">Típus</label>
+                                    <input type="text" class="form-control" id="inputType" name="inputType"
+                                           placeholder="1"
+                                           value="{{ objUnit.type }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Dátum</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputCreatedAt">Létrehozva</label>
+                                    <input type="text" class="form-control" id="inputCreatedAt"
+                                           aria-describedby="inputCreatedAt"
+                                           value="{{ objUnit.createdAt|date("Y. m. d. H:i") }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUpdatedAt">Módosítva</label>
+                                    <input type="text" class="form-control" id="inputUpdatedAt"
+                                           aria-describedby="inputUpdatedAt"
+                                           value="{{ objUnit.updatedAt|date("Y. m. d. H:i") }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if isEditable == TRUE %}
+                        <div class="masonry-item col-md-6">
+                            <div class="bgc-white p-20 bd">
+                                <div class="mT-30">
+                                    <input type="submit"
+                                           class="btn btn-primary" value="{{ isNew ? 'Mentés' : 'Módosítás' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock body %}

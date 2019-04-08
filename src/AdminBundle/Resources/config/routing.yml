@@ -1,0 +1,95 @@
+#admin_login:
+#path: /admin/login
+#defaults: { _controller: AdminBundle:Security:getLogin }
+#methods: GET
+#admin_post_login:
+#  path: /admin/login
+#  defaults: { _controller: AdminBundle:Security:postLogin }
+#  methods: POST
+#fos_user_security_check:
+#  path: /login_check
+#  defaults: { _controller: fos_user.security.controller:checkAction }
+#  methods: POST
+#fos_user_security_login:
+#  path: /admin/login
+#  defaults: { _controller: fos_user.security.controller:loginAction }
+#  methods: GET POST
+
+admin_post_loginn:
+  path:     /admin/login
+  defaults: { _controller: AdminBundle:Security:loginAdmin }
+after_login_route_name:
+  path: /admin/faszom
+  defaults: { _controller: AdminBundle:Security:loginAdminasdasdsa }
+login_failure_route_name:
+  path: /admin/bmeg
+  defaults: { _controller: AdminBundle:Security:loginassdasdas }
+admin_get_dashboard:
+  path: /admin
+  defaults: { _controller: AdminBundle:Dashboard:index }
+  methods: GET
+#Houses
+admin_get_houses:
+  path: /admin/houses
+  defaults: { _controller: AdminBundle:Building:getHouses }
+  methods: GET
+admin_get_house_read:
+  path: /admin/houses/{houseId}/read
+  defaults: { _controller: AdminBundle:Building:getHouseRead }
+  methods: GET
+admin_get_house_edit:
+  path: /admin/houses/{houseId}/edit
+  defaults: { _controller: AdminBundle:Building:getHouseEdit }
+  methods: GET
+admin_get_house_delete:
+  path: /admin/houses/{houseId}/delete
+  defaults: { _controller: AdminBundle:Building:getHouseDelete }
+  methods: GET
+admin_get_house_add:
+  path: /admin/houses/add
+  defaults: { _controller: AdminBundle:Building:getHouseAdd }
+  methods: GET
+admin_post_house_edit:
+  path: /admin/houses/{houseId}/edit
+  defaults: { _controller: AdminBundle:Building:postHouseEdit }
+  methods: POST
+admin_post_house_add:
+  path: /admin/houses/add
+  defaults: { _controller: AdminBundle:Building:postHouseAdd }
+  methods: POST
+#Units
+admin_get_units:
+  path: /admin/units
+  defaults: { _controller: AdminBundle:Building:getUnits }
+  methods: GET
+admin_get_unit_read:
+  path: /admin/units/{unitId}/read
+  defaults: { _controller: AdminBundle:Building:getUnitRead }
+  methods: GET
+admin_get_unit_edit:
+  path: /admin/units/{unitId}/edit
+  defaults: { _controller: AdminBundle:Building:getUnitEdit }
+  methods: GET
+admin_get_unit_delete:
+  path: /admin/units/{unitId}/delete
+  defaults: { _controller: AdminBundle:Building:getUnitDelete }
+  methods: GET
+admin_get_unit_add:
+  path: /admin/units/add
+  defaults: { _controller: AdminBundle:Building:getUnitAdd }
+  methods: GET
+admin_post_unit_edit:
+  path: /admin/units/{unitId}/edit
+  defaults: { _controller: AdminBundle:Building:postUnitEdit }
+  methods: POST
+admin_post_unit_add:
+  path: /admin/units/add
+  defaults: { _controller: AdminBundle:Building:postUnitAdd }
+  methods: POST
+
+
+
+admin_get_navigate:
+  path: /admin/{pageName}
+  defaults: { _controller: AdminBundle:Dashboard:navigate }
+  methods: GET

@@ -11,9 +11,11 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use ApiBundle\Controller\SecurityController;
+use AdminBundle\Controller\SecurityController as AdminSecurityController;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
+use FOS\UserBundle\Controller\SecurityController as FosSecurityController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TokenListener
@@ -28,12 +30,14 @@ class TokenListener
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
-        if ($controller[0] instanceof SecurityController) {
+        if ($controller[0] instanceof SecurityController || $controller[0] instanceof AdminSecurityController || $controller[0] instanceof FosSecurityController) {
             return;
-        } else if ($controller[0] instanceof ExceptionController) {
+        } else if ($controller[0] instanceof ExceptionController || $controller[0] instanceof ProfilerController) {
             return;
-            throw new BadRequestHttpException('Bad request http exception');
+        } else {
+            return;
         }
+
         $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');
 
         if (!$token) {
