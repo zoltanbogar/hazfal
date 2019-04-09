@@ -28,6 +28,10 @@ admin_get_dashboard:
   path: /admin
   defaults: { _controller: AdminBundle:Dashboard:index }
   methods: GET
+admin_logout:
+  path: /admin/logout
+  defaults: { _controller: AdminBundle:Security:logoutAdmin }
+  methods: GET
 #Houses
 admin_get_houses:
   path: /admin/houses
@@ -87,7 +91,33 @@ admin_post_unit_add:
   defaults: { _controller: AdminBundle:Building:postUnitAdd }
   methods: POST
 
+#HouseUsers
+admin_get_house_users:
+  path: /admin/house-users
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUsers }
+  methods: GET
 
+admin_get_house_user_read:
+  path: /admin/house-users/{houseUserId}/read
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUserRead }
+  methods: GET
+
+admin_get_house_user_edit:
+  path: /admin/house-users/{houseUserId}/edit
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUserEdit }
+  methods: GET
+
+admin_get_house_user_delete:
+  path: /admin/house-users/{houseUserId}/delete
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUserDelete }
+  methods: GET
+
+admin_post_house_user_edit:
+  path: /admin/house-users/{houseUserId}/edit
+  defaults: { _controller: AdminBundle:HouseUser:postHouseUserEdit }
+  methods: POST
+
+#-----------------------------------------------------------------
 
 admin_get_navigate:
   path: /admin/{pageName}

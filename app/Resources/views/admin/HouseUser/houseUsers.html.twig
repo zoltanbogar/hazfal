@@ -1,0 +1,91 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    Sikeres törlés!
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4 class="c-grey-900 mB-20"><a href="{{ path('admin_get_houses') }}">Technikai felhasználók listája</a></h4>
+                            </div>
+                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
+                                   width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Ház</th>
+                                    <th>Név</th>
+                                    <th>Cégnév</th>
+                                    <th>Telefonszám</th>
+                                    <th>E-mail cím</th>
+                                    <th>Létrehozva</th>
+                                    <th>Módosítva</th>
+                                    <th>Műveletek</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in objHouseUsers %}
+                                    <tr>
+                                        <td>{{ user.id|e }}</td>
+                                        <td>{{ user.house.name|e }}</td>
+                                        <td>{{ user.firstName|e }} {{ user.lastName|e }}</td>
+                                        <td>{{ user.companyName|e }}</td>
+                                        <td>{{ user.phoneNumber|e }}</td>
+                                        <td>{{ user.email|e }}</td>
+                                        <td>{{ user.createdAt|date("Y. m. d. H:i") }}</td>
+                                        <td>{{ user.updatedAt|date("Y. m. d. H:i") }}</td>
+                                        <td>
+                                            <a class="readButton"
+                                               href="{{ path('admin_get_house_user_read', {'houseUserId': user.id}) }}">
+                                                <i class="ti-search mR-10"></i>
+                                            </a>
+                                            <a class="editButton"
+                                               href="{{ path('admin_get_house_user_edit', {'houseUserId': user.id}) }}">
+                                                <i class="ti-pencil mR-10"></i>
+                                            </a>
+                                            <a class="deleteButton"
+                                               href="{{ path('admin_get_house_user_delete', {'houseUserId': user.id}) }}">
+                                                <i class="ti-trash mR-10"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.deleteButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan törölni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+    </script>
+{% endblock %}
