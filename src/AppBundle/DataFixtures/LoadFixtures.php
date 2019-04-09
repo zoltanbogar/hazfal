@@ -124,6 +124,7 @@ class LoadFixtures extends Fixture
             $objUnit->setType(1);
             $objUnit->setBalance(rand(-1, 1) * $i * 1337);
             $objUnit->setHouseShare("0.5");
+            $objUnit->setCreatedAt(new \DateTime('now'));
             $manager->persist($objUnit);
         }
 
