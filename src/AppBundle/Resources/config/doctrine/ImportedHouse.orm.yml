@@ -1,0 +1,57 @@
+AppBundle\Entity\ImportedHouse:
+  type: entity
+  table: imported_houses
+  repositoryClass: AppBundle\Repository\ImportedHouseRepository
+  fields:
+    name:
+      type: string
+      length: 255
+      nullable: true
+    countryCode:
+      type: string
+      length: '2'
+      column: country_code
+      nullable: true
+    region:
+      type: string
+      length: 255
+      nullable: true
+    postalCode:
+      type: string
+      length: 255
+      column: postal_code
+      nullable: true
+    city:
+      type: string
+      length: 255
+      column: city
+      nullable: true
+    street:
+      type: string
+      length: 255
+      column: street
+      nullable: true
+    building:
+      type: string
+      length: 255
+      nullable: true
+    unit:
+      type: string
+      length: 255
+      nullable: true
+    lotNumber:
+      type: string
+      length: 255
+      column: lot_number
+      nullable: true
+    gpsLatitude:
+      type: string
+      length: 255
+      column: gps_latitude
+      nullable: true
+    gpsLongitude:
+      type: string
+      length: 255
+      column: gps_longitude
+      nullable: true
+  lifecycleCallbacks: {  }

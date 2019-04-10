@@ -1,25 +1,29 @@
 AppBundle\Entity\ImportSource:
-    type: entity
-    table: import_source
-    repositoryClass: AppBundle\Repository\ImportSourceRepository
+  type: entity
+  table: import_source
+  repositoryClass: AppBundle\Repository\ImportSourceRepository
+  id:
     id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
-    fields:
-        name:
-            type: string
-            length: 255
-        slug:
-            type: string
-            length: 255
-        apiKey:
-            type: string
-            length: 255
-            column: api_key
-        isActive:
-            type: boolean
-            column: is_active
-    lifecycleCallbacks: {  }
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      length: 255
+    slug:
+      type: string
+      length: 255
+    apiKey:
+      type: string
+      length: 255
+      column: api_key
+    isActive:
+      type: boolean
+      column: is_active
+    oneToMany:
+      importedEntities:
+        targetEntity: ImportedEntity
+        mappedBy: importSource
+  lifecycleCallbacks: {  }

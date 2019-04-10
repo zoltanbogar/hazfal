@@ -1,21 +1,12 @@
-AppBundle\Entity\User:
+AppBundle\Entity\ImportedUser:
   type: entity
-  table: user
-  repositoryClass: AppBundle\Repository\UserRepository
-  id:
-    id:
-      type: integer
-      id: true
-      generator:
-        strategy: AUTO
+  table: imported_users
+  repositoryClass: AppBundle\Repository\ImportedUserRepository
   fields:
     registrationDate:
       type: datetime
       column: registration_date
-    deletedAt:
-      type: datetime
       nullable: true
-      column: deleted_at
     firstName:
       type: string
       length: 255
@@ -27,16 +18,20 @@ AppBundle\Entity\User:
     dateOfBirth:
       type: date
       column: date_of_birth
+      nullable: true
     placeOfBirth:
       type: string
       length: 255
       column: place_of_birth
+      nullable: true
     bio:
       type: text
       column: Bio
+      nullable: true
     sex:
       type: integer
       column: Sex
+      nullable: true
     phoneNumber:
       type: string
       length: 255
@@ -46,6 +41,7 @@ AppBundle\Entity\User:
       type: string
       length: 255
       column: local_phone_number
+      nullable: true
     idNumber:
       type: integer
       nullable: true
@@ -54,48 +50,15 @@ AppBundle\Entity\User:
       type: string
       length: 255
       column: official_address
+      nullable: true
     currentLocation:
       type: string
       length: 255
       column: current_location
+      nullable: true
     joinToken:
       type: string
       length: 255
       column: join_token
-    apiKey:
-      type: string
-      length: 255
-      column: api_key
-    phoneConformationSentAt:
-      type: datetime
       nullable: true
-      column: phone_confirm_sent_at
-    phoneConformationCode:
-      type: string
-      nullable: true
-      column: phone_confirm_code
-    profileImage:
-      type: string
-      nullable: true
-      column: profile_image
-  oneToMany:
-    documents:
-      targetEntity: Document
-      mappedBy: user
-    comments:
-      targetEntity: Comment
-      mappedBy: user
-    notifications:
-      targetEntity: Notification
-      mappedBy: user
-    payments:
-      targetEntity: Payment
-      mappedBy: user
-    orders:
-      targetEntity: Order
-      mappedBy: user
-  oneToOne:
-    houseUser:
-      targetEntity: HouseUser
-      mappedBy: user
   lifecycleCallbacks: {  }

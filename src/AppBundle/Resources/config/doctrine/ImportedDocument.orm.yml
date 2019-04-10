@@ -1,0 +1,22 @@
+AppBundle\Entity\ImportedDocument:
+  type: entity
+  table: imported_documents
+  repositoryClass: AppBundle\Repository\ImportedDocumentRepository
+  fields:
+    userId:
+      type: integer
+      column: user_id
+    documentTypeId:
+      type: integer
+      column: document_type_id
+      nullable: true
+    houseId:
+      type: integer
+      column: house_id
+    name:
+      type: string
+      length: 255
+    filename:
+      type: string
+      length: 255
+  lifecycleCallbacks: {  }
