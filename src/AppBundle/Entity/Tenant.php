@@ -65,4 +65,5 @@ class Tenant extends HouseUser
     {
         return $this->unitTenant;
     }
+
 }

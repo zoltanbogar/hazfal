@@ -123,127 +123,50 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="sidebar-link" href="{{ path('admin_get_houses') }}">
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle" href="javascript:void(0);">
                 <span class="icon-holder">
-                  <i class="c-brown-500 ti-home"></i>
-                </span>
+                    <i class="c-purple-500 ti-home"></i>
+                  </span>
                         <span class="title">Házak</span>
+                        <span class="arrow">
+                    <i class="ti-angle-right"></i>
+                  </span>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ path('admin_get_houses') }}">Házak</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_get_units') }}">Albetétek</a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="sidebar-link" href="{{ path('admin_get_units') }}">
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle" href="javascript:void(0);">
                 <span class="icon-holder">
-                  <i class="c-brown-500 ti-home"></i>
-                </span>
-                        <span class="title">Albetétek</span>
+                    <i class="c-purple-500 ti-user"></i>
+                  </span>
+                        <span class="title">Felhasználók</span>
+                        <span class="arrow">
+                    <i class="ti-angle-right"></i>
+                  </span>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ path('admin_get_house_users') }}">Technikai felhasználók</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_get_users') }}">Felhasználók</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_get_users') }}">Menedzserek</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_get_users') }}">Sales ügynökök</a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="sidebar-link" href="{{ path('admin_get_house_users') }}">
-                <span class="icon-holder">
-                  <i class="c-brown-500 ti-user"></i>
-                </span>
-                        <span class="title">Technikai felhasználók</span>
-                    </a>
-                </li>
-{#                <li class="nav-item">#}
-{#                    <a class="sidebar-link" href="{{ path('admin_get_navigate', {'pageName': 'email'}) }}">#}
-{#                <span class="icon-holder">#}
-{#                  <i class="c-brown-500 ti-email"></i>#}
-{#                </span>#}
-{#                        <span class="title">Email</span>#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li class="nav-item">#}
-{#                    <a class="sidebar-link" href="{{ path('admin_get_navigate', {'pageName': 'compose'}) }}">#}
-{#                <span class="icon-holder">#}
-{#                  <i class="c-blue-500 ti-share"></i>#}
-{#                </span>#}
-{#                        <span class="title">Compose</span>#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li class="nav-item">#}
-{#                    <a class="sidebar-link" href="{{ path('admin_get_navigate', {'pageName': 'calendar'}) }}">#}
-{#                <span class="icon-holder">#}
-{#                  <i class="c-deep-orange-500 ti-calendar"></i>#}
-{#                </span>#}
-{#                        <span class="title">Calendar</span>#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li class="nav-item">#}
-{#                    <a class="sidebar-link" href="{{ path('admin_get_navigate', {'pageName': 'chat'}) }}">#}
-{#                <span class="icon-holder">#}
-{#                  <i class="c-deep-purple-500 ti-comment-alt"></i>#}
-{#                </span>#}
-{#                        <span class="title">Chat</span>#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li class="nav-item">#}
-{#                    <a class="sidebar-link" href="{{ path('admin_get_navigate', {'pageName': 'charts'}) }}">#}
-{#                <span class="icon-holder">#}
-{#                  <i class="c-indigo-500 ti-bar-chart"></i>#}
-{#                </span>#}
-{#                        <span class="title">Charts</span>#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li class="nav-item">#}
-{#                    <a class="sidebar-link" href="{{ path('admin_get_navigate', {'pageName': 'forms'}) }}">#}
-{#                <span class="icon-holder">#}
-{#                  <i class="c-light-blue-500 ti-pencil"></i>#}
-{#                </span>#}
-{#                        <span class="title">Forms</span>#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li class="nav-item dropdown">#}
-{#                    <a class="sidebar-link" href="ui">#}
-{#                <span class="icon-holder">#}
-{#                    <i class="c-pink-500 ti-palette"></i>#}
-{#                  </span>#}
-{#                        <span class="title">UI Elements</span>#}
-{#                    </a>#}
-{#                </li>#}
-{#                <li class="nav-item dropdown">#}
-{#                    <a class="dropdown-toggle" href="javascript:void(0);">#}
-{#                <span class="icon-holder">#}
-{#                  <i class="c-orange-500 ti-layout-list-thumb"></i>#}
-{#                </span>#}
-{#                        <span class="title">Tables</span>#}
-{#                        <span class="arrow">#}
-{#                  <i class="ti-angle-right"></i>#}
-{#                </span>#}
-{#                    </a>#}
-{#                    <ul class="dropdown-menu">#}
-{#                        <li>#}
-{#                            <a class="sidebar-link"#}
-{#                               href="{{ path('admin_get_navigate', {'pageName': 'basic-table'}) }}">Basic#}
-{#                                Table</a>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                            <a class="sidebar-link" href="{{ path('admin_get_navigate', {'pageName': 'datatable'}) }}">Data#}
-{#                                Table</a>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                </li>#}
-{#                <li class="nav-item dropdown">#}
-{#                    <a class="dropdown-toggle" href="javascript:void(0);">#}
-{#                <span class="icon-holder">#}
-{#                    <i class="c-purple-500 ti-map"></i>#}
-{#                  </span>#}
-{#                        <span class="title">Maps</span>#}
-{#                        <span class="arrow">#}
-{#                    <i class="ti-angle-right"></i>#}
-{#                  </span>#}
-{#                    </a>#}
-{#                    <ul class="dropdown-menu">#}
-{#                        <li>#}
-{#                            <a href="google-maps">Google Map</a>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                            <a href="vector-maps">Vector Map</a>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                </li>#}
 {#                <li class="nav-item dropdown">#}
 {#                    <a class="dropdown-toggle" href="javascript:void(0);">#}
 {#                <span class="icon-holder">#}

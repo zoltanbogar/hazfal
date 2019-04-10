@@ -117,6 +117,32 @@ admin_post_house_user_edit:
   defaults: { _controller: AdminBundle:HouseUser:postHouseUserEdit }
   methods: POST
 
+
+#Users
+admin_get_users:
+  path: /admin/users
+  defaults: { _controller: AdminBundle:User:getUsers }
+  methods: GET
+
+admin_get_user_read:
+  path: /admin/users/{userId}/read
+  defaults: { _controller: AdminBundle:User:getUserRead }
+  methods: GET
+
+admin_get_user_edit:
+  path: /admin/users/{userId}/edit
+  defaults: { _controller: AdminBundle:User:getUserEdit }
+  methods: GET
+
+admin_get_user_delete:
+  path: /admin/users/{userId}/delete
+  defaults: { _controller: AdminBundle:User:getUserDelete }
+  methods: GET
+
+admin_post_user_edit:
+  path: /admin/users/{userId}/edit
+  defaults: { _controller: AdminBundle:User:postUserEdit }
+  methods: POST
 #-----------------------------------------------------------------
 
 admin_get_navigate:
