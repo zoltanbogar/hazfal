@@ -138,4 +138,139 @@ class ImportSource
     {
         return $this->isActive;
     }
+    /**
+     * @var string
+     */
+    private $oneToMany;
+
+
+    /**
+     * Set oneToMany.
+     *
+     * @param string $oneToMany
+     *
+     * @return ImportSource
+     */
+    public function setOneToMany($oneToMany)
+    {
+        $this->oneToMany = $oneToMany;
+
+        return $this;
+    }
+
+    /**
+     * Get oneToMany.
+     *
+     * @return string
+     */
+    public function getOneToMany()
+    {
+        return $this->oneToMany;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $importedEntities;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->importedEntities = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add importedEntity.
+     *
+     * @param \AppBundle\Entity\ImportedEntity $importedEntity
+     *
+     * @return ImportSource
+     */
+    public function addImportedEntity(\AppBundle\Entity\ImportedEntity $importedEntity)
+    {
+        $this->importedEntities[] = $importedEntity;
+
+        return $this;
+    }
+
+    /**
+     * Remove importedEntity.
+     *
+     * @param \AppBundle\Entity\ImportedEntity $importedEntity
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeImportedEntity(\AppBundle\Entity\ImportedEntity $importedEntity)
+    {
+        return $this->importedEntities->removeElement($importedEntity);
+    }
+
+    /**
+     * Get importedEntities.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImportedEntities()
+    {
+        return $this->importedEntities;
+    }
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
+     * @var string
+     */
+    private $username;
+
+
+    /**
+     * Set email.
+     *
+     * @param string $email
+     *
+     * @return ImportSource
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set username.
+     *
+     * @param string $username
+     *
+     * @return ImportSource
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get username.
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
 }

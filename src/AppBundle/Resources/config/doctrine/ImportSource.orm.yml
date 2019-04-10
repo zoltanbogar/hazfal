@@ -22,8 +22,14 @@ AppBundle\Entity\ImportSource:
     isActive:
       type: boolean
       column: is_active
-    oneToMany:
-      importedEntities:
-        targetEntity: ImportedEntity
-        mappedBy: importSource
+    email:
+      type: string
+      length: 255
+    username:
+      type: string
+      length: 255
+  oneToMany:
+    importedEntities:
+      targetEntity: ImportedEntity
+      mappedBy: importSource
   lifecycleCallbacks: {  }

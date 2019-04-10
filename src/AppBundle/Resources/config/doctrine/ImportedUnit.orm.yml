@@ -17,7 +17,7 @@ AppBundle\Entity\ImportedUnit:
       type: float
       column: floor_area
       nullable: true
-    type:
+    unit_type:
       type: smallint
       nullable: true
     balance:

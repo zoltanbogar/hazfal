@@ -10,6 +10,9 @@ use AppBundle\Entity\Document;
 use AppBundle\Entity\DocumentType;
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\ImportedHouseUser;
+use AppBundle\Entity\ImportedUnit;
+use AppBundle\Entity\ImportedUser;
 use AppBundle\Entity\Malfunction;
 use AppBundle\Entity\Manager;
 use AppBundle\Entity\Order;
@@ -144,10 +147,10 @@ class UserController extends Controller
 
         $entityManager = $this->getDoctrine()->getManager();
         $query = $entityManager->createQuery(
-            "SELECT house_user FROM AppBundle\Entity\HouseUser house_user WHERE house_user INSTANCE OF AppBundle\Entity\Manager AND house_user.id IN (".implode(
+            "SELECT house_user FROM AppBundle\Entity\HouseUser house_user WHERE house_user INSTANCE OF AppBundle\Entity\Manager AND house_user.id IN (" . implode(
                 ',',
                 $rowHouseUserID
-            ).")"
+            ) . ")"
         );
         $products = $query->getResult();
 
@@ -167,6 +170,7 @@ class UserController extends Controller
                 'company_address' => 'required',
                 'company_tax_number' => 'required',
                 'local_contact_number' => 'required',
+                'id' => 'required|numeric',
             ],
             $request
         );
@@ -175,14 +179,19 @@ class UserController extends Controller
             return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
         }
 
-        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
-        if (!$validator) {
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
             return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
         }
-        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedHouseUser::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
-        $objHouseUser = new Tenant();
+        /*$objHouseUser = new Tenant();
         if ($request->get('user_id')) {
             $numUserID = $request->get("user_id");
             $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
@@ -211,11 +220,26 @@ class UserController extends Controller
         $objHouseUser->setUpdatedAt(new \DateTime('now'));
         $objHouseUser->setLocalContactNumber($request->get('local_contact_number'));
 
+        $entityManager->persist($objHouseUser);*/
+        $objHouseUser = new ImportedHouseUser();
+        $objHouseUser->setEmail($request->get('email'));
+        $objHouseUser->setMailingAddress($request->get('mailing_address'));
+        $objHouseUser->setPhoneNumber($request->get('phone_number'));
+        $objHouseUser->setFirstName($request->get('first_name'));
+        $objHouseUser->setLastName($request->get('last_name'));
+        $objHouseUser->setCompanyName($request->get('company_name'));
+        $objHouseUser->setCompanyAddress($request->get('company_address'));
+        $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setImportedAt(new \DateTime('now'));
+        $objHouseUser->setExternalId($request->get('id'));
+        $objHouseUser->setIsAccepted(0);
+        $objHouseUser->setImportSource($objImportSource);
+
         $entityManager->persist($objHouseUser);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
-            "Tenant has been created!",
+            "House User has been imported!",
             $request->query->all()
         );
     }
@@ -234,6 +258,7 @@ class UserController extends Controller
                 'company_tax_number' => 'required',
                 'website' => 'required',
                 'logo_image' => 'required',
+                'id' => 'required|numeric',
             ],
             $request
         );
@@ -242,14 +267,19 @@ class UserController extends Controller
             return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
         }
 
-        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
-        if (!$validator) {
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
             return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
         }
-        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedHouseUser::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
-        $objHouseUser = new Manager();
+        /*$objHouseUser = new Manager();
         if ($request->get('user_id')) {
             $numUserID = $request->get("user_id");
             $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
@@ -279,11 +309,86 @@ class UserController extends Controller
         $objHouseUser->setWebsite($request->get('website'));
         $objHouseUser->setLogoImage($request->get('logo_image'));
 
+        $entityManager->persist($objHouseUser);*/
+        $objHouseUser = new ImportedHouseUser();
+        $objHouseUser->setEmail($request->get('email'));
+        $objHouseUser->setMailingAddress($request->get('mailing_address'));
+        $objHouseUser->setPhoneNumber($request->get('phone_number'));
+        $objHouseUser->setFirstName($request->get('first_name'));
+        $objHouseUser->setLastName($request->get('last_name'));
+        $objHouseUser->setCompanyName($request->get('company_name'));
+        $objHouseUser->setCompanyAddress($request->get('company_address'));
+        $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setImportedAt(new \DateTime('now'));
+        $objHouseUser->setExternalId($request->get('id'));
+        $objHouseUser->setIsAccepted(0);
+        $objHouseUser->setImportSource($objImportSource);
+
         $entityManager->persist($objHouseUser);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
-            "Manager has been created!",
+            "House User has been imported!",
+            $request->query->all()
+        );
+    }
+
+    public function postImportUserAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'date_of_birth' => 'required|date',
+                'place_of_birth' => 'required',
+                'phone_number' => 'required',
+                'local_phone_number' => 'required',
+                'id_number' => 'required',
+                'official_address' => 'required',
+                'current_location' => 'required',
+                'id' => 'required|numeric',
+                //'join_token' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedUser::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objUser = new ImportedUser();
+        $objUser->setPhoneNumber($request->get('phone_number'));
+        $objUser->setFirstName($request->get('first_name'));
+        $objUser->setLastName($request->get('last_name'));
+        $objUser->setDateOfBirth(new \DateTime($request->get('date_of_birth')));
+        $objUser->setPlaceOfBirth($request->get('place_of_birth'));
+        $objUser->setLocalPhoneNumber($request->get('local_phone_number'));
+        $objUser->setIdNumber($request->get('id_number'));
+        $objUser->setOfficialAddress($request->get('official_address'));
+        $objUser->setCurrentLocation($request->get('current_location'));
+        $objUser->setImportedAt(new \DateTime('now'));
+        $objUser->setExternalId($request->get('id'));
+        $objUser->setIsAccepted(0);
+        $objUser->setImportSource($objImportSource);
+
+        $entityManager->persist($objUser);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "User has been imported!",
             $request->query->all()
         );
     }

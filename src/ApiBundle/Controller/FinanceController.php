@@ -10,6 +10,9 @@ use AppBundle\Entity\Document;
 use AppBundle\Entity\DocumentType;
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\ImportedBill;
+use AppBundle\Entity\ImportedHouseUser;
+use AppBundle\Entity\ImportedPayment;
 use AppBundle\Entity\Malfunction;
 use AppBundle\Entity\Manager;
 use AppBundle\Entity\Order;
@@ -105,14 +108,16 @@ class FinanceController extends Controller
         foreach ($objUnit as $key => $data) {
             $tblUnit[] = [
                 'id' => $data->getId(),
-                'address' => $data->getBuilding().". ".$data->getFloor()." em. ".$data->getDoor()." ajtó",
+                'address' => $data->getBuilding() . ". " . $data->getFloor() . " em. " . $data->getDoor() . " ajtó",
                 'building' => $data->getBuilding(),
                 'floor' => $data->getFloor(),
                 'door' => $data->getDoor(),
-                'type' => $data->getType() == 1 ? "Lakás" : "Garázs", //FIXME ez egy szám, kell egy dictionary, hogy mi minek felel meg, pl. 1 = Lakás, 2 = Garázs
+                'type' => $data->getType() == 1 ? "Lakás" : "Garázs",
+                //FIXME ez egy szám, kell egy dictionary, hogy mi minek felel meg, pl. 1 = Lakás, 2 = Garázs
                 //'date' => $data->getDate(),
-                'date' => date('Y.m.d'), //new \DateTime('now'),//FIXME valami dátumot kell visszadani
-                'balance' => -1*$data->getBalance(),
+                'date' => date('Y.m.d'),
+                //new \DateTime('now'),//FIXME valami dátumot kell visszadani
+                'balance' => -1 * $data->getBalance(),
             ];
         }
 
@@ -204,14 +209,14 @@ class FinanceController extends Controller
 
         $tblUnit = [
             'id' => $objUnit->getId(),
-            'address' => $objUnit->getBuilding()." ép. ".$objUnit->getFloor().". em. ".$objUnit->getDoor(),
+            'address' => $objUnit->getBuilding() . " ép. " . $objUnit->getFloor() . ". em. " . $objUnit->getDoor(),
             'building' => $objUnit->getBuilding(),
             'floor' => $objUnit->getFloor(),
             'door' => $objUnit->getDoor(),
             'type' => $objUnit->getType(), //FIXME ez egy szám, kell egy dictionary, hogy mi minek felel meg, pl. 1 = Lakás, 2 = Garázs
             //'date' => $data->getDate(),
             'date' => date('Y.m.d'), //new \DateTime('now'), //FIXME valami dátumot kell visszadani
-            'balance' => -1*$objUnit->getBalance(),
+            'balance' => -1 * $objUnit->getBalance(),
             'balanceItems' => [
                 'bills' => $tblBills,
                 'payments' => $tblPayments,
@@ -246,6 +251,7 @@ class FinanceController extends Controller
                 'issued_at' => 'required|date',
                 'due_date' => 'required|date',
                 'api_key' => 'required',
+                'id' => 'required|numeric',
             ],
             $request
         );
@@ -254,14 +260,19 @@ class FinanceController extends Controller
             return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
         }
 
-        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
-        if (!$validator) {
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
             return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
         }
-        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedBill::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
-        $objBill = new Bill();
+        /*$objBill = new Bill();
         if ($request->get('unit_id')) {
             $numUnitID = $request->get("unit_id");
             $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
@@ -280,11 +291,91 @@ class FinanceController extends Controller
         $objBill->setIssuedAt(new \DateTime($request->get('issued_at')));
         $objBill->setDueDate(new \DateTime($request->get('due_date')));
 
+        $entityManager->persist($objBill);*/
+        $objBill = new ImportedBill();
+        if ($request->get('unit_id')) {
+            $numUnitID = $request->get("unit_id");
+            $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+            if (!$objUnit) {
+                return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+            }
+            $objBill->setUnit($objUnit);
+        }
+        $objBill->setAmount($request->get('amount'));
+        $objBill->setBillCategory($request->get('bill_category'));
+        $objBill->setDetails($request->get('details'));
+        $objBill->setReceiptNumber($request->get('receipt_number'));
+        $objBill->setIssuedForMonth($request->get('issued_for_month'));
+        $objBill->setIssuedAt(new \DateTime($request->get('issued_at')));
+        $objBill->setDueDate(new \DateTime($request->get('due_date')));
+        $objBill->setImportedAt(new \DateTime('now'));
+        $objBill->setExternalId($request->get('id'));
+        $objBill->setIsAccepted(0);
+        $objBill->setImportSource($objImportSource);
+
         $entityManager->persist($objBill);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
-            "Bill has been created!",
+            "Bill has been imported!",
+            $request->query->all()
+        );
+    }
+
+    public function postImportPaymentAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'unit_id' => 'required|numeric',
+                //'payment_method_id' => 'required|numeric',
+                'user_id' => 'required|numeric',
+                'house_user_id' => 'required|numeric',
+                'payment_date' => 'required|date',
+                'booking_date' => 'required|date',
+                'receipt_number' => 'required|numeric',
+                'amount' => 'required|numeric',
+                'api_key' => 'required',
+                'id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedPayment::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objPayment = new ImportedPayment();
+        $objPayment->setUnitId($request->get('unit_id'));
+        $objPayment->setAmount($request->get('amount'));
+        $objPayment->setReceiptNumber($request->get('receipt_number'));
+        $objPayment->setBookingDate(new \DateTime($request->get('booking_date')));
+        $objPayment->setPaymentDate(new \DateTime($request->get('payment_date')));
+        $objPayment->setHouseUserId($request->get('house_user_id'));
+        $objPayment->setUserId($request->get('user_id'));
+        $objPayment->setImportedAt(new \DateTime('now'));
+        $objPayment->setExternalId($request->get('id'));
+        $objPayment->setIsAccepted(0);
+        $objPayment->setImportSource($objImportSource);
+        //var_dump($objPayment->getUnitId());
+        //die("asdas");
+        $entityManager->persist($objPayment);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Payment has been imported!",
             $request->query->all()
         );
     }
@@ -451,7 +542,7 @@ class FinanceController extends Controller
 
         $strOrderID = $objOrder->getOrderId();
 
-        $message = utf8_encode($merchantID.'|'.$successURL.'|'.$successAPIURL.'|'.$strOrderID.'|'.$numSumAmount.'|'.$defaultCurrency);
+        $message = utf8_encode($merchantID . '|' . $successURL . '|' . $successAPIURL . '|' . $strOrderID . '|' . $numSumAmount . '|' . $defaultCurrency);
 
         $checkhash = hash_hmac('sha256', $message, $secretKey);
 

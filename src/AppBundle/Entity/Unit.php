@@ -472,4 +472,45 @@ class Unit
     {
         return $this->orders;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $importedBills;
+
+
+    /**
+     * Add importedBill.
+     *
+     * @param \AppBundle\Entity\ImportedBill $importedBill
+     *
+     * @return Unit
+     */
+    public function addImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
+    {
+        $this->importedBills[] = $importedBill;
+
+        return $this;
+    }
+
+    /**
+     * Remove importedBill.
+     *
+     * @param \AppBundle\Entity\ImportedBill $importedBill
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
+    {
+        return $this->importedBills->removeElement($importedBill);
+    }
+
+    /**
+     * Get importedBills.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImportedBills()
+    {
+        return $this->importedBills;
+    }
 }

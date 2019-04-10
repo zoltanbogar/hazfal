@@ -31,6 +31,9 @@ AppBundle\Entity\ImportedEntity:
     isAccepted:
       type: boolean
       column: is_accepted
+      nullable: true
+      options:
+        default: false
   manyToOne:
     importSource:
       targetEntity: ImportSource

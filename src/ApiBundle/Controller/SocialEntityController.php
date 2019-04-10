@@ -10,6 +10,8 @@ use AppBundle\Entity\Document;
 use AppBundle\Entity\DocumentType;
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\ImportedDocument;
+use AppBundle\Entity\ImportedHouseUser;
 use AppBundle\Entity\Malfunction;
 use AppBundle\Entity\Manager;
 use AppBundle\Entity\Order;
@@ -82,6 +84,7 @@ class SocialEntityController extends Controller
         }
 
         error_log(4);
+
         return $this->container->get('response_handler')->successHandler($objPost, $request->query->all());
     }
 
@@ -114,11 +117,11 @@ class SocialEntityController extends Controller
         }
 
         $type = $request->get('type');
-        
+
         if ($type !== "post") {
             return $this->container->get('response_handler')->errorHandler("no_valid_type_provided", "Invalid parameters", 422);
         }
-        
+
         if (!$request->get('subject') || !$request->get('content') || !$request->get('house_id')) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
@@ -270,6 +273,7 @@ class SocialEntityController extends Controller
                 'house_id' => 'required|numeric',
                 'name' => 'required',
                 'filename' => 'required',
+                'id' => 'required|numeric',
             ],
             $request
         );
@@ -278,17 +282,23 @@ class SocialEntityController extends Controller
             return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
         }
 
-        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
-        if (!$validator) {
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
             return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
         }
-        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedDocument::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+        }
+
         if ($request->get('type') !== 'document') {
             return $this->container->get('response_handler')->errorHandler("invalid_entity_type", "Invalid parameters", 422);
         }
 
         $entityManager = $this->getDoctrine()->getManager();
-        $objDocument = new Document();
+        /*$objDocument = new Document();
         if ($request->get('user_id')) {
             $numUserID = $request->get("user_id");
             $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
@@ -318,11 +328,22 @@ class SocialEntityController extends Controller
         $objDocument->setCreatedAt(new \DateTime('now'));
         $objDocument->setUpdatedAt(new \DateTime('now'));
 
+        $entityManager->persist($objDocument);*/
+        $objDocument = new ImportedDocument();
+        $objDocument->setName($request->get('name'));
+        $objDocument->setFilename($request->get('filename'));
+        $objDocument->setHouseId($request->get('house_id'));
+        $objDocument->setUserId($request->get('user_id'));
+        $objDocument->setImportedAt(new \DateTime('now'));
+        $objDocument->setExternalId($request->get('id'));
+        $objDocument->setIsAccepted(0);
+        $objDocument->setImportSource($objImportSource);
+
         $entityManager->persist($objDocument);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
-            "Document has been created!",
+            "Document has been imported!",
             $request->query->all()
         );
     }

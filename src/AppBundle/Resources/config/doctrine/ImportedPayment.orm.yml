@@ -6,6 +6,12 @@ AppBundle\Entity\ImportedPayment:
     unitId:
       type: integer
       column: unit_id
+    userId:
+      type: integer
+      column: user_id
+    houseUserId:
+      type: integer
+      column: house_user_id
     paymentMethodId:
       type: integer
       column: payment_method_id

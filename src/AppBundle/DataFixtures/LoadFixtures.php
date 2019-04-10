@@ -4,6 +4,7 @@ namespace AppBundle\DataFixtures;
 
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\ImportSource;
 use AppBundle\Entity\Manager;
 use AppBundle\Entity\Tenant;
 use AppBundle\Entity\Unit;
@@ -49,12 +50,12 @@ class LoadFixtures extends Fixture
 
             $objHouse = new House();
             //$objHouse->addHouseUser($objTenant);
-            $objHouse->setName('House '.$i);
+            $objHouse->setName('House ' . $i);
             $objHouse->setCountryCode('HU');
             $objHouse->setRegion($rowRegion[array_rand($rowRegion, 1)]);
             $objHouse->setPostalCode($i);
-            $objHouse->setCity('Varos_'.$i);
-            $objHouse->setStreet('Utca_'.$i);
+            $objHouse->setCity('Varos_' . $i);
+            $objHouse->setStreet('Utca_' . $i);
             $objHouse->setBuilding(rand(1, 200));
             $objHouse->setUnit('Unit');
             $objHouse->setLotNumber(rand(1, 200));
@@ -67,41 +68,41 @@ class LoadFixtures extends Fixture
             $manager->persist($objHouse);
 
             $objTenant = new Tenant();
-            $objTenant->setLocalContactNumber('LocalContantNumber_'.$i);
+            $objTenant->setLocalContactNumber('LocalContantNumber_' . $i);
             $objTenant->setUser(NULL);
-            $objTenant->setEmail('Email_'.$i.'@example.com');
-            $objTenant->setMailingAddress('MailingAddress_'.$i);
-            $objTenant->setPhoneNumber('+3630'.str_pad($i, 7, '0', STR_PAD_LEFT));
-            $objTenant->setFirstName('First_'.$i);
-            $objTenant->setLastName('Last_'.$i);
+            $objTenant->setEmail('Email_' . $i . '@example.com');
+            $objTenant->setMailingAddress('MailingAddress_' . $i);
+            $objTenant->setPhoneNumber('+3630' . str_pad($i, 7, '0', STR_PAD_LEFT));
+            $objTenant->setFirstName('First_' . $i);
+            $objTenant->setLastName('Last_' . $i);
             $objTenant->setCompanyName('Epam Systems Kft.');
             $objTenant->setCompanyAddress('6723 Szeged, Felso-Tisza part 25.');
             $objTenant->setCompanyTaxNumber('asdasdasdas');
             $objTenant->setRegistrationToken(str_pad(($i + 20), 8, '0', STR_PAD_LEFT));
-            $objTenant->setInviteSentAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
+            $objTenant->setInviteSentAt(new \DateTime('2019-02-' . str_pad($i, 2, '0', STR_PAD_LEFT)));
             $objTenant->setDeletedAt(NULL);
-            $objTenant->setCreatedAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
-            $objTenant->setUpdatedAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
+            $objTenant->setCreatedAt(new \DateTime('2019-02-' . str_pad($i, 2, '0', STR_PAD_LEFT)));
+            $objTenant->setUpdatedAt(new \DateTime('2019-02-' . str_pad($i, 2, '0', STR_PAD_LEFT)));
             $objTenant->setHouse($objHouse);
             $manager->persist($objTenant);
 
             $objManager = new Manager();
-            $objManager->setWebsite('www.Website'.$i.".com");
-            $objManager->setLogoImage('Image_'.$i);
+            $objManager->setWebsite('www.Website' . $i . ".com");
+            $objManager->setLogoImage('Image_' . $i);
             $objManager->setUser(NULL);
-            $objManager->setEmail('Email_'.$i.'@example.com');
-            $objManager->setMailingAddress('MailingAddress_'.$i);
-            $objManager->setPhoneNumber('+3630'.str_pad($i, 7, '0', STR_PAD_LEFT));
-            $objManager->setFirstName('First_'.$i);
-            $objManager->setLastName('Last_'.$i);
+            $objManager->setEmail('Email_' . $i . '@example.com');
+            $objManager->setMailingAddress('MailingAddress_' . $i);
+            $objManager->setPhoneNumber('+3630' . str_pad($i, 7, '0', STR_PAD_LEFT));
+            $objManager->setFirstName('First_' . $i);
+            $objManager->setLastName('Last_' . $i);
             $objManager->setCompanyName('Epam Systems Kft.');
             $objManager->setCompanyAddress('6723 Szeged, Felso-Tisza part 25.');
             $objManager->setCompanyTaxNumber('asdasdasdas');
             $objManager->setRegistrationToken(str_pad($i, 8, '1', STR_PAD_LEFT));
-            $objManager->setInviteSentAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
+            $objManager->setInviteSentAt(new \DateTime('2019-02-' . str_pad($i, 2, '0', STR_PAD_LEFT)));
             $objManager->setDeletedAt(NULL);
-            $objManager->setCreatedAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
-            $objManager->setUpdatedAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
+            $objManager->setCreatedAt(new \DateTime('2019-02-' . str_pad($i, 2, '0', STR_PAD_LEFT)));
+            $objManager->setUpdatedAt(new \DateTime('2019-02-' . str_pad($i, 2, '0', STR_PAD_LEFT)));
             $objManager->setHouse($objHouse);
             $manager->persist($objManager);
 
@@ -117,7 +118,7 @@ class LoadFixtures extends Fixture
             $objUnit = new Unit();
             $objUnit->setHouse($objHouse);
             $objUnit->setUnitTenant($objUnitTenant);
-            $objUnit->setBuilding('Building_'.$i);
+            $objUnit->setBuilding('Building_' . $i);
             $objUnit->setFloor($i);
             $objUnit->setDoor($i);
             $objUnit->setFloorArea($i * 1337);
@@ -127,6 +128,33 @@ class LoadFixtures extends Fixture
             $objUnit->setCreatedAt(new \DateTime('now'));
             $manager->persist($objUnit);
         }
+
+        $objImportSource = new ImportSource();
+        $objImportSource->setIsActive(1);
+        $objImportSource->setName('eControl');
+        $objImportSource->setEmail('info@zipnet.hu');
+        $objImportSource->setUsername('econtrol');
+        $objImportSource->setSlug('econtrol');
+        $objImportSource->setApiKey('MWI2NWFmZjYyZDUyZWIxODY5NGExOTRhMWU3MDQ3YmQzY2ZkMmE4Mw==');
+        $manager->persist($objImportSource);
+
+        $objImportSource = new ImportSource();
+        $objImportSource->setIsActive(1);
+        $objImportSource->setName('Multiház');
+        $objImportSource->setEmail('profi@scha.hu');
+        $objImportSource->setUsername('multihaz');
+        $objImportSource->setSlug('multihaz');
+        $objImportSource->setApiKey('NDg0MTcwZTBjNzI4NzY3NGYzZTQ4ZDhmMmMxN2E4MzhhZGQyZTlhZg==');
+        $manager->persist($objImportSource);
+
+        $objImportSource = new ImportSource();
+        $objImportSource->setIsActive(1);
+        $objImportSource->setName('KöltségSQL');
+        $objImportSource->setEmail('info@koltsegsql.hu');
+        $objImportSource->setUsername('koltsegsql');
+        $objImportSource->setSlug('koltsegsql');
+        $objImportSource->setApiKey('MDU5ZjY4NDExMjVjZDA1MzYzN2RmYjk2Yzg5MzJmNDczYjllNDgyYw==');
+        $manager->persist($objImportSource);
 
         $manager->flush();
     }

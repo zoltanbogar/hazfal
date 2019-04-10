@@ -505,4 +505,5 @@ class HouseUser
     {
         return $this->house;
     }
+
 }

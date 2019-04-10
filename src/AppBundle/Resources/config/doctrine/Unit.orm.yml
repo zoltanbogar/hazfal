@@ -41,6 +41,9 @@ AppBundle\Entity\Unit:
     bills:
       targetEntity: Bill
       mappedBy: unit
+    importedBills:
+      targetEntity: ImportedBill
+      mappedBy: unit
     orders:
       targetEntity: Order
       mappedBy: unit
