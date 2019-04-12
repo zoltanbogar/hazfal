@@ -21,47 +21,12 @@
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
                             <div style="display: flex; justify-content: space-between">
                                 <h4 class="c-grey-900 mB-20"><a href="{{ path('admin_get_users') }}">Felhasználók listája</a></h4>
+                                <div style="align-self: center;">
+                                    <a href="{{ path('admin_get_user_add', {'objectType' : 'user'}) }}" class="btn btn-primary"><i
+                                                class="ti-plus mR-10"></i> Új felhasználó hozzáadása</a>
+                                </div>
                             </div>
-                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
-                                   width="100%">
-                                <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Felhasználónév</th>
-                                    <th>E-mail cím</th>
-                                    <th>Név</th>
-                                    <th>Telefonszám</th>
-                                    <th>Műveletek</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for user in objUsers %}
-                                    <tr>
-                                        <td>{{ user.id|e }}</td>
-                                        <td>{{ user.username|e }}</td>
-                                        <td>{{ user.email|e }}</td>
-                                        <td>{{ user.lastName|e }} {{ user.firstName|e }}</td>
-                                        <td>{{ user.localPhoneNumber|e }}</td>
-                                        <td>
-                                            <a class="readButton"
-                                               href="{{ path('admin_get_user_read', {'userId': user.id}) }}">
-                                                <i class="ti-search mR-10"></i>
-                                            </a>
-                                            <a class="editButton"
-                                               href="{{ path('admin_get_user_edit', {'userId': user.id}) }}">
-                                                <i class="ti-pencil mR-10"></i>
-                                            </a>
-                                            {% if app.user.id != user.id %}
-                                                <a class="deleteButton"
-                                                   href="{{ path('admin_get_user_delete', {'userId': user.id}) }}">
-                                                    <i class="ti-trash mR-10"></i>
-                                                </a>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
+                            {% include 'Admin/userTableLayout.html.twig' with {'object' : objUsers, 'objectType' : 'user'} %}
                         </div>
                     </div>
                 </div>

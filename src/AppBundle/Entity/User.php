@@ -866,4 +866,33 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->profileImage;
     }
+    /**
+     * @var \AppBundle\Entity\Permission
+     */
+    private $permission;
+
+
+    /**
+     * Set permission.
+     *
+     * @param \AppBundle\Entity\Permission|null $permission
+     *
+     * @return User
+     */
+    public function setPermission(\AppBundle\Entity\Permission $permission = null)
+    {
+        $this->permission = $permission;
+
+        return $this;
+    }
+
+    /**
+     * Get permission.
+     *
+     * @return \AppBundle\Entity\Permission|null
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+    }
 }

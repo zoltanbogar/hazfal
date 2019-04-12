@@ -18,25 +18,95 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2>
-                        #{{ objUser.id }} felhasználó
+                        {% if objectType == 'user' %}
+                            {% set path = path('admin_get_users') %}
+                            {{ objUser.id is null ? 'Új felhasználó hozzáadása' : '# '~objUser.id~' felhasználó' }}
+                        {% else %}
+                            {% set path = path('admin_get_sales_users') %}
+                            {{ objUser.id is null ? 'Új sales felhasználó hozzáadása' : '# '~objUser.id~' sales felhasználó' }}
+                        {% endif %}
                         <span class="pull-right">
-                        <a href="{{ path('admin_get_users') }}" class="btn btn-secondary">
+                        <a href="{{ path }}" class="btn btn-secondary">
                             <i class="ti-angle-left mR-10"></i> VISSZA</a>
                         </span>
                     </h2>
                 </div>
             </div>
-            <form action="{{ path('admin_post_user_edit', {'userId': objUser.id}) }}" method="post">
+            <form action="{{ isNew ? path('admin_post_user_add') : path('admin_post_user_edit', {'userId': objUser.id}) }}" method="post">
                 <div class="row gap-20 masonry pos-r">
                     <div class="masonry-sizer col-md-6"></div>
                     <div class="masonry-item col-md-6">
                         <div class="bgc-white p-20 bd">
-                            <h6 class="c-grey-900">Általános</h6>
+                            <h6 class="c-grey-900">Technikai adatok</h6>
                             <div class="mT-30">
                                 <div class="form-group">
                                     <label for="inputId">Id</label>
                                     <input type="text" class="form-control" name="inputId" id="inputId"
                                            aria-describedby="inputId" value="{{ objUser.id }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPermissionId">Jogosultság</label>
+                                    <select name="inputPermissionId" id="inputPermissionId" class="form-control" {{ isEditable ?: 'disabled' }} {{ objectType == 'sales' ? 'disabled' : '' }}>
+                                        <option>Kérlek válassz...</option>
+                                        {% if objectType == 'sales' %}
+                                            {% for permission in objPermissions %}
+                                                {% if permission.slug == 'sales' %}
+                                                    <option value="{{ permission.id }}" selected>{{ permission.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for permission in objPermissions %}
+                                                <option value="{{ permission.id }}" {{ objUser.id is not null and objUser.permission.id == permission.id ? 'selected' : '' }}>{{ permission.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputIsActive">Státusz</label>
+                                    <select name="inputIsActive" id="inputIsActive" class="form-control" {{ isEditable ?: 'disabled' }}>
+                                        <option {{ isNew ? 'selected' : '' }}>Kérlek válassz...</option>
+                                        <option value="1" {{ objUser.enabled == 1 and isNew == false ? 'selected' : '' }}>Aktív</option>
+                                        <option value="0" {{ objUser.enabled == 0 and isNew == false ? 'selected' : '' }}>Inaktív</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUserName">Felhasználónév</label>
+                                    <input type="text" class="form-control" id="inputUserName"
+                                           name="inputUserName"
+                                           value="{{ objUser.username }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                {% if isNew %}
+                                    <div class="form-group">
+                                        <label for="inputPassword">Jelszó</label>
+                                        <input type="password" class="form-control" id="inputPassword"
+                                               name="inputPassword"
+                                               value="{{ objUser.password }}" {{ isNew ?: 'disabled' }}>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPasswordAgain">Jelszó újra</label>
+                                        <input type="password" class="form-control" id="inputPasswordAgain"
+                                               name="inputPasswordAgain"
+                                               value="{{ objUser.password }}" {{ isNew ?: 'disabled' }}>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Általános</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputLastName">Vezetéknév</label>
+                                    <input type="text" class="form-control" id="inputLastName"
+                                           name="inputLastName"
+                                           value="{{ objUser.lastName }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputFirstName">Keresztnév</label>
+                                    <input type="text" class="form-control" id="inputFirstName" name="inputFirstName"
+                                           aria-describedby="inputFirstName"
+                                           value="{{ objUser.firstName }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputEmail">Email cím</label>
@@ -52,55 +122,34 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="inputSex">Nem</label>
-                                    <input type="text" class="form-control" id="inputSex" name="inputSex"
-                                           aria-describedby="inputSex"
-                                           value="{{ objUser.sex == 1 ? 'Férfi' : 'Nő' }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputIsActive">Státusz</label>
-                                    <input type="text" class="form-control" id="inputIsActive" name="inputIsActive"
-                                           aria-describedby="inputIsActive"
-                                           value="{{ objUser.enabled == 0 ? 'Nem aktív' : 'Aktív' }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputFirstName">Keresztnév</label>
-                                    <input type="text" class="form-control" id="inputFirstName" name="inputFirstName"
-                                           aria-describedby="inputFirstName"
-                                           value="{{ objUser.firstName }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputLastName">Vezetéknév</label>
-                                    <input type="text" class="form-control" id="inputLastName"
-                                           name="inputLastName"
-                                           placeholder="Pl.: HU"
-                                           value="{{ objUser.lastName }}" disabled>
+                                    <select name="inputSex" id="inputSex" class="form-control" {{ isEditable ?: 'disabled' }}>
+                                        <option {{ isNew ? 'selected' : '' }}>Kérlek válassz...</option>
+                                        <option value="1" {{ objUser.sex == 1 and isNew == false ? 'selected' : '' }}>Férfi</option>
+                                        <option value="0" {{ objUser.sex == 0 and isNew == false ? 'selected' : '' }}>Nő</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputDateOfBirth">Születési idő</label>
-                                    <input type="text" class="form-control" id="inputDateOfBirth"
+                                    <input type="{{ isEditable ? 'date' : 'text' }}" class="form-control" id="inputDateOfBirth"
                                            name="inputDateOfBirth"
-                                           placeholder="Pl.: HU"
-                                           value="{{ objUser.dateOfBirth | date("Y. m. d.") }}" disabled>
+                                           value="{{ objUser.dateOfBirth | date("Y-m-d") }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputPlaceOfBirth">Születési hely</label>
                                     <input type="text" class="form-control" id="inputPlaceOfBirth"
                                            name="inputPlaceOfBirth"
-                                           placeholder="Pl.: HU"
-                                           value="{{ objUser.placeOfBirth }}" disabled>
+                                           value="{{ objUser.placeOfBirth }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputOfficialAddress">Cím</label>
                                     <input type="text" class="form-control" id="inputOfficialAddress"
                                            name="inputOfficialAddress"
-                                           placeholder="Pl.: HU"
                                            value="{{ objUser.officialAddress }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputCurrentLocation">Tartózkodási hely</label>
                                     <input type="text" class="form-control" id="inputCurrentLocation"
                                            name="inputCurrentLocation"
-                                           placeholder="Pl.: HU"
                                            value="{{ objUser.currentLocation }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
                             </div>
@@ -111,31 +160,45 @@
                             <h6 class="c-grey-900">Leírás</h6>
                             <div class="mT-30">
                                 <div class="form-group">
-                                    <label for="inputCompanyName">Bio</label>
+                                    <label for="inputBio">Bio</label>
                                     <textarea rows="10" name="inputBio" class="form-control" {{ isEditable ?: 'disabled' }}>{{ objUser.bio }}</textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="masonry-item col-md-6">
-                        <div class="bgc-white p-20 bd">
-                            <h6 class="c-grey-900">Dátum</h6>
-                            <div class="mT-30">
-                                <div class="form-group">
-                                    <label for="inputCreatedAt">Utolsó bejelentkezés</label>
-                                    <input type="text" class="form-control" id="inputCreatedAt"
-                                           aria-describedby="inputCreatedAt"
-                                           value="{{ objUser.lastLogin|date("Y. m. d. H:i") }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputCreatedAt">Regisztráció dátuma</label>
-                                    <input type="text" class="form-control" id="inputCreatedAt"
-                                           aria-describedby="inputCreatedAt"
-                                           value="{{ objUser.registrationDate|date("Y. m. d. H:i") }}" disabled>
+                    {% if isNew == FALSE %}
+                        <div class="masonry-item col-md-6">
+                            <div class="bgc-white p-20 bd">
+                                <h6 class="c-grey-900">Dátum</h6>
+                                <div class="mT-30">
+                                    <div class="form-group">
+                                        <label for="inputCreatedAt">Utolsó bejelentkezés</label>
+                                        <input type="text" class="form-control" id="inputCreatedAt"
+                                               aria-describedby="inputCreatedAt"
+                                               value="{{ objUser.lastLogin|date("Y. m. d. H:i") }}" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputCreatedAt">Regisztráció dátuma</label>
+                                        <input type="text" class="form-control" id="inputCreatedAt"
+                                               aria-describedby="inputCreatedAt"
+                                               value="{{ objUser.registrationDate|date("Y. m. d. H:i") }}" disabled>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
+                    {% if objectType == 'salesUser' %}
+                        <div class="masonry-item col-md-6">
+                            <div class="bgc-white p-20 bd">
+                                <h6 class="c-grey-900">Sales ügynök statisztikák</h6>
+                                <div class="mT-30">
+                                    <div class="form-group">
+                                        Statisztikák
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     {% if isEditable == TRUE %}
                         <div class="masonry-item col-md-6">
                             <div class="bgc-white p-20 bd">

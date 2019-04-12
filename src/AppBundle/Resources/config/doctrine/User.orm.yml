@@ -29,7 +29,7 @@ AppBundle\Entity\User:
             length: 255
             column: last_name
         dateOfBirth:
-            type: date
+            type: datetime
             column: date_of_birth
         placeOfBirth:
             type: string
@@ -66,6 +66,7 @@ AppBundle\Entity\User:
             type: string
             length: 255
             column: join_token
+            nullable: true
         apiKey:
             type: string
             length: 255
@@ -106,4 +107,10 @@ AppBundle\Entity\User:
         houseUser:
             targetEntity: HouseUser
             mappedBy: user
+        permission:
+            targetEntity: Permission
+            inversedBy: user
+            joinColumn:
+                name: permission_id
+                referencedColumnName: id
     lifecycleCallbacks: {  }

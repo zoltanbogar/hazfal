@@ -67,6 +67,7 @@ AppBundle\Entity\HouseUser:
         updatedAt:
             type: datetime
             column: updated_at
+            nullable: true
     oneToMany:
         payments:
             targetEntity: Payment
