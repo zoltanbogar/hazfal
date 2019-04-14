@@ -170,7 +170,9 @@ class UserController extends Controller
                 'company_address' => 'required',
                 'company_tax_number' => 'required',
                 'local_contact_number' => 'required',
+                'house_user_type' => 'required',
                 'id' => 'required|numeric',
+                'house_id' => 'required|numeric',
             ],
             $request
         );
@@ -230,6 +232,7 @@ class UserController extends Controller
         $objHouseUser->setCompanyName($request->get('company_name'));
         $objHouseUser->setCompanyAddress($request->get('company_address'));
         $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setLocalContactNumber($request->get('local_contact_number'));
         $objHouseUser->setImportedAt(new \DateTime('now'));
         $objHouseUser->setExternalId($request->get('id'));
         $objHouseUser->setIsAccepted(0);
@@ -258,7 +261,9 @@ class UserController extends Controller
                 'company_tax_number' => 'required',
                 'website' => 'required',
                 'logo_image' => 'required',
+                'house_user_type' => 'required',
                 'id' => 'required|numeric',
+                'house_id' => 'required|numeric',
             ],
             $request
         );
@@ -319,6 +324,8 @@ class UserController extends Controller
         $objHouseUser->setCompanyName($request->get('company_name'));
         $objHouseUser->setCompanyAddress($request->get('company_address'));
         $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setWebsite($request->get('website'));
+        $objHouseUser->setLogoImage($request->get('logo_image'));
         $objHouseUser->setImportedAt(new \DateTime('now'));
         $objHouseUser->setExternalId($request->get('id'));
         $objHouseUser->setIsAccepted(0);

@@ -66,4 +66,30 @@ class Tenant extends HouseUser
         return $this->unitTenant;
     }
 
+
+    /**
+     * Add unitTenant.
+     *
+     * @param \AppBundle\Entity\UnitTenant $unitTenant
+     *
+     * @return Tenant
+     */
+    public function addUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant)
+    {
+        $this->unitTenant[] = $unitTenant;
+
+        return $this;
+    }
+
+    /**
+     * Remove unitTenant.
+     *
+     * @param \AppBundle\Entity\UnitTenant $unitTenant
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant)
+    {
+        return $this->unitTenant->removeElement($unitTenant);
+    }
 }

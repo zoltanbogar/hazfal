@@ -1,0 +1,104 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    {{ success.successTitle }} - {{ success.successText }}
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4 class="c-grey-900 mB-20"><a href="{{ path('admin_get_import_houses') }}">Házak
+                                        listája</a></h4>
+                            </div>
+                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
+                                   width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Import forrás</th>
+                                    <th>Külső ID</th>
+                                    <th>Importálva</th>
+                                    <th>Név</th>
+                                    <th>Irányítószám</th>
+                                    <th>Város</th>
+                                    <th>Utca</th>
+                                    <th>Épület</th>
+                                    <th>Egység</th>
+                                    <th>Helyrajzi szám</th>
+                                    <th>Műveletek</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for house in objHouses %}
+                                    <tr>
+                                        <td>{{ house.id|e }}</td>
+                                        <td>{{ house.importSource.name }}</td>
+                                        <td>{{ house.externalId|e }}</td>
+                                        <td>{{ house.importedAt|date("Y. m. d.") }}</td>
+                                        <td>{{ house.name|e }}</td>
+                                        <td>{{ house.postalCode|e }}</td>
+                                        <td>{{ house.city|e }}</td>
+                                        <td>{{ house.street|e }}</td>
+                                        <td>{{ house.building|e }}</td>
+                                        <td>{{ house.unit|e }}</td>
+                                        <td>{{ house.lotNumber|e }}</td>
+                                        <td>
+                                            <a class="readButton"
+                                               href="{{ path('admin_get_import_house_import', {'importedHouseId': house.id}) }}">
+                                                <i class="ti-plus mR-10"></i>
+                                            </a>
+                                            <a class="deleteButton"
+                                               href="{{ path('admin_get_import_house_delete', {'importedHouseId': house.id}) }}">
+                                                <i class="ti-trash mR-10"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.readButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan importálni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+
+        $('.deleteButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan törölni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+    </script>
+{% endblock %}

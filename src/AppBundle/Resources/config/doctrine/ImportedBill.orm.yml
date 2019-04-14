@@ -31,11 +31,7 @@ AppBundle\Entity\ImportedBill:
       length: 255
       column: issued_for_month
       nullable: true
-  manyToOne:
-    unit:
-      targetEntity: Unit
-      inversedBy: importedBills
-      joinColumn:
-        name: unit_id
-        referencedColumnName: id
+    unitId:
+      type: integer
+      column: unit_id
   lifecycleCallbacks: {  }

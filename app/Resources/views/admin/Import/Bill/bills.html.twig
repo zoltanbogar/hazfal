@@ -1,0 +1,109 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    {{ success.successTitle }} - {{ success.successText }}
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4 class="c-grey-900 mB-20">
+                                    <a href="{{ path('admin_get_import_bills') }}">
+                                        Számlák listája
+                                    </a>
+                                </h4>
+                            </div>
+                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
+                                   width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Import forrás</th>
+                                    <th>Külső ID</th>
+                                    <th>Importálva</th>
+                                    <th>Számla kategória</th>
+                                    <th>Összeg</th>
+                                    <th>Részletek</th>
+                                    <th>Kivetve</th>
+                                    <th>Fizetési határidő</th>
+                                    <th>Bizonylatszám</th>
+                                    <th>Keletkezés hónapja</th>
+                                    <th>Albetét azonosító</th>
+                                    <th>Műveletek</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for bill in objBills %}
+                                    <tr>
+                                        <td>{{ bill.id|e }}</td>
+                                        <td>{{ bill.importSource.name }}</td>
+                                        <td>{{ bill.externalId|e }}</td>
+                                        <td>{{ bill.importedAt|date("Y. m. d.") }}</td>
+                                        <td>{{ bill.billCategory|e }}</td>
+                                        <td>{{ bill.amount|e }}</td>
+                                        <td>{{ bill.details|e }}</td>
+                                        <td>{{ bill.issuedAt|date("Y. m. d.") }}</td>
+                                        <td>{{ bill.dueDate|date("Y. m. d.") }}</td>
+                                        <td>{{ bill.receiptNumber|e }}</td>
+                                        <td>{{ bill.issuedForMonth|e }}</td>
+                                        <td>{{ bill.unitId|e }}</td>
+                                        <td>
+                                            <a class="readButton"
+                                               href="{{ path('admin_get_import_bill_import', {'importedBillId': bill.id}) }}">
+                                                <i class="ti-plus mR-10"></i>
+                                            </a>
+                                            <a class="deleteButton"
+                                               href="{{ path('admin_get_import_bill_delete', {'importedBillId': bill.id}) }}">
+                                                <i class="ti-trash mR-10"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.readButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan importálni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+
+        $('.deleteButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan törölni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+    </script>
+{% endblock %}

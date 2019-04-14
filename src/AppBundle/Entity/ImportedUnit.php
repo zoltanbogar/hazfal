@@ -239,4 +239,62 @@ class ImportedUnit extends ImportedEntity
     {
         return $this->unit_type;
     }
+    /**
+     * @var int|null
+     */
+    private $house_id;
+
+    /**
+     * @var int|null
+     */
+    private $tenant_id;
+
+
+    /**
+     * Set houseId.
+     *
+     * @param int|null $houseId
+     *
+     * @return ImportedUnit
+     */
+    public function setHouseId($houseId = null)
+    {
+        $this->house_id = $houseId;
+
+        return $this;
+    }
+
+    /**
+     * Get houseId.
+     *
+     * @return int|null
+     */
+    public function getHouseId()
+    {
+        return $this->house_id;
+    }
+
+    /**
+     * Set tenantId.
+     *
+     * @param int|null $tenantId
+     *
+     * @return ImportedUnit
+     */
+    public function setTenantId($tenantId = null)
+    {
+        $this->tenant_id = $tenantId;
+
+        return $this;
+    }
+
+    /**
+     * Get tenantId.
+     *
+     * @return int|null
+     */
+    public function getTenantId()
+    {
+        return $this->tenant_id;
+    }
 }

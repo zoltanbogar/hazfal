@@ -49,4 +49,28 @@ AppBundle\Entity\ImportedHouseUser:
       type: datetime
       column: invite_sent_at
       nullable: true
+    userId:
+      type: integer
+      nullable: true
+      column: user_id
+    houseId:
+      type: integer
+      column: house_id
+    localContactNumber:
+      type: string
+      length: 255
+      nullable: true
+      column: local_contact_number
+    website:
+      type: string
+      length: 255
+      nullable: true
+    logoImage:
+      type: string
+      length: 255
+      column: logo_image
+      nullable: true
+    house_user_type:
+      type: string
+      length: 255
   lifecycleCallbacks: {  }

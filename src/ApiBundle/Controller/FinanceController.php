@@ -394,6 +394,8 @@ class FinanceController extends Controller
             $objPayment = $this->getDoctrine()->getRepository(Payment::class)->findAllAfterMonth($request->query->get('start_date'));
         } else if ($request->query->get('end_date')) {
             $objPayment = $this->getDoctrine()->getRepository(Payment::class)->findAllBeforeMonth($request->query->get('end_date'));
+        } else {
+            $objPayment = $this->getDoctrine()->getRepository(Payment::class)->findAll();
         }
 
         if (!$objPayment) {

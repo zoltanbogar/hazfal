@@ -312,4 +312,33 @@ class Bill
     {
         return $this->unit;
     }
+    /**
+     * @var int
+     */
+    private $unitId;
+
+
+    /**
+     * Set unitId.
+     *
+     * @param int $unitId
+     *
+     * @return Bill
+     */
+    public function setUnitId($unitId)
+    {
+        $this->unitId = $unitId;
+
+        return $this;
+    }
+
+    /**
+     * Get unitId.
+     *
+     * @return int
+     */
+    public function getUnitId()
+    {
+        return $this->unitId;
+    }
 }

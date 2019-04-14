@@ -6,9 +6,12 @@ use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
 use AppBundle\Entity\ImportSource;
 use AppBundle\Entity\Manager;
+use AppBundle\Entity\Payment;
+use AppBundle\Entity\PaymentMethod;
 use AppBundle\Entity\Tenant;
 use AppBundle\Entity\Unit;
 use AppBundle\Entity\UnitTenant;
+use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
@@ -30,26 +33,7 @@ class LoadFixtures extends Fixture
             'Fejer',
         ];
         for ($i = 1; $i <= 20; $i++) {
-            /*$objHouseUser = new HouseUser();
-            $objHouseUser->setUser(NULL);
-            $objHouseUser->setEmail('Email_'.$i.'@example.com');
-            $objHouseUser->setMailingAddress('MailingAddress_'.$i);
-            $objHouseUser->setPhoneNumber('+3630'.str_pad($i, 7, '0', STR_PAD_LEFT));
-            $objHouseUser->setFirstName('First_'.$i);
-            $objHouseUser->setLastName('Last_'.$i);
-            $objHouseUser->setCompanyName('Epam Systems Kft.');
-            $objHouseUser->setCompanyAddress('6723 Szeged, Felso-Tisza part 25.');
-            $objHouseUser->setCompanyTaxNumber('asdasdasdas');
-            $objHouseUser->setRegistrationToken(str_pad($i, 8, '0', STR_PAD_LEFT));
-            $objHouseUser->setInviteSentAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
-            $objHouseUser->setDeletedAt(NULL);
-            $objHouseUser->setCreatedAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
-            $objHouseUser->setUpdatedAt(new \DateTime('2019-02-'.str_pad($i, 2, '0', STR_PAD_LEFT)));
-            $objHouseUser->setType('tenant');
-            $manager->persist($objHouseUser);*/
-
             $objHouse = new House();
-            //$objHouse->addHouseUser($objTenant);
             $objHouse->setName('House ' . $i);
             $objHouse->setCountryCode('HU');
             $objHouse->setRegion($rowRegion[array_rand($rowRegion, 1)]);
@@ -126,6 +110,7 @@ class LoadFixtures extends Fixture
             $objUnit->setBalance(rand(-1, 1) * $i * 1337);
             $objUnit->setHouseShare("0.5");
             $objUnit->setCreatedAt(new \DateTime('now'));
+            $objUnit->setUpdatedAt(new \DateTime('now'));
             $manager->persist($objUnit);
         }
 
@@ -155,6 +140,98 @@ class LoadFixtures extends Fixture
         $objImportSource->setSlug('koltsegsql');
         $objImportSource->setApiKey('MDU5ZjY4NDExMjVjZDA1MzYzN2RmYjk2Yzg5MzJmNDczYjllNDgyYw==');
         $manager->persist($objImportSource);
+
+        $objPaymentMethod = new PaymentMethod();
+        $objPaymentMethod->setName('Csoportos beszedés');
+        $objPaymentMethod->setSlug('csopbesz');
+        $objPaymentMethod->setDescription('Csoportos beszedés');
+        $manager->persist($objPaymentMethod);
+
+        $objPaymentMethod2 = new PaymentMethod();
+        $objPaymentMethod2->setName('Átutalás');
+        $objPaymentMethod2->setSlug('atutalas');
+        $objPaymentMethod2->setDescription('Átutalás');
+        $manager->persist($objPaymentMethod2);
+
+        $objPaymentMethod3 = new PaymentMethod();
+        $objPaymentMethod3->setName('Csekk');
+        $objPaymentMethod3->setSlug('csekk');
+        $objPaymentMethod3->setDescription('Csekk');
+        $manager->persist($objPaymentMethod3);
+
+        $objUser = new User();
+        $objUser->setRegistrationDate(new \DateTime('now'));
+        $objUser->setFirstName('Christoph');
+        $objUser->setLastName('Waltz');
+        $objUser->setDateOfBirth(\DateTime::createFromFormat('Y-m-d', '1956-10-04'));
+        $objUser->setPlaceOfBirth('Bécs, Ausztria');
+        $objUser->setBio(
+            'Kétszeres Oscar-díjas, kétszeres Golden Globe-díjas és kétszeres BAFTA-díjas osztrák színész. Egyike azon kevés színészeknek, akik az összes BAFTA-, Oscar- és Golden Globe-jelölésből elnyerték a díjat.'
+        );
+        $objUser->setSex(1);
+        $objUser->setLocalPhoneNumber('0666123456');
+        $objUser->setOfficialAddress('5600 Békéscsaba, Attila utca 21.');
+        $objUser->setCurrentLocation('5600 Békéscsaba, Attila utca 21.');
+        $objUser->setJoinToken('123456');
+        $objUser->setApiKey('12345654321x');
+        $objUser->setUsername('chris_waltz');
+        $objUser->setUsernameCanonical('chris_waltz');
+        $objUser->setEmail('chris_waltz@gmail.com');
+        $objUser->setEmailCanonical('chris_waltz@gmail.com');
+        $objUser->setEnabled(1);
+        $objUser->setPassword('admin');
+        $objUser->setRoles(['ROLE_USER']);
+        $manager->persist($objUser);
+
+        $manager->flush();
+
+        $objPayment = new Payment();
+        $objUnit = $manager->getRepository(Unit::class)->find(15);
+        $objPayment->setUnit($objUnit);
+        $objPaymentMethod = $manager->getRepository(PaymentMethod::class)->find(1);
+        $objPayment->setPaymentMethod($objPaymentMethod);
+        $objUser = $manager->getRepository(User::class)->find(1);
+        $objPayment->setUser($objUser);
+        $objHouseUser = $manager->getRepository(HouseUser::class)->find(11);
+        $objPayment->setUser($objHouseUser);
+        $objPayment->setPaymentDate(\DateTime::createFromFormat('Y-m-d', '2019-02-04'));
+        $objPayment->setBookingDate(\DateTime::createFromFormat('Y-m-d', '2019-03-14'));
+        $objPayment->setReceiptNumber('133712378');
+        $objPayment->setAmount(39999);
+        $objPayment->setStatus(1);
+        $manager->persist($objPayment);
+
+        $objPayment = new Payment();
+        $objUnit = $manager->getRepository(Unit::class)->find(16);
+        $objPayment->setUnit($objUnit);
+        $objPaymentMethod = $manager->getRepository(PaymentMethod::class)->find(2);
+        $objPayment->setPaymentMethod($objPaymentMethod);
+        $objUser = $manager->getRepository(User::class)->find(1);
+        $objPayment->setUser($objUser);
+        $objHouseUser = $manager->getRepository(HouseUser::class)->find(11);
+        $objPayment->setUser($objHouseUser);
+        $objPayment->setPaymentDate(\DateTime::createFromFormat('Y-m-d', '2019-03-04'));
+        $objPayment->setBookingDate(\DateTime::createFromFormat('Y-m-d', '2019-04-14'));
+        $objPayment->setReceiptNumber('133712379');
+        $objPayment->setAmount(34999);
+        $objPayment->setStatus(1);
+        $manager->persist($objPayment);
+
+        $objPayment = new Payment();
+        $objUnit = $manager->getRepository(Unit::class)->find(15);
+        $objPayment->setUnit($objUnit);
+        $objPaymentMethod = $manager->getRepository(PaymentMethod::class)->find(3);
+        $objPayment->setPaymentMethod($objPaymentMethod);
+        $objUser = $manager->getRepository(User::class)->find(1);
+        $objPayment->setUser($objUser);
+        $objHouseUser = $manager->getRepository(HouseUser::class)->find(11);
+        $objPayment->setUser($objHouseUser);
+        $objPayment->setPaymentDate(\DateTime::createFromFormat('Y-m-d', '2019-04-07'));
+        $objPayment->setBookingDate(\DateTime::createFromFormat('Y-m-d', '2019-05-24'));
+        $objPayment->setReceiptNumber('133712380');
+        $objPayment->setAmount(45000);
+        $objPayment->setStatus(1);
+        $manager->persist($objPayment);
 
         $manager->flush();
     }

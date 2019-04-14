@@ -34,14 +34,12 @@ class TokenListener
             return;
         } else if ($controller[0] instanceof ExceptionController || $controller[0] instanceof ProfilerController) {
             return;
-        } else {
-            return;
         }
 
         $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');
 
         if (!$token) {
-            throw new AccessDeniedHttpException('No token provided!');
+            throw new AccessDeniedHttpException('No token provided! Teszteléshez használd a "12345654321x" tokent');
         }
 
         $user = $this->entityManager->getRepository(User::class)->findUserByApiKey($token);

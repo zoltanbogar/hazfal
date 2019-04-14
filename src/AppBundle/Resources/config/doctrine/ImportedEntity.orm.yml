@@ -25,6 +25,7 @@ AppBundle\Entity\ImportedEntity:
     importedAt:
       type: datetime
       column: imported_at
+      nullable: true
     externalId:
       type: integer
       column: external_id
@@ -34,6 +35,14 @@ AppBundle\Entity\ImportedEntity:
       nullable: true
       options:
         default: false
+    acceptedAt:
+      type: datetime
+      column: accepted_at
+      nullable: true
+    deletedAt:
+      type: datetime
+      column: deleted_at
+      nullable: true
   manyToOne:
     importSource:
       targetEntity: ImportSource

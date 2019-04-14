@@ -11,10 +11,12 @@ AppBundle\Entity\UnitTenant:
   fields:
     type:
       type: smallint
+      nullable: true
     ownershipShare:
       type: string
       length: 255
       column: ownership_share
+      nullable: true
     status:
       type: smallint
     deletedAt:
@@ -31,7 +33,7 @@ AppBundle\Entity\UnitTenant:
     units:
       targetEntity: Unit
       mappedBy: unitTenant
-  oneToOne:
+  manyToOne:
     tenant:
       targetEntity: Tenant
       inversedBy: unitTenant

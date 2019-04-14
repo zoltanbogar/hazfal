@@ -138,4 +138,62 @@ class ImportedEntity
     {
         return $this->importSource;
     }
+    /**
+     * @var \DateTime|null
+     */
+    private $acceptedAt;
+
+
+    /**
+     * Set acceptedAt.
+     *
+     * @param \DateTime|null $acceptedAt
+     *
+     * @return ImportedEntity
+     */
+    public function setAcceptedAt($acceptedAt = null)
+    {
+        $this->acceptedAt = $acceptedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get acceptedAt.
+     *
+     * @return \DateTime|null
+     */
+    public function getAcceptedAt()
+    {
+        return $this->acceptedAt;
+    }
+    /**
+     * @var \DateTime|null
+     */
+    private $deletedAt;
+
+
+    /**
+     * Set deletedAt.
+     *
+     * @param \DateTime|null $deletedAt
+     *
+     * @return ImportedEntity
+     */
+    public function setDeletedAt($deletedAt = null)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt.
+     *
+     * @return \DateTime|null
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
 }
