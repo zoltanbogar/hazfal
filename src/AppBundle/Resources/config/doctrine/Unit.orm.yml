@@ -34,6 +34,10 @@ AppBundle\Entity\Unit:
     updatedAt:
       type: datetime
       column: updated_at
+    deletedAt:
+      type: datetime
+      nullable: true
+      column: deleted_at
   oneToMany:
     payments:
       targetEntity: Payment

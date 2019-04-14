@@ -837,4 +837,33 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->phoneConformationCode;
     }
+    /**
+     * @var string
+     */
+    private $profileImage;
+
+
+    /**
+     * Set profileImage.
+     *
+     * @param string $profileImage
+     *
+     * @return User
+     */
+    public function setProfileImage($profileImage)
+    {
+        $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    /**
+     * Get profileImage.
+     *
+     * @return string
+     */
+    public function getProfileImage()
+    {
+        return $this->profileImage;
+    }
 }

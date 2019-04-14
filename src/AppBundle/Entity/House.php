@@ -2,11 +2,18 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+
 /**
  * House
  */
 class House
 {
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
+
     /**
      * @var int
      */
@@ -71,11 +78,6 @@ class House
      * @var int
      */
     private $status;
-
-    /**
-     * @var \DateTime|null
-     */
-    private $deletedAt;
 
     /**
      * @var \DateTime
@@ -411,30 +413,6 @@ class House
     }
 
     /**
-     * Set deletedAt.
-     *
-     * @param \DateTime|null $deletedAt
-     *
-     * @return House
-     */
-    public function setDeletedAt($deletedAt = null)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt.
-     *
-     * @return \DateTime|null
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set createdAt.
      *
      * @param \DateTime $createdAt
@@ -589,6 +567,7 @@ class House
     {
         return $this->houseUsers;
     }
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -630,6 +609,7 @@ class House
     {
         return $this->posts;
     }
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */

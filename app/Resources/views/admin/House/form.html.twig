@@ -23,11 +23,13 @@
                         <div class="bgc-white p-20 bd">
                             <h6 class="c-grey-900">Általános</h6>
                             <div class="mT-30">
-                                <div class="form-group">
-                                    <label for="inputId">Id</label>
-                                    <input type="text" class="form-control" name="inputId" id="inputId"
-                                           aria-describedby="inputId" value="{{ objHouse.id }}" disabled>
-                                </div>
+                                {% if isNew == FALSE %}
+                                    <div class="form-group">
+                                        <label for="inputId">Id</label>
+                                        <input type="text" class="form-control" name="inputId" id="inputId"
+                                               aria-describedby="inputId" value="{{ objHouse.id }}" disabled>
+                                    </div>
+                                {% endif %}
                                 <div class="form-group">
                                     <label for="inputStatus">Státusz</label>
                                     <input type="text" class="form-control" id="inputStatus" name="inputStatus"

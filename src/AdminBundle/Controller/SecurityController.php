@@ -92,16 +92,4 @@ class SecurityController extends Controller
 
         return $this->redirectToRoute('admin_post_loginn');
     }
-
-    public function loginAdminasdasdsaAction()
-    {
-        var_dump("foo");
-        die("asdasdsa");
-    }
-
-    public function loginassdasdasAction(Request $request)
-    {
-        var_dump($request);
-        die("asdasdsa");
-    }
 }

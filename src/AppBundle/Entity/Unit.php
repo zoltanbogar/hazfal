@@ -472,4 +472,33 @@ class Unit
     {
         return $this->orders;
     }
+    /**
+     * @var \DateTime|null
+     */
+    private $deletedAt;
+
+
+    /**
+     * Set deletedAt.
+     *
+     * @param \DateTime|null $deletedAt
+     *
+     * @return Unit
+     */
+    public function setDeletedAt($deletedAt = null)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt.
+     *
+     * @return \DateTime|null
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
 }

@@ -60,7 +60,6 @@ class SocialEntityController extends Controller
 
     public function getPostsByHouseIdAction(Request $request)
     {
-        error_log(1);
         if (!$request->get("house_id")) {
             return $this->container->get('response_handler')->errorHandler("no_house_id_provided", "Invalid parameters", 422);
         }
@@ -68,7 +67,6 @@ class SocialEntityController extends Controller
         $numHouseID = $request->get("house_id");
         $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
 
-        error_log(2);
         if (!$objHouse) {
             return $this->container->get('response_handler')->errorHandler("house_not_exists", "Not found", 404);
         }
@@ -76,12 +74,10 @@ class SocialEntityController extends Controller
         $criteria->orderBy(['id' => 'DESC']);
         $objPost = $objHouse->getPosts()->matching($criteria);
 
-        error_log(3);
         if (!$objPost) {
             return $this->container->get('response_handler')->errorHandler("post_not_exists", "Not found", 404);
         }
 
-        error_log(4);
         return $this->container->get('response_handler')->successHandler($objPost, $request->query->all());
     }
 
@@ -114,11 +110,11 @@ class SocialEntityController extends Controller
         }
 
         $type = $request->get('type');
-        
+
         if ($type !== "post") {
             return $this->container->get('response_handler')->errorHandler("no_valid_type_provided", "Invalid parameters", 422);
         }
-        
+
         if (!$request->get('subject') || !$request->get('content') || !$request->get('house_id')) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
