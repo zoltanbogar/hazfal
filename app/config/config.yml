@@ -61,6 +61,10 @@ doctrine:
     auto_generate_proxy_classes: '%kernel.debug%'
     naming_strategy: doctrine.orm.naming_strategy.underscore
     auto_mapping: true
+    filters:
+      deleted:
+        class: 'AppBundle\Repository\Filters\DeletedFilter'
+        enabled: true
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -105,3 +109,5 @@ nelmio_cors:
       allow_headers: ['*']
       allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
       max_age: 3600
+tla_spark_post:
+  api_key: 76ed2dc43d3b6e7d18d250a8baed5153f2e9a969

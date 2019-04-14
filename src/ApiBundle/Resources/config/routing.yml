@@ -143,3 +143,8 @@ api_save_phone_number:
   path: /phone/save
   defaults: { _controller: ApiBundle:Default:putSavePhoneNumber }
   methods: PUT
+
+api_get_confirm_registration:
+  path: confirm-registration/{hash}
+  defaults: { _controller: ApiBundle:Security:getConfirmRegistration }
+  methods: GET

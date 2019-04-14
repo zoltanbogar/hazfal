@@ -87,21 +87,9 @@ class SecurityController extends Controller
 
     public function logoutAdminAction(Request $request)
     {
-        $this->get('security.token_storage')->setToken(null);
+        $this->get('security.token_storage')->setToken(NULL);
         $request->getSession()->invalidate();
 
         return $this->redirectToRoute('admin_post_loginn');
-    }
-
-    public function loginAdminasdasdsaAction()
-    {
-        var_dump("foo");
-        die("asdasdsa");
-    }
-
-    public function loginassdasdasAction(Request $request)
-    {
-        var_dump($request);
-        die("asdasdsa");
     }
 }

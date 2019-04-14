@@ -94,6 +94,9 @@ AppBundle\Entity\User:
     orders:
       targetEntity: Order
       mappedBy: user
+    registrations:
+      targetEntity: Registration
+      mappedBy: user
   oneToOne:
     houseUser:
       targetEntity: HouseUser

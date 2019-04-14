@@ -837,6 +837,7 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->phoneConformationCode;
     }
+
     /**
      * @var string
      */
@@ -865,5 +866,52 @@ class User extends BaseUser// implements UserInterface
     public function getProfileImage()
     {
         return $this->profileImage;
+    }
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $registrations;
+
+
+    /**
+     * Add registration.
+     *
+     * @param \AppBundle\Entity\Registration $registration
+     *
+     * @return User
+     */
+    public function addRegistration(\AppBundle\Entity\Registration $registration)
+    {
+        $this->registrations[] = $registration;
+
+        return $this;
+    }
+
+    /**
+     * Remove registration.
+     *
+     * @param \AppBundle\Entity\Registration $registration
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeRegistration(\AppBundle\Entity\Registration $registration)
+    {
+        return $this->registrations->removeElement($registration);
+    }
+
+    /**
+     * Get registrations.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRegistrations()
+    {
+        return $this->registrations;
+    }
+
+    public function getFullName()
+    {
+        return $this->getFirstName() . " " . $this->getLastName();
     }
 }

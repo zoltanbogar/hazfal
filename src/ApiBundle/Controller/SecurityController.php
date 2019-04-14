@@ -5,6 +5,7 @@ namespace ApiBundle\Controller;
 use ApiBundle\Service\ResponseHandler;
 
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\Registration;
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,32 +63,32 @@ class SecurityController extends Controller
         // Fire the login event manually
         $event = new InteractiveLoginEvent($request, $token);
         $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
-        
+
         $userData = [];
         $userData['id'] = $objUser->getId();
         $userData['accessToken'] = $objUser->getApiKey();
-        $userData['name'] = $objUser->getLastName()." ".$objUser->getFirstName();
-        $userData['profileUrl'] = "/assets/images/profile.jpg" ;
+        $userData['name'] = $objUser->getLastName() . " " . $objUser->getFirstName();
+        $userData['profileUrl'] = "/assets/images/profile.jpg";
         $userData['houses'] = [];
         $units = [];
 
         $houseUser = $objUser->getHouseUser();
-        if($houseUser) {
+        if ($houseUser) {
             $house = $houseUser->getHouse();
             $tenant = $houseUser->getUnitTenant();
             foreach ($tenant->getUnits() as $unit) {
                 $units[] = [
                     'id' => $unit->getId(),
-                    'address' => $unit->getBuilding().". ".$unit->getFloor()." em. ".$unit->getDoor()." ajtó",
-                    'type' => $unit->getType()
+                    'address' => $unit->getBuilding() . ". " . $unit->getFloor() . " em. " . $unit->getDoor() . " ajtó",
+                    'type' => $unit->getType(),
                 ];
             }
             $userData['houses'][] = [
                 'id' => $house->getId(),
-                'address' => $house->getPostalCode(). " ".$house->getCity().", ".$house->getStreet()." ".$house->getBuilding(),
-                'units' => $units
+                'address' => $house->getPostalCode() . " " . $house->getCity() . ", " . $house->getStreet() . " " . $house->getBuilding(),
+                'units' => $units,
             ];
-            
+
         }
 
         return $this->container->get('response_handler')->successHandler($userData, $request->query->all());
@@ -151,13 +152,18 @@ class SecurityController extends Controller
         $user->setEmail($request->get("email"));
         $user->setPlainPassword($request->get("password"));
         $user->setPassword($request->get("password"));
-        $user->setEnabled(TRUE);
+        //$user->setEnabled(TRUE);
+        $user->setEnabled(FALSE);
+
+        //TODO send confirmation email
 
         $userManager->updateUser($user);
 
         $objHouseUser->setUser($user);
 
         $entityManager->flush();
+
+        $this->sendConfirmationEmailToUser($user, $request);
 
         $identiconDir = 'images/identicon';
         $identiconFile = $user->getId() . '.png';
@@ -166,7 +172,6 @@ class SecurityController extends Controller
         }
 
         $tile = new Tile();
-        $minHashLenght = 0;
 
         do {
             $numTiles = rand(3, 8);
@@ -201,5 +206,97 @@ class SecurityController extends Controller
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler($user, $request->query->all());
+    }
+
+    public function getConfirmRegistrationAction($hash, Request $request)
+    {
+        $objRegistration = $this->getDoctrine()->getRepository(Registration::class)->findRegistrationByHash($hash);
+        if ($objRegistration) {
+            $objUser = $objRegistration->getUser();
+            if ($objUser) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $userManager = $this->get('fos_user.user_manager');
+
+                $objUser->setEnabled(TRUE);
+                $userManager->updateUser($objUser);
+
+                $objRegistration->setStatus(0);
+                $objRegistration->setUpdatedAt(new \DateTime('now'));
+
+                $entityManager->persist($objRegistration);
+                $entityManager->flush();
+
+                return new Response('Sikeres aktiválás!', 200);
+            }
+        }
+
+        return new Response('A link nem található, vagy lejárt!', 404);
+    }
+
+    private function sendConfirmationEmailToUser($objUser, $request)
+    {
+        $hash = $this->saveRegistration($objUser);
+        $sparky = $this->container->get('tla_spark_post.api_client');
+
+        $promise = $sparky->transmissions->post(
+            [
+
+                'content' => [
+                    'from' => [
+                        'name' => 'Hazfal Info',
+                        'email' => 'info@hazfal.hu',
+                    ],
+                    'subject' => 'Házfal regisztráció megerősítés',
+                    'html' => '<html><body><p>Kedves {{name}},</p><p>regisztrációjának befejezéséhez kattintson az alábbi linkre: {{link}}</p></body></html>',
+                    'text' => 'Kedves {{name}}, regisztrációjának befejezéséhez kattintson az alábbi linkre: {{link}}',
+
+                ],
+                'substitution_data' => [
+                    'name' => $objUser->getFullName(),
+                    'link' => $request->getSchemeAndHttpHost() . $this->generateUrl('api_get_confirm_registration', ['hash' => $hash]),
+                ],
+                'recipients' => [
+                    [
+                        'address' => [
+                            'name' => $objUser->getFullName(),
+                            'email' => $objUser->getEmail(),
+                        ],
+                    ],
+                ],
+                'cc' => [
+                    [
+                        'address' => [
+                            'name' => 'Zoltan Bogar',
+                            'email' => 'zoltan.r.bogar@gmail.com',
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $promise = $sparky->transmissions->get();
+
+        try {
+            $promise->wait();
+        } catch (\Throwable $t) {
+            echo $t->getCode() . "\n";
+            echo $t->getMessage() . "\n";
+        }
+    }
+
+    private function saveRegistration($objUser)
+    {
+        $hash = substr(base64_encode(sha1(mt_rand())), 0, 64);
+        $entityManager = $this->getDoctrine()->getManager();
+        $objRegistration = new Registration();
+        $objRegistration->setHash($hash);
+        $objRegistration->setStatus(1);
+        $objRegistration->setCreatedAt(new \DateTime('now'));
+        $objRegistration->setUpdatedAt(new \DateTime('now'));
+        $objRegistration->setUser($objUser);
+        $entityManager->persist($objRegistration);
+        $entityManager->flush();
+
+        return $hash;
     }
 }
