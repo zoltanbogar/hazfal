@@ -91,24 +91,30 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        $('.readButton').on("click", function (e) {
-            e.preventDefault();
+        const initConfirmationClickEventHandler = () => {
+            $('.deleteButton').off('click').on("click", function (e) {
+                e.preventDefault();
 
-            var choice = confirm('Biztosan importálni akarod?');
+                var choice = confirm('Biztosan törölni akarod?');
 
-            if (choice) {
-                window.location.href = $(this).attr('href');
-            }
-        });
+                if (choice) {
+                    window.location.href = $(this).attr('href');
+                }
+            });
 
-        $('.deleteButton').on("click", function (e) {
-            e.preventDefault();
+            $('.readButton').off('click').on("click", function (e) {
+                e.preventDefault();
 
-            var choice = confirm('Biztosan törölni akarod?');
+                var choice = confirm('Biztosan importálni akarod?');
 
-            if (choice) {
-                window.location.href = $(this).attr('href');
-            }
-        });
+                if (choice) {
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        };
+
+        $('.paginate_button').on('click', () => initConfirmationClickEventHandler());
+
+        initConfirmationClickEventHandler();
     </script>
 {% endblock %}

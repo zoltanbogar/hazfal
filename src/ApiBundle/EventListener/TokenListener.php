@@ -34,6 +34,10 @@ class TokenListener
             return;
         } else if ($controller[0] instanceof ExceptionController || $controller[0] instanceof ProfilerController) {
             return;
+        } else {
+            file_put_contents('eventlog.txt', print_r($event, TRUE), FILE_APPEND | LOCK_EX);
+
+            return;
         }
 
         $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');
