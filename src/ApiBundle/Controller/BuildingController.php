@@ -10,6 +10,9 @@ use AppBundle\Entity\Document;
 use AppBundle\Entity\DocumentType;
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\ImportedHouse;
+use AppBundle\Entity\ImportedUnit;
+use AppBundle\Entity\ImportSource;
 use AppBundle\Entity\Malfunction;
 use AppBundle\Entity\Manager;
 use AppBundle\Entity\Order;
@@ -115,6 +118,7 @@ class BuildingController extends Controller
                 'lot_number' => 'required|numeric',
                 'gps_latitude' => 'required|numeric',
                 'gps_longitude' => 'required|numeric',
+                'id' => 'required|numeric',
             ],
             $request
         );
@@ -123,14 +127,20 @@ class BuildingController extends Controller
             return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
         }
 
-        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
-        if (!$validator) {
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
             return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
         }
-        //TODO validálni a duplikáció elkerülésének érdekében
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedHouse::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
-        $objHouse = new House();
+
+        $objHouse = new ImportedHouse();
         $objHouse->setName($request->get('name'));
         $objHouse->setCountryCode($request->get('country_code') ?? 'HU');
         $objHouse->setRegion($request->get('region'));
@@ -142,15 +152,16 @@ class BuildingController extends Controller
         $objHouse->setLotNumber($request->get('lot_number'));
         $objHouse->setGpsLatitude($request->get('gps_latitude'));
         $objHouse->setGpsLongitude($request->get('gps_longitude'));
-        $objHouse->setStatus(1);
-        $objHouse->setCreatedAt(new \DateTime('now'));
-        $objHouse->setUpdatedAt(new \DateTime('now'));
+        $objHouse->setImportedAt(new \DateTime('now'));
+        $objHouse->setExternalId($request->get('id'));
+        $objHouse->setIsAccepted(0);
+        $objHouse->setImportSource($objImportSource);
 
         $entityManager->persist($objHouse);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
-            "House with id: ".$objHouse->getId()." and name: ".$objHouse->getName()." has been created!",
+            "House with id: " . $objHouse->getId() . " and name: " . $objHouse->getName() . " has been imported!",
             $request->query->all()
         );
     }
@@ -166,6 +177,7 @@ class BuildingController extends Controller
                 'type' => 'required|numeric',
                 'balance' => 'required|numeric',
                 'house_share' => 'required|numeric',
+                'id' => 'required|numeric',
             ],
             $request
         );
@@ -174,20 +186,19 @@ class BuildingController extends Controller
             return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
         }
 
-        $validator = $this->container->get('validation_handler')->importSourceValidationHandler($request);
-        if (!$validator) {
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
             return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
         }
-        //TODO validálni a duplikáció elkerülésének érdekében
-        /*if (!$request->get('house_id') || !is_numeric($request->get('house_id'))) {
-            return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+
+        $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedUnit::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if ($isAlreadyAdded) {
+            return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
         }
-        if (!$request->get('unit_tenant_id') || !is_numeric($request->get('unit_tenant_id'))) {
-            return $this->container->get('response_handler')->errorHandler("invalid_unit_floor_area", "Invalid parameters", 422);
-        }*/
 
         $entityManager = $this->getDoctrine()->getManager();
-        $objUnit = new Unit();
+        /*$objUnit = new Unit();
         if ($request->get('house_id')) {
             $numHouseID = $request->get("house_id");
             $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
@@ -214,11 +225,25 @@ class BuildingController extends Controller
         $objUnit->setCreatedAt(new \DateTime('now'));
         $objUnit->setUpdatedAt(new \DateTime('now'));
 
+        $entityManager->persist($objUnit);*/
+        $objUnit = new ImportedUnit();
+        $objUnit->setBuilding($request->get('building'));
+        $objUnit->setFloor($request->get('floor'));
+        $objUnit->setDoor($request->get('door'));
+        $objUnit->setFloorArea($request->get('floor_area'));
+        $objUnit->setUnitType($request->get('type'));
+        $objUnit->setBalance($request->get('balance'));
+        $objUnit->setHouseShare($request->get('house_share'));
+        $objUnit->setImportedAt(new \DateTime('now'));
+        $objUnit->setExternalId($request->get('id'));
+        $objUnit->setIsAccepted(0);
+        $objUnit->setImportSource($objImportSource);
+
         $entityManager->persist($objUnit);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
-            "Unit with id: ".$objUnit->getId()." has been created!",
+            "Unit with id: " . $objUnit->getId() . " has been imported!",
             $request->query->all()
         );
     }

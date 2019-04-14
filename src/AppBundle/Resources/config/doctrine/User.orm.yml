@@ -9,10 +9,6 @@ AppBundle\Entity\User:
       generator:
         strategy: AUTO
   fields:
-    #lastLogin:
-    #  type: datetime
-    #  nullable: true
-    #  column: last_login
     registrationDate:
       type: datetime
       column: registration_date
@@ -82,10 +78,6 @@ AppBundle\Entity\User:
       type: string
       nullable: true
       column: profile_image
-    #username:
-    #  type: string
-    #  length: 255
-    #  column: username
   oneToMany:
     documents:
       targetEntity: Document

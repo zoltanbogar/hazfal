@@ -78,7 +78,7 @@ class ValidationHandler
             //TODO logoljuk valahova
         }
 
-        return TRUE;
+        return $objImportSource;
     }
 
     private function getError($strParameter, $numCode)

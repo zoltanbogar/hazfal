@@ -145,6 +145,92 @@ admin_post_user_edit:
   methods: POST
 #-----------------------------------------------------------------
 
+#Import
+admin_get_import_house_users:
+  path: /admin/import/house-users
+  defaults: { _controller: AdminBundle:Import:getHouseUsers }
+  methods: GET
+admin_get_import_users:
+  path: /admin/import/users
+  defaults: { _controller: AdminBundle:Import:getUsers }
+  methods: GET
+admin_get_import_houses:
+  path: /admin/import/houses
+  defaults: { _controller: AdminBundle:Import:getHouses }
+  methods: GET
+admin_get_import_units:
+  path: /admin/import/units
+  defaults: { _controller: AdminBundle:Import:getUnits }
+  methods: GET
+admin_get_import_payments:
+  path: /admin/import/payments
+  defaults: { _controller: AdminBundle:Import:getPayments }
+  methods: GET
+admin_get_import_bills:
+  path: /admin/import/bills
+  defaults: { _controller: AdminBundle:Import:getBills }
+  methods: GET
+admin_get_import_documents:
+  path: /admin/import/documents
+  defaults: { _controller: AdminBundle:Import:getDocuments }
+  methods: GET
+admin_get_import_house_user_import:
+  path: /admin/import/house-users/{importedHouseUserId}/import
+  defaults: { _controller: AdminBundle:Import:getHouseUserImport }
+  methods: GET
+admin_get_import_house_user_delete:
+  path: /admin/import/house-users/{importedHouseUserId}/delete
+  defaults: { _controller: AdminBundle:Import:getHouseUserDelete }
+  methods: GET
+admin_get_import_user_import:
+  path: /admin/import/users/{importedUserId}/import
+  defaults: { _controller: AdminBundle:Import:getUserImport }
+  methods: GET
+admin_get_import_user_delete:
+  path: /admin/import/users/{importedUserId}/delete
+  defaults: { _controller: AdminBundle:Import:getUserDelete }
+  methods: GET
+admin_get_import_house_import:
+  path: /admin/import/houses/{importedHouseId}/import
+  defaults: { _controller: AdminBundle:Import:getHouseImport }
+  methods: GET
+admin_get_import_house_delete:
+  path: /admin/import/houses/{importedHouseId}/delete
+  defaults: { _controller: AdminBundle:Import:getHouseDelete }
+  methods: GET
+admin_get_import_unit_import:
+  path: /admin/import/units/{importedUnitId}/import
+  defaults: { _controller: AdminBundle:Import:getUnitImport }
+  methods: GET
+admin_get_import_unit_delete:
+  path: /admin/import/units/{importedUnitId}/delete
+  defaults: { _controller: AdminBundle:Import:getUnitDelete }
+  methods: GET
+admin_get_import_payment_import:
+  path: /admin/import/payments/{importedPaymentId}/import
+  defaults: { _controller: AdminBundle:Import:getPaymentImport }
+  methods: GET
+admin_get_import_payment_delete:
+  path: /admin/import/payments/{importedPaymentId}/delete
+  defaults: { _controller: AdminBundle:Import:getPaymentDelete }
+  methods: GET
+admin_get_import_bill_import:
+  path: /admin/import/bills/{importedBillId}/import
+  defaults: { _controller: AdminBundle:Import:getBillImport }
+  methods: GET
+admin_get_import_bill_delete:
+  path: /admin/import/bills/{importedBillId}/delete
+  defaults: { _controller: AdminBundle:Import:getBillDelete }
+  methods: GET
+admin_get_import_document_import:
+  path: /admin/import/documents/{importedDocumentId}/import
+  defaults: { _controller: AdminBundle:Import:getDocumentImport }
+  methods: GET
+admin_get_import_document_delete:
+  path: /admin/import/documents/{importedDocumentId}/delete
+  defaults: { _controller: AdminBundle:Import:getDocumentDelete }
+  methods: GET
+#-----------------------------------------------------------------
 admin_get_navigate:
   path: /admin/{pageName}
   defaults: { _controller: AdminBundle:Dashboard:navigate }

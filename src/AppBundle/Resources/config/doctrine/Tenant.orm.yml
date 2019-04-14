@@ -8,7 +8,7 @@ AppBundle\Entity\Tenant:
       length: 255
       nullable: true
       column: local_contact_number
-  oneToOne:
+  oneToMany:
     unitTenant:
       targetEntity: UnitTenant
       mappedBy: tenant

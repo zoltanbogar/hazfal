@@ -95,6 +95,10 @@ api_post_import_unit:
   path: /import/unit
   defaults: { _controller: ApiBundle:Building:postImportUnit }
   methods: POST
+api_post_import_user:
+  path: /import/user
+  defaults: { _controller: ApiBundle:User:postImportUser }
+  methods: POST
 api_post_import_house_user:
   path: /import/house-user
   defaults: { _controller: ApiBundle:User:postImportHouseUser }
@@ -110,6 +114,10 @@ api_post_import_document:
 api_post_import_bill:
   path: /import/bill
   defaults: { _controller: ApiBundle:Finance:postImportBill }
+  methods: POST
+api_post_import_payment:
+  path: /import/payment
+  defaults: { _controller: ApiBundle:Finance:postImportPayment }
   methods: POST
 api_get_export_payments:
   path: /export/payments

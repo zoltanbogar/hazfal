@@ -473,6 +473,23 @@ class Unit
         return $this->orders;
     }
     /**
+<<<<<<< HEAD
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $importedBills;
+
+
+    /**
+     * Add importedBill.
+     *
+     * @param \AppBundle\Entity\ImportedBill $importedBill
+     *
+     * @return Unit
+     */
+    public function addImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
+    {
+        $this->importedBills[] = $importedBill;
+=======
      * @var \DateTime|null
      */
     private $deletedAt;
@@ -488,11 +505,33 @@ class Unit
     public function setDeletedAt($deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
+>>>>>>> develop
 
         return $this;
     }
 
     /**
+<<<<<<< HEAD
+     * Remove importedBill.
+     *
+     * @param \AppBundle\Entity\ImportedBill $importedBill
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
+    {
+        return $this->importedBills->removeElement($importedBill);
+    }
+
+    /**
+     * Get importedBills.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImportedBills()
+    {
+        return $this->importedBills;
+=======
      * Get deletedAt.
      *
      * @return \DateTime|null
@@ -500,5 +539,6 @@ class Unit
     public function getDeletedAt()
     {
         return $this->deletedAt;
+>>>>>>> develop
     }
 }

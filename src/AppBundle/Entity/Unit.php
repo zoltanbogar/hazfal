@@ -333,7 +333,7 @@ class Unit
      *
      * @return Unit
      */
-    public function setHouse(\AppBundle\Entity\House $house = null)
+    public function setHouse(\AppBundle\Entity\House $house = NULL)
     {
         $this->house = $house;
 
@@ -357,7 +357,7 @@ class Unit
      *
      * @return Unit
      */
-    public function setUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant = null)
+    public function setUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant = NULL)
     {
         $this->unitTenant = $unitTenant;
 
@@ -373,6 +373,7 @@ class Unit
     {
         return $this->unitTenant;
     }
+
     /**
      * @var \DateTime
      */
@@ -431,6 +432,7 @@ class Unit
     {
         return $this->updatedAt;
     }
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -472,6 +474,7 @@ class Unit
     {
         return $this->orders;
     }
+
     /**
      * @var \DateTime|null
      */
@@ -485,7 +488,7 @@ class Unit
      *
      * @return Unit
      */
-    public function setDeletedAt($deletedAt = null)
+    public function setDeletedAt($deletedAt = NULL)
     {
         $this->deletedAt = $deletedAt;
 

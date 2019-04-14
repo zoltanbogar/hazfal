@@ -1,13 +1,13 @@
 AppBundle\Entity\Manager:
-    type: entity
-    table: manager
-    repositoryClass: AppBundle\Repository\ManagerRepository
-    fields:
-        website:
-            type: string
-            length: 255
-        logoImage:
-            type: string
-            length: 255
-            column: logo_image
-    lifecycleCallbacks: {  }
+  type: entity
+  table: manager
+  repositoryClass: AppBundle\Repository\ManagerRepository
+  fields:
+    website:
+      type: string
+      length: 255
+    logoImage:
+      type: string
+      length: 255
+      column: logo_image
+  lifecycleCallbacks: {  }
