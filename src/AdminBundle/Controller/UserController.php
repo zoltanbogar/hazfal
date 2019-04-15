@@ -21,8 +21,10 @@ class UserController extends Controller
             ->findAll();
 
         foreach ($objUsers as $user) {
-            if($user->getPermission()->getSlug() != 'sales') {
-                $users[] = $user;
+            foreach ($user->getPermissions() as $permission) {
+                if ($permission->getSlug() != 'sales') {
+                    $users[] = $user;
+                }
             }
         }
 

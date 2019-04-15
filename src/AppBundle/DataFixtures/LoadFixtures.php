@@ -8,6 +8,7 @@ use AppBundle\Entity\ImportSource;
 use AppBundle\Entity\Manager;
 use AppBundle\Entity\Payment;
 use AppBundle\Entity\PaymentMethod;
+use AppBundle\Entity\Permission;
 use AppBundle\Entity\Tenant;
 use AppBundle\Entity\Unit;
 use AppBundle\Entity\UnitTenant;
@@ -183,6 +184,34 @@ class LoadFixtures extends Fixture
         $objUser->setRoles(['ROLE_USER']);
         $manager->persist($objUser);
 
+        $manager->flush();
+
+        $permission = new Permission();
+        $permission->setName('SuperAdmin');
+        $permission->setSlug('super_admin');
+        $permission->setCreatedAt(new \DateTime('now'));
+
+        $manager->persist($permission);
+        $manager->flush();
+
+        $objUser->addPermission($permission);
+        $manager->persist($objUser);
+        $manager->flush();
+
+        $permission = new Permission();
+        $permission->setName('Sales');
+        $permission->setSlug('sales');
+        $permission->setCreatedAt(new \DateTime('now'));
+
+        $manager->persist($permission);
+        $manager->flush();
+
+        $permission = new Permission();
+        $permission->setName('Finance');
+        $permission->setSlug('finance');
+        $permission->setCreatedAt(new \DateTime('now'));
+
+        $manager->persist($permission);
         $manager->flush();
 
         $objPayment = new Payment();

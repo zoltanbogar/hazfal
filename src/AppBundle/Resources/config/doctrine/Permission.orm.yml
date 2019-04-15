@@ -26,8 +26,8 @@ AppBundle\Entity\Permission:
             type: datetime
             column: deleted_at
             nullable: true
-    oneToOne:
-        user:
-            targetEntity: User
-            mappedBy: permission
+    manyToMany:
+        users:
+            targetEntity: AppBundle\Entity\User
+            mappedBy: permissions
     lifecycleCallbacks: {  }

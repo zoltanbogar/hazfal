@@ -46,20 +46,18 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="inputPermissionId">Jogosultság</label>
-                                    <select name="inputPermissionId" id="inputPermissionId" class="form-control" {{ isEditable ?: 'disabled' }} {{ objectType == 'sales' ? 'disabled' : '' }}>
-                                        <option>Kérlek válassz...</option>
-                                        {% if objectType == 'sales' %}
-                                            {% for permission in objPermissions %}
-                                                {% if permission.slug == 'sales' %}
-                                                    <option value="{{ permission.id }}" selected>{{ permission.name }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% else %}
-                                            {% for permission in objPermissions %}
-                                                <option value="{{ permission.id }}" {{ objUser.id is not null and objUser.permission.id == permission.id ? 'selected' : '' }}>{{ permission.name }}</option>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </select>
+                                    <br>
+                                    {% for permission in objPermissions %}
+                                        {% for userPermissions in objUser.permissions %}
+                                            {% set checked = '' %}
+                                            {% if userPermissions.id == permission.id %}
+                                                {% set checked = 'checked' %}
+                                            {% endif %}
+                                            <input type="checkbox" id="inputPermissionId-{{ loop.index }}" name="inputPermissionId[]" {{ checked }}>
+                                            <label for="inputPermissionId-{{ loop.index }}">{{ permission.name }}</label>
+                                            <br>
+                                        {% endfor %}
+                                    {% endfor %}
                                 </div>
                                 <div class="form-group">
                                     <label for="inputIsActive">Státusz</label>

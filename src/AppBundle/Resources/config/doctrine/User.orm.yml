@@ -101,4 +101,16 @@ AppBundle\Entity\User:
         houseUser:
             targetEntity: HouseUser
             mappedBy: user
+    manyToMany:
+        permissions:
+            targetEntity: AppBundle\Entity\Permission
+            inversedBy: users
+            joinTable:
+                name: users_permissions
+                joinColumns:
+                    user_id:
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    permission_id:
+                        referencedColumnName: id
     lifecycleCallbacks: {  }

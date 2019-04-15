@@ -941,4 +941,45 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->permission;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $permissions;
+
+
+    /**
+     * Add permission.
+     *
+     * @param \AppBundle\Entity\Permission $permission
+     *
+     * @return User
+     */
+    public function addPermission(\AppBundle\Entity\Permission $permission)
+    {
+        $this->permissions[] = $permission;
+
+        return $this;
+    }
+
+    /**
+     * Remove permission.
+     *
+     * @param \AppBundle\Entity\Permission $permission
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removePermission(\AppBundle\Entity\Permission $permission)
+    {
+        return $this->permissions->removeElement($permission);
+    }
+
+    /**
+     * Get permissions.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
 }
