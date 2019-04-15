@@ -2,23 +2,120 @@
 # https://symfony.com/doc/current/security.html
 security:
 
-    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
-    providers:
-        in_memory:
-            memory: ~
+  encoders:
+    FOS\UserBundle\Model\UserInterface: sha512
+    #CashbackCloud\CommonBundle\Entity\Translator: plaintext
 
-    firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+  # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+  providers:
+    fos_userbundle:
+      id: fos_user.user_provider.username
+    #api_key_user_provider:
+    #  id: AppBundle\Security\ApiKeyUserProvider
+    doctrine:
+      entity:
+        class: AppBundle:User
+        property: apiKey
 
-        main:
-            anonymous: ~
-            # activate different ways to authenticate
+    in_memory:
+      memory:
+        users:
+          admin:
+            password: kitten
+            roles: 'ROLE_ADMIN'
 
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+  role_hierarchy:
+    ROLE_ADMIN: ROLE_USER
 
-            # https://symfony.com/doc/current/security/form_login_setup.html
-            #form_login: ~
+  firewalls:
+    # disables authentication for assets and the profiler, adapt it according to your needs
+    #login:
+    #  pattern:  ^/admin/login
+    #  security: false
+    #pattern:  ^/api/login
+    #stateless: true
+    #anonymous: true
+    #json_login:
+    #  check_path:               /api/login_check
+    #  success_handler:          lexik_jwt_authentication.handler.authentication_success
+    #  failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+
+    api:
+      pattern:   ^/api
+      stateless: true
+      guard:
+        authenticators:
+          - lexik_jwt_authentication.jwt_token_authenticator
+
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      pattern: ^/admin
+      security: true
+      anonymous: true
+      logout: true
+      #anonymous: ~
+      form_login:
+        provider: fos_userbundle
+        login_path: admin_post_loginn
+        check_path: admin_post_loginn
+        default_target_path: /admin
+        always_use_default_target_path: true
+        #failure_path: login_failure_route_name
+        #csrf_token_generator: security.csrf.token_manager
+
+
+
+        #form_login:
+        #  provider:     fos_userbundle
+        #  login_path:   fos_user_security_login
+        #  use_forward:  false
+        #  check_path:   fos_user_security_check
+        #  failure_path: null
+        #logout:
+        #  path:         fos_user_security_logout
+        #  target:       /
+        #anonymous:        true
+
+
+
+
+
+
+
+      #form_login:
+      #  login_path:             fos_user_security_login
+      #  check_path:             /login_check
+      #  provider:               fos_userbundle
+      #  csrf_token_generator: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
+
+      #simple_preauth:
+      #  authenticator: AppBundle\Security\ApiKeyAuthenticator
+      #provider: api_key_user_provider
+
+      #guard:
+      #  authenticators:
+      #    - AppBundle\Security\TokenAuthenticator
+
+      #anonymous: ~
+
+      #json_login:
+      #  check_path: /login
+      # activate different ways to authenticate
+
+      # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+      #http_basic: ~
+
+      # https://symfony.com/doc/current/security/form_login_setup.html
+      #form_login: ~
+  #access_control:
+  #  - { path: ^/units, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
+  access_control:
+    #- { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/registration, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/admin, roles: ROLE_USER }
+    - { path: ^/, roles: ROLE_USER }
+    - { path: ^/*, roles: ROLE_USER  }

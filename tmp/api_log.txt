@@ -1,0 +1,314 @@
+2019-03-12 18:42:40, /units/1, 404, Symfony\Component\HttpFoundation\Request Object
+(
+    [attributes] => Symfony\Component\HttpFoundation\ParameterBag Object
+        (
+            [parameters:protected] => Array
+                (
+                    [_controller] => ApiBundle\Controller\DefaultController::getUnitsByHouseAction
+                    [house_id] => 1
+                    [_route] => api_get_units
+                    [_route_params] => Array
+                        (
+                            [house_id] => 1
+                        )
+
+                    [_firewall_context] => security.firewall.map.context.main
+                )
+
+        )
+
+    [request] => Symfony\Component\HttpFoundation\ParameterBag Object
+        (
+            [parameters:protected] => Array
+                (
+                )
+
+        )
+
+    [query] => Symfony\Component\HttpFoundation\ParameterBag Object
+        (
+            [parameters:protected] => Array
+                (
+                )
+
+        )
+
+    [server] => Symfony\Component\HttpFoundation\ServerBag Object
+        (
+            [parameters:protected] => Array
+                (
+                    [DOCUMENT_ROOT] => E:\Dev\hazfal_backend\web
+                    [REMOTE_ADDR] => 127.0.0.1
+                    [REMOTE_PORT] => 63196
+                    [SERVER_SOFTWARE] => PHP 7.2.3RC1 Development Server
+                    [SERVER_PROTOCOL] => HTTP/1.1
+                    [SERVER_NAME] => 127.0.0.1
+                    [SERVER_PORT] => 8000
+                    [REQUEST_URI] => /units/1
+                    [REQUEST_METHOD] => GET
+                    [SCRIPT_NAME] => \app_dev.php
+                    [SCRIPT_FILENAME] => E:\Dev\hazfal_backend\web\app_dev.php
+                    [PHP_SELF] => \app_dev.php
+                    [HTTP_CACHE_CONTROL] => no-cache
+                    [HTTP_POSTMAN_TOKEN] => 63f9ea9d-366c-44d3-842a-7f70bf4541ef
+                    [HTTP_USER_AGENT] => PostmanRuntime/7.6.1
+                    [HTTP_ACCEPT] => */*
+                    [HTTP_HOST] => api.hazfal.test:8000
+                    [HTTP_ACCEPT_ENCODING] => gzip, deflate
+                    [HTTP_CONNECTION] => keep-alive
+                    [REQUEST_TIME_FLOAT] => 1552416160.2968
+                    [REQUEST_TIME] => 1552416160
+                    [ACLOCAL_PATH] => /mingw64/share/aclocal:/usr/share/aclocal
+                    [ALLUSERSPROFILE] => C:\ProgramData
+                    [APPDATA] => C:\Users\Zoli\AppData\Roaming
+                    [COMMONPROGRAMFILES] => C:\Program Files\Common Files
+                    [CommonProgramFiles(x86)] => C:\Program Files (x86)\Common Files
+                    [CommonProgramW6432] => C:\Program Files\Common Files
+                    [COMPOSE_CONVERT_WINDOWS_PATHS] => true
+                    [COMPUTERNAME] => ZOLI-PC
+                    [COMSPEC] => C:\Windows\system32\cmd.exe
+                    [DISPLAY] => needs-to-be-defined
+                    [DOCKER_CERT_PATH] => C:\Users\Zoli\.docker\machine\machines\default
+                    [DOCKER_HOST] => tcp://192.168.99.100:2376
+                    [DOCKER_MACHINE_NAME] => default
+                    [DOCKER_TLS_VERIFY] => 1
+                    [DOCKER_TOOLBOX_INSTALL_PATH] => C:\Program Files\Docker Toolbox
+                    [EXEPATH] => C:\Program Files\Git
+                    [FP_NO_HOST_CHECK] => NO
+                    [HOME] => C:\Users\Zoli
+                    [HOMEDRIVE] => C:
+                    [HOMEPATH] => \Users\Zoli
+                    [HOSTNAME] => Zoli-PC
+                    [INFOPATH] => /usr/local/info:/usr/share/info:/usr/info:/share/info:
+                    [KRDIR] => C:/Users/Zoli/abevjava/eKuldes
+                    [LANG] => hu_HU.UTF-8
+                    [LOCALAPPDATA] => C:\Users\Zoli\AppData\Local
+                    [LOGONSERVER] => \\ZOLI-PC
+                    [MANPATH] => /mingw64/share/man:/usr/local/man:/usr/share/man:/usr/man:/share/man:
+                    [MSYSTEM] => MINGW64
+                    [NO_PROXY] => 192.168.99.100
+                    [NUMBER_OF_PROCESSORS] => 8
+                    [OLDPWD] => /e
+                    [OS] => Windows_NT
+                    [PATH] => C:\Users\Zoli\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Zoli\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client;C:\Program Files\Intel\iCLS Client;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\WiFi\bin;C:\Program Files\Common Files\Intel\WirelessCommon;C:\Program Files\Lenovo\Bluetooth Software;C:\Program Files\Lenovo\Bluetooth Software\syswow64;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Git\cmd;C:\ProgramData\ComposerSetup\bin;C:\PHP7;C:\Program Files\PuTTY;C:\Program Files\MySQL\MySQL Utilities 1.6;C:\nodejs;C:\HashiCorp\Vagrant\bin;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files (x86)\Yarn\bin;C:\Program Files\MySQL\MySQL Server 5.7\bin;C:\Program Files\Intel\WiFi\bin;C:\Program Files\Common Files\Intel\WirelessCommon;C:\MinGW\bin;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\Zoli\AppData\Roaming\Composer\vendor\bin;C:\PHP7;C:\Users\Zoli\AppData\Roaming\npm;C:\Users\Zoli\AppData\Local\Yarn\bin;C:\Program Files\Docker Toolbox;C:\Program Files (x86)\Bdrive\NetDrive3\x64;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+                    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+                    [PKG_CONFIG_PATH] => /mingw64/lib/pkgconfig:/mingw64/share/pkgconfig
+                    [PLINK_PROTOCOL] => ssh
+                    [PRINTER] => Canon LBP6020
+                    [PROCESSOR_ARCHITECTURE] => AMD64
+                    [PROCESSOR_IDENTIFIER] => Intel64 Family 6 Model 60 Stepping 3, GenuineIntel
+                    [PROCESSOR_LEVEL] => 6
+                    [PROCESSOR_REVISION] => 3c03
+                    [ProgramData] => C:\ProgramData
+                    [PROGRAMFILES] => C:\Program Files
+                    [ProgramFiles(x86)] => C:\Program Files (x86)
+                    [ProgramW6432] => C:\Program Files
+                    [PROMPT] => $P$G
+                    [PS1] => \[\033]0;$TITLEPREFIX:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[32m\]\u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$ 
+                    [PSModulePath] => C:\Windows\system32\WindowsPowerShell\v1.0\Modules\
+                    [PUBLIC] => C:\Users\Public
+                    [PWD] => /e/Dev/hazfal_backend
+                    [SESSIONNAME] => Console
+                    [SHELL] => C:\Program Files\Git\usr\bin\bash
+                    [SHLVL] => 1
+                    [SSH_ASKPASS] => /mingw64/libexec/git-core/git-gui--askpass
+                    [SYSTEMDRIVE] => C:
+                    [SYSTEMROOT] => C:\Windows
+                    [TEMP] => C:\Users\Zoli\AppData\Local\Temp
+                    [TERM] => xterm
+                    [TMP] => C:\Users\Zoli\AppData\Local\Temp
+                    [TMPDIR] => C:\Users\Zoli\AppData\Local\Temp
+                    [USERDOMAIN] => Zoli-PC
+                    [USERNAME] => Zoli
+                    [USERPROFILE] => C:\Users\Zoli
+                    [VBOX_MSI_INSTALL_PATH] => C:\Program Files\Oracle\VirtualBox\
+                    [WINDIR] => C:\Windows
+                    [windows_tracing_flags] => 3
+                    [windows_tracing_logfile] => C:\BVTBin\Tests\installpackage\csilogfile.log
+                    [_] => /usr/bin/winpty
+                    [APP_FRONT_CONTROLLER] => app_dev.php
+                )
+
+        )
+
+    [files] => Symfony\Component\HttpFoundation\FileBag Object
+        (
+            [parameters:protected] => Array
+                (
+                )
+
+        )
+
+    [cookies] => Symfony\Component\HttpFoundation\ParameterBag Object
+        (
+            [parameters:protected] => Array
+                (
+                )
+
+        )
+
+    [headers] => Symfony\Component\HttpFoundation\HeaderBag Object
+        (
+            [headers:protected] => Array
+                (
+                    [cache-control] => Array
+                        (
+                            [0] => no-cache
+                        )
+
+                    [postman-token] => Array
+                        (
+                            [0] => 63f9ea9d-366c-44d3-842a-7f70bf4541ef
+                        )
+
+                    [user-agent] => Array
+                        (
+                            [0] => PostmanRuntime/7.6.1
+                        )
+
+                    [accept] => Array
+                        (
+                            [0] => */*
+                        )
+
+                    [host] => Array
+                        (
+                            [0] => api.hazfal.test:8000
+                        )
+
+                    [accept-encoding] => Array
+                        (
+                            [0] => gzip, deflate
+                        )
+
+                    [connection] => Array
+                        (
+                            [0] => keep-alive
+                        )
+
+                    [x-php-ob-level] => Array
+                        (
+                            [0] => 1
+                        )
+
+                )
+
+            [cacheControl:protected] => Array
+                (
+                    [no-cache] => 1
+                )
+
+        )
+
+    [content:protected] => 
+    [languages:protected] => 
+    [charsets:protected] => 
+    [encodings:protected] => 
+    [acceptableContentTypes:protected] => 
+    [pathInfo:protected] => /units/1
+    [requestUri:protected] => /units/1
+    [baseUrl:protected] => 
+    [basePath:protected] => 
+    [method:protected] => GET
+    [format:protected] => 
+    [session:protected] => Symfony\Component\HttpFoundation\Session\Session Object
+        (
+            [storage:protected] => Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage Object
+                (
+                    [bags:protected] => Array
+                        (
+                            [attributes] => Symfony\Component\HttpFoundation\Session\SessionBagProxy Object
+                                (
+                                    [bag:Symfony\Component\HttpFoundation\Session\SessionBagProxy:private] => Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag Object
+                                        (
+                                            [name:Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag:private] => attributes
+                                            [storageKey:Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag:private] => _sf2_attributes
+                                            [attributes:protected] => Array
+                                                (
+                                                )
+
+                                        )
+
+                                    [data:Symfony\Component\HttpFoundation\Session\SessionBagProxy:private] => Array
+                                        (
+                                        )
+
+                                    [usageIndex:Symfony\Component\HttpFoundation\Session\SessionBagProxy:private] => 0
+                                )
+
+                            [flashes] => Symfony\Component\HttpFoundation\Session\SessionBagProxy Object
+                                (
+                                    [bag:Symfony\Component\HttpFoundation\Session\SessionBagProxy:private] => Symfony\Component\HttpFoundation\Session\Flash\FlashBag Object
+                                        (
+                                            [name:Symfony\Component\HttpFoundation\Session\Flash\FlashBag:private] => flashes
+                                            [flashes:Symfony\Component\HttpFoundation\Session\Flash\FlashBag:private] => Array
+                                                (
+                                                )
+
+                                            [storageKey:Symfony\Component\HttpFoundation\Session\Flash\FlashBag:private] => _symfony_flashes
+                                        )
+
+                                    [data:Symfony\Component\HttpFoundation\Session\SessionBagProxy:private] => Array
+                                        (
+                                        )
+
+                                    [usageIndex:Symfony\Component\HttpFoundation\Session\SessionBagProxy:private] => 0
+                                )
+
+                        )
+
+                    [started:protected] => 
+                    [closed:protected] => 
+                    [saveHandler:protected] => Symfony\Component\HttpFoundation\Session\Storage\Proxy\SessionHandlerProxy Object
+                        (
+                            [handler:protected] => Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandler Object
+                                (
+                                    [handler:Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandler:private] => Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler Object
+                                        (
+                                        )
+
+                                    [doDestroy:Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandler:private] => 
+                                    [sessionName:Symfony\Component\HttpFoundation\Session\Storage\Handler\AbstractSessionHandler:private] => 
+                                    [prefetchId:Symfony\Component\HttpFoundation\Session\Storage\Handler\AbstractSessionHandler:private] => 
+                                    [prefetchData:Symfony\Component\HttpFoundation\Session\Storage\Handler\AbstractSessionHandler:private] => 
+                                    [newSessionId:Symfony\Component\HttpFoundation\Session\Storage\Handler\AbstractSessionHandler:private] => 
+                                    [igbinaryEmptyData:Symfony\Component\HttpFoundation\Session\Storage\Handler\AbstractSessionHandler:private] => 
+                                )
+
+                            [wrapper:protected] => 
+                            [saveHandlerName:protected] => user
+                        )
+
+                    [metadataBag:protected] => Symfony\Component\HttpFoundation\Session\Storage\MetadataBag Object
+                        (
+                            [name:Symfony\Component\HttpFoundation\Session\Storage\MetadataBag:private] => __metadata
+                            [storageKey:Symfony\Component\HttpFoundation\Session\Storage\MetadataBag:private] => _sf2_meta
+                            [meta:protected] => Array
+                                (
+                                    [c] => 0
+                                    [u] => 0
+                                    [l] => 0
+                                )
+
+                            [lastUsed:Symfony\Component\HttpFoundation\Session\Storage\MetadataBag:private] => 
+                            [updateThreshold:Symfony\Component\HttpFoundation\Session\Storage\MetadataBag:private] => 0
+                        )
+
+                )
+
+            [flashName:Symfony\Component\HttpFoundation\Session\Session:private] => flashes
+            [attributeName:Symfony\Component\HttpFoundation\Session\Session:private] => attributes
+            [data:Symfony\Component\HttpFoundation\Session\Session:private] => Array
+                (
+                )
+
+            [usageIndex:Symfony\Component\HttpFoundation\Session\Session:private] => 0
+        )
+
+    [locale:protected] => 
+    [defaultLocale:protected] => en
+    [isHostValid:Symfony\Component\HttpFoundation\Request:private] => 1
+    [isForwardedValid:Symfony\Component\HttpFoundation\Request:private] => 1
+)
+
+

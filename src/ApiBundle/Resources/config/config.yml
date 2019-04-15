@@ -1,0 +1,5 @@
+jms_serializer:
+  metadata:
+    debug: "%kernel.debug%"
+    directories:
+      - {name: Api,    path: "@ApiBundle/Resources/config/serializer",     namespace_prefix: 'ApiBundle' }

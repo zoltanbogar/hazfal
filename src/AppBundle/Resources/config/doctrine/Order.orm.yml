@@ -1,0 +1,49 @@
+AppBundle\Entity\Order:
+    type: entity
+    table: orders
+    repositoryClass: AppBundle\Repository\OrderRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        orderId:
+            type: string
+            length: 255
+        isPaid:
+            type: smallint
+        cart:
+            type: text
+        createdAt:
+            type: datetime
+            column: created_at
+        updatedAt:
+            type: datetime
+            column: updated_at
+            nullable: true
+        checkHash:
+            type: string
+            length: 255
+            nullable: true
+    manyToOne:
+        user:
+            targetEntity: User
+            inversedBy: orders
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+        unit:
+            targetEntity: Unit
+            inversedBy: orders
+            joinColumn:
+                name: unit_id
+                referencedColumnName: id
+        paymentMethod:
+            targetEntity: PaymentMethod
+            inversedBy: orders
+            joinColumn:
+                name: payment_method_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

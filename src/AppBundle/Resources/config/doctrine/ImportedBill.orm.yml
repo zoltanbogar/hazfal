@@ -1,0 +1,37 @@
+AppBundle\Entity\ImportedBill:
+  type: entity
+  table: imported_bills
+  repositoryClass: AppBundle\Repository\ImportedBillRepository
+  fields:
+    billCategory:
+      type: string
+      length: 255
+      nullable: true
+    amount:
+      type: integer
+      nullable: true
+    details:
+      type: text
+      nullable: true
+    issuedAt:
+      type: datetime
+      column: issued_at
+      nullable: true
+    dueDate:
+      type: datetime
+      column: due_date
+      nullable: true
+    receiptNumber:
+      type: string
+      length: 255
+      column: receipt_number
+      nullable: true
+    issuedForMonth:
+      type: string
+      length: 255
+      column: issued_for_month
+      nullable: true
+    unitId:
+      type: integer
+      column: unit_id
+  lifecycleCallbacks: {  }

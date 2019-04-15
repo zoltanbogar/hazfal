@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  php:
+    build: ./build/php
+    expose:
+      - '9000'
+    depends_on:
+      - db
+    volumes:
+      - ../:/var/www/html/hazfal-back-end:cached
+      - ./logs:/var/log
+  web:
+    build: ./build/nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - php
+      - db
+    volumes:
+      - ../:/var/www/html/hazfal-back-end
+      - ./logs:/var/log/nginx
+  composer:
+    build: ./build/composer
+  db:
+    image: mariadb
+    environment:
+      - MYSQL_DATABASE=hazfal
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=root
+    ports:
+      - "33060:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql

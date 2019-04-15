@@ -1,0 +1,40 @@
+AppBundle\Entity\Document:
+    type: entity
+    table: document
+    repositoryClass: AppBundle\Repository\DocumentRepository
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        documentTypeId:
+            type: integer
+            column: document_type_id
+        houseId:
+            type: integer
+            column: house_id
+        name:
+            type: string
+            length: 255
+        filename:
+            type: string
+            length: 255
+    manyToOne:
+        user:
+            targetEntity: User
+            inversedBy: documents
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+        documentType:
+            targetEntity: DocumentType
+            inversedBy: documents
+            joinColumn:
+                name: document_type_id
+                referencedColumnName: id
+        house:
+            targetEntity: House
+            inversedBy: documents
+            joinColumn:
+                name: house_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

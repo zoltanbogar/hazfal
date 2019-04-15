@@ -1,0 +1,41 @@
+AppBundle\Entity\ImportedUnit:
+  type: entity
+  table: imported_units
+  repositoryClass: AppBundle\Repository\ImportedUnitRepository
+  fields:
+    building:
+      type: string
+      length: 255
+      nullable: true
+    floor:
+      type: smallint
+      nullable: true
+    door:
+      type: smallint
+      nullable: true
+    floorArea:
+      type: float
+      column: floor_area
+      nullable: true
+    unit_type:
+      type: smallint
+      nullable: true
+    balance:
+      type: integer
+      nullable: true
+    houseShare:
+      type: string
+      length: 255
+      column: house_share
+      nullable: true
+    house_id:
+      type: integer
+      nullable: true
+    tenant_id:
+      type: integer
+      nullable: true
+  oneToOne:
+    unit:
+      targetEntity: Unit
+      mappedBy: importedUnit
+  lifecycleCallbacks: {  }

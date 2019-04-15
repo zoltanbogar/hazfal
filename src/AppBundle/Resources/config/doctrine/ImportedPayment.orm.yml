@@ -1,0 +1,32 @@
+AppBundle\Entity\ImportedPayment:
+  type: entity
+  table: imported_payments
+  repositoryClass: AppBundle\Repository\ImportedPaymentRepository
+  fields:
+    unitId:
+      type: integer
+      column: unit_id
+    userId:
+      type: integer
+      column: user_id
+    houseUserId:
+      type: integer
+      column: house_user_id
+    paymentMethodId:
+      type: integer
+      column: payment_method_id
+      nullable: true
+    paymentDate:
+      type: datetime
+      column: payment_date
+    bookingDate:
+      type: datetime
+      column: booking_date
+    receiptNumber:
+      type: string
+      length: 255
+      column: receipt_number
+      nullable: true
+    amount:
+      type: integer
+  lifecycleCallbacks: {  }

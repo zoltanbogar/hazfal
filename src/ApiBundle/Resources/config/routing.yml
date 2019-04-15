@@ -1,0 +1,150 @@
+api_homepage:
+  path:     /
+  defaults: { _controller: ApiBundle:Default:index }
+logout:
+  path: /logout
+api_get_houses:
+  path: /houses
+  defaults: { _controller: ApiBundle:Building:getHouses }
+  methods: GET
+api_get_house:
+  path: /house/{id}
+  defaults: { _controller: ApiBundle:Building:getHouseById }
+  methods: GET
+api_get_units:
+  path: /units/{house_id}
+  defaults: { _controller: ApiBundle:Building:getUnitsByHouse }
+  methods: GET
+api_get_unit:
+  path: /unit/{unit_id}
+  defaults: { _controller: ApiBundle:Building:getUnitById }
+  methods: GET
+api_get_house_users_by_house:
+  path: /house/{house_id}/house-users
+  defaults: { _controller: ApiBundle:User:getHouseUsersByHouseId }
+  methods: GET
+api_get_house_users_by_unit:
+  path: /unit/{unit_id}/house-users
+  defaults: { _controller: ApiBundle:User:getHouseUsersByUnitId }
+  methods: GET
+api_get_user:
+  path: /user/{user_id}
+  defaults: { _controller: ApiBundle:User:getUserById , user_id: 0 }
+  methods: GET
+api_get_documents_by_house_id:
+  path: /documents/{house_id}
+  defaults: { _controller: ApiBundle:SocialEntity:getDocumentsByHouseId }
+  methods: GET
+api_get_house_user_by_id:
+  path: /house-user/{house_user_id}
+  defaults: { _controller: ApiBundle:User:getHouseUserById }
+  methods: GET
+api_get_posts_by_house:
+  path: /posts/{house_id}
+  defaults: { _controller: ApiBundle:SocialEntity:getPostsByHouseId }
+  methods: GET
+api_get_malfunctions_by_house:
+  path: /malfunctions/{house_id}
+  defaults: { _controller: ApiBundle:SocialEntity:getMalfunctionsByHouseId }
+  methods: GET
+api_get_bills_by_unit:
+  path: /bills/{unit_id}
+  defaults: { _controller: ApiBundle:Finance:getBillsByUnitId }
+  methods: GET
+api_post_post_to_house:
+  path: /post/post
+  defaults: { _controller: ApiBundle:SocialEntity:postPostToHouse }
+  methods: POST
+api_post_malfunction_to_house:
+  path: /malfunction/post
+  defaults: { _controller: ApiBundle:SocialEntity:postMalfunctionToHouse }
+  methods: POST
+api_post_comment_to_social_entity:
+  path: /comment/post
+  defaults: { _controller: ApiBundle:SocialEntity:postCommentToSocialEntity }
+  methods: POST
+api_get_comments_by_social_entity:
+  path: /comments/{social_entity_id}
+  defaults: { _controller: ApiBundle:SocialEntity:getCommentsBySocialEntityId }
+  methods: GET
+api_get_managers_by_house:
+  path: /managers/{house_id}
+  defaults: { _controller: ApiBundle:User:getManagersByHouseId }
+  methods: GET
+api_get_balance_by_house:
+  path: /balance/{house_id}
+  defaults: { _controller: ApiBundle:Finance:getBalanceByHouseId }
+  methods: GET
+api_get_detailed_balance_by_unit:
+  path: /balance/unit/{unit_id}
+  defaults: { _controller: ApiBundle:Finance:getDetailedBalanceByUnitId }
+  methods: GET
+api_get_register_user:
+  path: /registration
+  defaults: { _controller: ApiBundle:Security:getRegistrationByToken }
+  methods: POST
+api_get_payment_methods:
+  path: /payment-methods
+  defaults: { _controller: ApiBundle:Finance:getPaymentMethods }
+  methods: GET
+api_post_import_house:
+  path: /import/house
+  defaults: { _controller: ApiBundle:Building:postImportHouse }
+  methods: POST
+api_post_import_unit:
+  path: /import/unit
+  defaults: { _controller: ApiBundle:Building:postImportUnit }
+  methods: POST
+api_post_import_user:
+  path: /import/user
+  defaults: { _controller: ApiBundle:User:postImportUser }
+  methods: POST
+api_post_import_house_user:
+  path: /import/house-user
+  defaults: { _controller: ApiBundle:User:postImportHouseUser }
+  methods: POST
+api_post_import_manager:
+  path: /import/manager
+  defaults: { _controller: ApiBundle:User:postImportManager }
+  methods: POST
+api_post_import_document:
+  path: /import/document
+  defaults: { _controller: ApiBundle:SocialEntity:postImportDocument }
+  methods: POST
+api_post_import_bill:
+  path: /import/bill
+  defaults: { _controller: ApiBundle:Finance:postImportBill }
+  methods: POST
+api_post_import_payment:
+  path: /import/payment
+  defaults: { _controller: ApiBundle:Finance:postImportPayment }
+  methods: POST
+api_get_export_payments:
+  path: /export/payments
+  defaults: { _controller: ApiBundle:Finance:getExportPayments }
+  methods: GET
+
+api_payments_borgun_success:
+  path: /payments/borgun/success
+  defaults: { _controller: ApiBundle:Finance:successfulBorgunPayment }
+api_payments_borgun_init:
+  path: /payments/borgun/init-payment
+  defaults: { _controller: ApiBundle:Finance:initBorgunPayment }
+api_login:
+  path:     /login
+  defaults: { _controller: ApiBundle:Security:login }
+
+api_send_confirmation_sms:
+  path: /phone/send-sms
+  defaults: { _controller: ApiBundle:Default:postSendSMS }
+  methods: POST
+
+api_save_phone_number:
+  path: /phone/save
+  defaults: { _controller: ApiBundle:Default:putSavePhoneNumber }
+  methods: PUT
+
+api_get_confirm_registration:
+  path: confirm-registration/{hash}
+  defaults: { _controller: ApiBundle:Security:getConfirmRegistration }
+  methods: GET

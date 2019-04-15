@@ -1,0 +1,170 @@
+AppBundle\Entity\HouseUser:
+  type: entity
+  table: house_users
+  inheritanceType: JOINED
+  discriminatorColumn:
+    name: type
+    type: string
+  discriminatorMap:
+    house_user: AppBundle\Entity\HouseUser
+    tenant: AppBundle\Entity\Tenant
+    manager: AppBundle\Entity\Manager
+  repositoryClass: AppBundle\Repository\HouseUserRepository
+  id:
+    id:
+<<<<<<< HEAD
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    email:
+      type: string
+      length: 255
+    mailingAddress:
+      type: string
+      length: 255
+      column: mailing_address
+    phoneNumber:
+      type: string
+      length: 255
+      column: phone_number
+    firstName:
+      type: string
+      length: 255
+      column: first_name
+    lastName:
+      type: string
+      length: 255
+      column: last_name
+    companyName:
+      type: string
+      length: 255
+      column: company_name
+    companyAddress:
+      type: string
+      length: 255
+      column: company_address
+    companyTaxNumber:
+      type: string
+      length: 255
+      column: company_tax_number
+    registrationToken:
+      type: string
+      length: 255
+      column: registration_token
+      nullable: true
+    inviteSentAt:
+      type: datetime
+      column: invite_sent_at
+      nullable: true
+    deletedAt:
+      type: datetime
+      nullable: true
+      column: deleted_at
+    createdAt:
+      type: datetime
+      column: created_at
+    updatedAt:
+      type: datetime
+      column: updated_at
+  oneToMany:
+    payments:
+      targetEntity: Payment
+      mappedBy: houseUser
+    houses:
+      targetEntity: House
+      mappedBy: houseManager
+  manyToOne:
+    house:
+      targetEntity: House
+      inversedBy: houseUsers
+      joinColumn:
+        name: house_id
+        referencedColumnName: id
+  oneToOne:
+    user:
+      targetEntity: User
+      inversedBy: houseUser
+      joinColumn:
+        name: user_id
+        referencedColumnName: id
+  lifecycleCallbacks: {  }
+=======
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        email:
+            type: string
+            length: 255
+        mailingAddress:
+            type: string
+            length: 255
+            column: mailing_address
+        phoneNumber:
+            type: string
+            length: 255
+            column: phone_number
+        firstName:
+            type: string
+            length: 255
+            column: first_name
+        lastName:
+            type: string
+            length: 255
+            column: last_name
+        companyName:
+            type: string
+            length: 255
+            column: company_name
+        companyAddress:
+            type: string
+            length: 255
+            column: company_address
+        companyTaxNumber:
+            type: string
+            length: 255
+            column: company_tax_number
+        registrationToken:
+            type: string
+            length: 255
+            column: registration_token
+            nullable: true
+        inviteSentAt:
+            type: datetime
+            column: invite_sent_at
+            nullable: true
+        deletedAt:
+            type: datetime
+            nullable: true
+            column: deleted_at
+        createdAt:
+            type: datetime
+            column: created_at
+        updatedAt:
+            type: datetime
+            column: updated_at
+            nullable: true
+    oneToMany:
+        payments:
+            targetEntity: Payment
+            mappedBy: houseUser
+    manyToOne:
+        house:
+            targetEntity: House
+            inversedBy: houseUsers
+            joinColumn:
+                name: house_id
+                referencedColumnName: id
+    oneToOne:
+        user:
+            targetEntity: User
+            inversedBy: houseUser
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }
+>>>>>>> feature/SalesAndManagers

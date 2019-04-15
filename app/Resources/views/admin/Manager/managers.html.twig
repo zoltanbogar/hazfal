@@ -1,0 +1,97 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    Sikeres törlés!
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <h4 class="c-grey-900 mB-20">
+                                <a href="{{ path('admin_get_managers') }}">Menedzserek listája</a>
+                                <span class="pull-right">
+                                    <a href="{{ path('admin_get_manager_add') }}" class="btn btn-primary">
+                                    <i class="ti-plus mR-10"></i> Új menedzser hozzáadása</a>
+                                </span>
+                            </h4>
+                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
+                                   width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Név</th>
+                                    <th>Ház</th>
+                                    <th>Albetétek száma</th>
+                                    <th>Cégnév</th>
+                                    <th>Telefonszám</th>
+                                    <th>E-mail cím</th>
+                                    <th>Létrehozva</th>
+                                    <th>Módosítva</th>
+                                    <th>Műveletek</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in objManagers %}
+                                    <tr>
+                                        <td>{{ user.id|e }}</td>
+                                        <td>{{ user.firstName|e }} {{ user.lastName|e }}</td>
+                                        <td><a href="{{ path('admin_get_house_read', {'houseId' : user.house.id}) }}">{{ user.house.name|e }}</a></td>
+                                        <td>{{ user.house.units|length }}</td>
+                                        <td>{{ user.companyName|e }}</td>
+                                        <td>{{ user.phoneNumber|e }}</td>
+                                        <td>{{ user.email|e }}</td>
+                                        <td>{{ user.createdAt|date("Y. m. d.") }}</td>
+                                        <td>{{ user.updatedAt|date("Y. m. d.") }}</td>
+                                        <td>
+                                            <a class="readButton"
+                                               href="{{ path('admin_get_manager_read', {'managerId': user.id}) }}">
+                                                <i class="ti-search mR-10"></i>
+                                            </a>
+                                            <a class="editButton"
+                                               href="{{ path('admin_get_manager_edit', {'managerId': user.id}) }}">
+                                                <i class="ti-pencil mR-10"></i>
+                                            </a>
+                                            <a class="deleteButton"
+                                               href="{{ path('admin_get_manager_delete', {'managerId': user.id}) }}">
+                                                <i class="ti-trash mR-10"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.deleteButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan törölni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,21 @@
+AppBundle\Entity\Comment:
+    type: entity
+    table: comments
+    repositoryClass: AppBundle\Repository\CommentRepository
+    fields:
+        content:
+            type: text
+    manyToOne:
+        user:
+            targetEntity: User
+            inversedBy: comments
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+        socialEntity:
+            targetEntity: SocialEntity
+            inversedBy: comments
+            joinColumn:
+                name: social_entity_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

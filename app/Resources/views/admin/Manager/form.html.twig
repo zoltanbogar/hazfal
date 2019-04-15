@@ -1,0 +1,156 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.strParameter }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    Sikeres mentés!
+                </div>
+                <br/>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>
+                        {{ objManager.id is null ? 'Új menedzser hozzáadása' : '# '~objManager.id~' menedzser' }}
+                        <span class="pull-right">
+                        <a href="{{ path('admin_get_managers') }}" class="btn btn-secondary">
+                            <i class="ti-angle-left mR-10"></i> VISSZA</a>
+                        </span>
+                    </h2>
+                </div>
+            </div>
+            <form action="{{ isNew ? path('admin_post_manager_add') : path('admin_post_manager_edit', {'managerId': objManager.id}) }}" method="post">
+                <div class="row gap-20 masonry pos-r">
+                    <div class="masonry-sizer col-md-6"></div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Általános</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputId">Id</label>
+                                    <input type="text" class="form-control" name="inputId" id="inputId"
+                                           aria-describedby="inputId" value="{{ objManager.id }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEmail">Email cím</label>
+                                    <input type="text" class="form-control" id="inputEmail" name="inputEmail"
+                                           aria-describedby="inputEmail"
+                                           value="{{ objManager.email }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPhoneNumber">Telefonszám</label>
+                                    <input type="text" class="form-control" id="inputPhoneNumber" name="inputPhoneNumber"
+                                           aria-describedby="inputPhoneNumber"
+                                           value="{{ objManager.phoneNumber }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputIsActive">Státusz</label>
+                                    <input type="text" class="form-control" id="inputIsActive" name="inputIsActive"
+                                           aria-describedby="inputIsActive"
+                                           value="{{ objManager.deletedAt ? 'Nem aktív' : 'Aktív' }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputFirstName">Keresztnév</label>
+                                    <input type="text" class="form-control" id="inputFirstName" name="inputFirstName"
+                                           aria-describedby="inputFirstName"
+                                           value="{{ objManager.firstName }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputLastName">Vezetéknév</label>
+                                    <input type="text" class="form-control" id="inputLastName"
+                                           name="inputLastName"
+                                           value="{{ objManager.lastName }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputHouseId">Ház</label>
+                                    <select name="inputHouseId" id="inputHouseId" class="form-control" {{ isEditable ?: 'disabled' }}>
+                                        <option>Kérlek válassz...</option>
+                                        {% for house in objHouses %}
+                                            <option value="{{ house.id }}" {{ objManager.id is not null and objManager.house.id == house.id ? 'selected' : '' }}>{{ house.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Specifikus adatok</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputWebsite">Weboldal</label>
+                                    <input type="text" class="form-control" id="inputWebsite" name="inputWebsite"
+                                           aria-describedby="inputWebsite"
+                                           value="{{ objManager.id is null ? '' : objManager.website }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Cégadatok</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputCompanyName">Cégnév</label>
+                                    <input type="text" class="form-control" id="inputCompanyName" name="inputCompanyName"
+                                           aria-describedby="inputCompanyName"
+                                           value="{{ objManager.companyName }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputCompanyAddress">Cég címe</label>
+                                    <input type="text" class="form-control" id="inputCompanyAddress" name="inputCompanyAddress"
+                                           aria-describedby="inputCompanyAddress"
+                                           value="{{ objManager.companyAddress }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputCompanyTaxNumber">Cég adószáma</label>
+                                    <input type="text" class="form-control" id="inputCompanyTaxNumber" name="inputCompanyTaxNumber"
+                                           aria-describedby="inputCompanyTaxNumber"
+                                           value="{{ objManager.companyTaxNumber }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if isNew == FALSE %}
+                        <div class="masonry-item col-md-6">
+                            <div class="bgc-white p-20 bd">
+                                <h6 class="c-grey-900">Dátum</h6>
+                                <div class="mT-30">
+                                    <div class="form-group">
+                                        <label for="inputCreatedAt">Létrehozva</label>
+                                        <input type="text" class="form-control" id="inputCreatedAt"
+                                               aria-describedby="inputCreatedAt"
+                                               value="{{ objManager.createdAt|date("Y. m. d. H:i") }}" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputUpdatedAt">Módosítva</label>
+                                        <input type="text" class="form-control" id="inputUpdatedAt"
+                                               aria-describedby="inputUpdatedAt"
+                                               value="{{ objManager.updatedAt|date("Y. m. d. H:i") }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if isEditable == TRUE %}
+                        <div class="masonry-item col-md-6">
+                            <div class="bgc-white p-20 bd">
+                                <div class="mT-30 ">
+                                    <input type="submit"
+                                           class="btn btn-primary" value="{{ isNew ? 'Mentés' : 'Módosítás' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock body %}

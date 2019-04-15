@@ -1,0 +1,107 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4 class="c-grey-900 mB-20"><a href="{{ path('admin_get_units') }}">Albetétek
+                                        listája</a>
+                                </h4>
+                                <div style="align-self: center;">
+                                    <a href="{{ path('admin_get_unit_add') }}" class="btn btn-primary"><i
+                                                class="ti-plus mR-10"></i> Új albetét hozzáadása</a>
+                                </div>
+                            </div>
+                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
+                                   width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Ház név</th>
+                                    <th>Épület</th>
+                                    <th>Emelet</th>
+                                    <th>Ajtó</th>
+                                    <th>Terület</th>
+                                    <th>Típus</th>
+                                    <th>Egyenleg</th>
+                                    <th>Tulajdonrész</th>
+                                    <th>Lakó</th>
+                                    <th>Létrehozva</th>
+                                    <th>Módosítva</th>
+                                    <th>Import forrás</th>
+                                    <th>Műveletek</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for unit in objUnits %}
+                                    <tr>
+                                        <td>{{ unit.id|e }}</td>
+                                        <td>{{ unit.house.name|e }}</td>
+                                        <td>{{ unit.building|e }}</td>
+                                        <td>{{ unit.floor|e }}</td>
+                                        <td>{{ unit.door|e }}</td>
+                                        <td>{{ unit.floorArea|e }}</td>
+                                        <td>{{ unit.type|e }}</td>
+                                        <td>{{ unit.balance|e }}</td>
+                                        <td>{{ unit.houseShare|e }}</td>
+                                        <td>{{ (unit.unitTenant and unit.unitTenant.tenant) ? unit.unitTenant.tenant.firstName ~ " " ~ unit.unitTenant.tenant.lastName : '' }}</td>
+                                        <td>{{ unit.createdAt|date("Y. m. d. H:i") }}</td>
+                                        <td>{{ unit.updatedAt|date("Y. m. d. H:i") }}</td>
+                                        <td>{{ unit.isImported ? unit.importedUnit.importSource.name : '-' }}</td>
+                                        <td>
+                                            <a class="readButton"
+                                               href="{{ path('admin_get_unit_read', {'unitId': unit.id}) }}">
+                                                <i class="ti-search mR-10"></i>
+                                            </a>
+                                            <a class="editButton"
+                                               href="{{ path('admin_get_unit_edit', {'unitId': unit.id}) }}">
+                                                <i class="ti-pencil mR-10"></i>
+                                            </a>
+                                            <a class="deleteButton"
+                                               href="{{ path('admin_get_unit_delete', {'unitId': unit.id}) }}">
+                                                <i class="ti-trash mR-10"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const initConfirmationClickEventHandler = () => {
+            $('.deleteButton').off('click').on("click", function (e) {
+                e.preventDefault();
+
+                var choice = confirm('Biztosan törölni akarod?');
+
+                if (choice) {
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        };
+
+        $('.paginate_button').on('click', () => initConfirmationClickEventHandler());
+
+        initConfirmationClickEventHandler();
+    </script>
+{% endblock %}
