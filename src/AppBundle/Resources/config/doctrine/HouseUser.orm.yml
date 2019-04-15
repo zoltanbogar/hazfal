@@ -1,15 +1,15 @@
 AppBundle\Entity\HouseUser:
-  type: entity
-  table: house_users
-  inheritanceType: JOINED
-  discriminatorColumn:
-    name: type
-    type: string
-  discriminatorMap:
-    house_user: AppBundle\Entity\HouseUser
-    tenant: AppBundle\Entity\Tenant
-    manager: AppBundle\Entity\Manager
-  repositoryClass: AppBundle\Repository\HouseUserRepository
+    type: entity
+    table: house_users
+    repositoryClass: AppBundle\Repository\HouseUserRepository
+    inheritanceType: JOINED
+    discriminatorColumn:
+        name: type
+        type: string
+    discriminatorMap:
+        house_user: AppBundle\Entity\HouseUser
+        tenant: AppBundle\Entity\Tenant
+        manager: AppBundle\Entity\Manager
     id:
         type: integer
         id: true
