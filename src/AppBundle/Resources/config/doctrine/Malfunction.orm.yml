@@ -1,20 +1,20 @@
 AppBundle\Entity\Malfunction:
-  type: entity
-  table: malfunction
-  repositoryClass: AppBundle\Repository\MalfunctionRepository
-  fields:
-    subject:
-      type: string
-      length: 255
-    content:
-      type: text
-    status:
-      type: smallint
-  manyToOne:
-    house:
-      targetEntity: House
-      inversedBy: malfunctions
-      joinColumn:
-        name: house_id
-        referencedColumnName: id
-  lifecycleCallbacks: {  }
+    type: entity
+    table: malfunction
+    repositoryClass: AppBundle\Repository\MalfunctionRepository
+    fields:
+        subject:
+            type: string
+            length: 255
+        content:
+            type: text
+        status:
+            type: smallint
+    manyToOne:
+        house:
+            targetEntity: House
+            inversedBy: malfunctions
+            joinColumn:
+                name: house_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

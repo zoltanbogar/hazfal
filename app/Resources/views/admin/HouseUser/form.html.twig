@@ -66,21 +66,18 @@
                                     <label for="inputLastName">Vezetéknév</label>
                                     <input type="text" class="form-control" id="inputLastName"
                                            name="inputLastName"
-                                           placeholder="Pl.: HU"
                                            value="{{ objHouseUser.lastName }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputInviteSentAt">Meghívó kiküldés időpontja</label>
                                     <input type="text" class="form-control" id="inputInviteSentAt"
                                            name="inputInviteSentAt"
-                                           placeholder="Pl.: HU"
                                            value="{{ objHouseUser.inviteSentAt | date("Y. m. d. H:i") }}" disabled>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputHouse">Ház</label>
                                     <input type="text" class="form-control" id="inputHouse"
                                            name="inputHouse"
-                                           placeholder="Pl.: HU"
                                            value="{{ objHouseUser.house.name }}" disabled>
                                 </div>
                             </div>
@@ -92,16 +89,16 @@
                             <div class="mT-30">
                                 {% if objHouseUser.localContactNumber is defined %}
                                     <div class="form-group">
-                                        <label for="inputCompanyName">Helyi kapcsolattartó száma</label>
-                                        <input type="text" class="form-control" id="inputCompanyName" name="inputCompanyName"
-                                               aria-describedby="inputCompanyName"
+                                        <label for="inputLocalContactNumber">Helyi kapcsolattartó száma</label>
+                                        <input type="text" class="form-control" id="inputLocalContactNumber" name="inputLocalContactNumber"
+                                               aria-describedby="inputLocalContactNumber"
                                                value="{{ objHouseUser.localContactNumber }}" {{ isEditable ?: 'disabled' }}>
                                     </div>
                                 {% else %}
                                     <div class="form-group">
-                                        <label for="inputCompanyName">Weboldal</label>
-                                        <input type="text" class="form-control" id="inputCompanyName" name="inputCompanyName"
-                                               aria-describedby="inputCompanyName"
+                                        <label for="inputWebsite">Weboldal</label>
+                                        <input type="text" class="form-control" id="inputWebsite" name="inputWebsite"
+                                               aria-describedby="inputWebsite"
                                                value="{{ objHouseUser.website }}" {{ isEditable ?: 'disabled' }}>
                                     </div>
                                 {% endif %}

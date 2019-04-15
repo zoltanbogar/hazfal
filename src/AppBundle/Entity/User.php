@@ -867,6 +867,7 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->profileImage;
     }
+<<<<<<< HEAD
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -884,11 +885,30 @@ class User extends BaseUser// implements UserInterface
     public function addRegistration(\AppBundle\Entity\Registration $registration)
     {
         $this->registrations[] = $registration;
+=======
+    /**
+     * @var \AppBundle\Entity\Permission
+     */
+    private $permission;
+
+
+    /**
+     * Set permission.
+     *
+     * @param \AppBundle\Entity\Permission|null $permission
+     *
+     * @return User
+     */
+    public function setPermission(\AppBundle\Entity\Permission $permission = null)
+    {
+        $this->permission = $permission;
+>>>>>>> feature/SalesAndManagers
 
         return $this;
     }
 
     /**
+<<<<<<< HEAD
      * Remove registration.
      *
      * @param \AppBundle\Entity\Registration $registration
@@ -913,5 +933,14 @@ class User extends BaseUser// implements UserInterface
     public function getFullName()
     {
         return $this->getFirstName() . " " . $this->getLastName();
+=======
+     * Get permission.
+     *
+     * @return \AppBundle\Entity\Permission|null
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+>>>>>>> feature/SalesAndManagers
     }
 }

@@ -129,7 +129,8 @@ class HouseUserController extends Controller
         $success = TRUE;
 
         try {
-            $entityManager->remove($objHouseUser);
+            $objHouseUser->setDeletedAt(new \DateTime('now'));
+            $entityManager->persist($objHouseUser);
             $entityManager->flush();
         } catch (\Exception $e) {
             $error = [
