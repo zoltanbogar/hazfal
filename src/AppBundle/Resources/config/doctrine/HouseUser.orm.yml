@@ -11,10 +11,11 @@ AppBundle\Entity\HouseUser:
         tenant: AppBundle\Entity\Tenant
         manager: AppBundle\Entity\Manager
     id:
-        type: integer
-        id: true
-        generator:
-            strategy: AUTO
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
     fields:
         email:
             type: string

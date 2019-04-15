@@ -3,10 +3,11 @@ AppBundle\Entity\House:
     table: houses
     repositoryClass: AppBundle\Repository\HouseRepository
     id:
-        type: integer
-        id: true
-        generator:
-            strategy: AUTO
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
     fields:
         name:
             type: string

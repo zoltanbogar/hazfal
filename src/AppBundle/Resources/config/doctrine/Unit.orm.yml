@@ -3,10 +3,11 @@ AppBundle\Entity\Unit:
     table: unit
     repositoryClass: AppBundle\Repository\UnitRepository
     id:
-        type: integer
-        id: true
-        generator:
-            strategy: AUTO
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
     fields:
         building:
             type: string
