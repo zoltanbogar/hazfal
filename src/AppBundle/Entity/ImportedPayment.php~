@@ -297,4 +297,10 @@ class ImportedPayment extends ImportedEntity
     {
         return $this->userId;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

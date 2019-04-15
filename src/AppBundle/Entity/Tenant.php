@@ -92,4 +92,10 @@ class Tenant extends HouseUser
     {
         return $this->unitTenant->removeElement($unitTenant);
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

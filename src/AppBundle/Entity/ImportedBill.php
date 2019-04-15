@@ -268,4 +268,10 @@ class ImportedBill extends ImportedEntity
     {
         return $this->unitId;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

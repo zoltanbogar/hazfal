@@ -36,4 +36,10 @@ class Reaction extends SocialEntity
     {
         return $this->reactionType;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

@@ -3,15 +3,6 @@ AppBundle\Entity\Document:
     table: document
     repositoryClass: AppBundle\Repository\DocumentRepository
     fields:
-        userId:
-            type: integer
-            column: user_id
-        documentTypeId:
-            type: integer
-            column: document_type_id
-        houseId:
-            type: integer
-            column: house_id
         name:
             type: string
             length: 255

@@ -384,4 +384,10 @@ class ImportedUser extends ImportedEntity
     {
         return $this->joinToken;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

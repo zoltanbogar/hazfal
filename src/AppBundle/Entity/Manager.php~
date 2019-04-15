@@ -65,4 +65,10 @@ class Manager extends HouseUser
     {
         return $this->logoImage;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

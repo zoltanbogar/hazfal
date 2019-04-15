@@ -506,4 +506,10 @@ class ImportedHouseUser extends ImportedEntity
     private $deletedAt;
 
 
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

@@ -273,4 +273,33 @@ class UnitTenant
     {
         return $this->units;
     }
+    /**
+     * @var int|null
+     */
+    private $unitTenantType;
+
+
+    /**
+     * Set unitTenantType.
+     *
+     * @param int|null $unitTenantType
+     *
+     * @return UnitTenant
+     */
+    public function setUnitTenantType($unitTenantType = null)
+    {
+        $this->unitTenantType = $unitTenantType;
+
+        return $this;
+    }
+
+    /**
+     * Get unitTenantType.
+     *
+     * @return int|null
+     */
+    public function getUnitTenantType()
+    {
+        return $this->unitTenantType;
+    }
 }

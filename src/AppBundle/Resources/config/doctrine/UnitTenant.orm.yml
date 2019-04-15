@@ -3,57 +3,20 @@ AppBundle\Entity\UnitTenant:
     table: unit_tenant
     repositoryClass: AppBundle\Repository\UnitTenantRepository
     id:
-<<<<<<< HEAD
-      type: integer
-      id: true
-      generator:
-        strategy: AUTO
-  fields:
-    type:
-      type: smallint
-      nullable: true
-    ownershipShare:
-      type: string
-      length: 255
-      column: ownership_share
-      nullable: true
-    status:
-      type: smallint
-    deletedAt:
-      type: datetime
-      nullable: true
-      column: deleted_at
-    createdAt:
-      type: datetime
-      column: created_at
-    updatedAt:
-      type: datetime
-      column: updated_at
-  oneToMany:
-    units:
-      targetEntity: Unit
-      mappedBy: unitTenant
-  manyToOne:
-    tenant:
-      targetEntity: Tenant
-      inversedBy: unitTenant
-      joinColumn:
-        name: tenant_id
-        referencedColumnName: id
-  lifecycleCallbacks: {  }
-=======
         id:
             type: integer
             id: true
             generator:
                 strategy: AUTO
     fields:
-        type:
+        unitTenantType:
             type: smallint
+            nullable: true
         ownershipShare:
             type: string
             length: 255
             column: ownership_share
+            nullable: true
         status:
             type: smallint
         deletedAt:
@@ -66,12 +29,11 @@ AppBundle\Entity\UnitTenant:
         updatedAt:
             type: datetime
             column: updated_at
-            nullable: true
     oneToMany:
         units:
             targetEntity: Unit
             mappedBy: unitTenant
-    oneToOne:
+    manyToOne:
         tenant:
             targetEntity: Tenant
             inversedBy: unitTenant
@@ -79,4 +41,4 @@ AppBundle\Entity\UnitTenant:
                 name: tenant_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }
->>>>>>> feature/SalesAndManagers
+

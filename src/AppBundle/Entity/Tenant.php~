@@ -66,7 +66,6 @@ class Tenant extends HouseUser
         return $this->unitTenant;
     }
 
-<<<<<<< HEAD
 
     /**
      * Add unitTenant.
@@ -93,6 +92,10 @@ class Tenant extends HouseUser
     {
         return $this->unitTenant->removeElement($unitTenant);
     }
-=======
->>>>>>> feature/SalesAndManagers
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

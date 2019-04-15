@@ -1,53 +1,53 @@
 AppBundle\Entity\ImportedEntity:
-  type: entity
-  table: imported_entities
-  inheritanceType: JOINED
-  discriminatorColumn:
-    name: type
-    type: string
-  discriminatorMap:
-    imported_entity: AppBundle\Entity\ImportedEntity
-    imported_house_user: AppBundle\Entity\ImportedHouseUser
-    imported_user: AppBundle\Entity\ImportedUser
-    imported_unit: AppBundle\Entity\ImportedUnit
-    imported_house: AppBundle\Entity\ImportedHouse
-    imported_bill: AppBundle\Entity\ImportedBill
-    imported_payment: AppBundle\Entity\ImportedPayment
-    imported_document: AppBundle\Entity\ImportedDocument
-  repositoryClass: AppBundle\Repository\ImportedEntityRepository
-  id:
+    type: entity
+    table: imported_entities
+    inheritanceType: JOINED
+    discriminatorColumn:
+        name: type
+        type: string
+    discriminatorMap:
+        imported_entity: AppBundle\Entity\ImportedEntity
+        imported_house_user: AppBundle\Entity\ImportedHouseUser
+        imported_user: AppBundle\Entity\ImportedUser
+        imported_unit: AppBundle\Entity\ImportedUnit
+        imported_house: AppBundle\Entity\ImportedHouse
+        imported_bill: AppBundle\Entity\ImportedBill
+        imported_payment: AppBundle\Entity\ImportedPayment
+        imported_document: AppBundle\Entity\ImportedDocument
+    repositoryClass: AppBundle\Repository\ImportedEntityRepository
     id:
-      type: integer
-      id: true
-      generator:
-        strategy: AUTO
-  fields:
-    importedAt:
-      type: datetime
-      column: imported_at
-      nullable: true
-    externalId:
-      type: integer
-      column: external_id
-    isAccepted:
-      type: boolean
-      column: is_accepted
-      nullable: true
-      options:
-        default: false
-    acceptedAt:
-      type: datetime
-      column: accepted_at
-      nullable: true
-    deletedAt:
-      type: datetime
-      column: deleted_at
-      nullable: true
-  manyToOne:
-    importSource:
-      targetEntity: ImportSource
-      inversedBy: importedEntities
-      joinColumn:
-        name: import_source_id
-        referencedColumnName: id
-  lifecycleCallbacks: {  }
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        importedAt:
+            type: datetime
+            column: imported_at
+            nullable: true
+        externalId:
+            type: integer
+            column: external_id
+        isAccepted:
+            type: boolean
+            column: is_accepted
+            nullable: true
+            options:
+                default: false
+        acceptedAt:
+            type: datetime
+            column: accepted_at
+            nullable: true
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: true
+    manyToOne:
+        importSource:
+            targetEntity: ImportSource
+            inversedBy: importedEntities
+            joinColumn:
+                name: import_source_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

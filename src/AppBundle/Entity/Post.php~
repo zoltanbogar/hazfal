@@ -123,4 +123,10 @@ class Post extends SocialEntity
     {
         return $this->house;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

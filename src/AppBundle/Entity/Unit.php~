@@ -333,7 +333,7 @@ class Unit
      *
      * @return Unit
      */
-    public function setHouse(\AppBundle\Entity\House $house = null)
+    public function setHouse(\AppBundle\Entity\House $house = NULL)
     {
         $this->house = $house;
 
@@ -357,7 +357,7 @@ class Unit
      *
      * @return Unit
      */
-    public function setUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant = null)
+    public function setUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant = NULL)
     {
         $this->unitTenant = $unitTenant;
 
@@ -373,6 +373,7 @@ class Unit
     {
         return $this->unitTenant;
     }
+
     /**
      * @var \DateTime
      */
@@ -431,6 +432,7 @@ class Unit
     {
         return $this->updatedAt;
     }
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -472,24 +474,8 @@ class Unit
     {
         return $this->orders;
     }
-    /**
-<<<<<<< HEAD
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $importedBills;
-
 
     /**
-     * Add importedBill.
-     *
-     * @param \AppBundle\Entity\ImportedBill $importedBill
-     *
-     * @return Unit
-     */
-    public function addImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
-    {
-        $this->importedBills[] = $importedBill;
-=======
      * @var \DateTime|null
      */
     private $deletedAt;
@@ -502,36 +488,14 @@ class Unit
      *
      * @return Unit
      */
-    public function setDeletedAt($deletedAt = null)
+    public function setDeletedAt($deletedAt = NULL)
     {
         $this->deletedAt = $deletedAt;
->>>>>>> develop
 
         return $this;
     }
 
     /**
-<<<<<<< HEAD
-     * Remove importedBill.
-     *
-     * @param \AppBundle\Entity\ImportedBill $importedBill
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
-    {
-        return $this->importedBills->removeElement($importedBill);
-    }
-
-    /**
-     * Get importedBills.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getImportedBills()
-    {
-        return $this->importedBills;
-=======
      * Get deletedAt.
      *
      * @return \DateTime|null
@@ -539,6 +503,99 @@ class Unit
     public function getDeletedAt()
     {
         return $this->deletedAt;
->>>>>>> develop
+    }
+
+    /**
+     * @var bool|null
+     */
+    private $isImported;
+
+    /**
+     * @var int|null
+     */
+    private $importId;
+
+
+    /**
+     * Set isImported.
+     *
+     * @param bool|null $isImported
+     *
+     * @return Unit
+     */
+    public function setIsImported($isImported = null)
+    {
+        $this->isImported = $isImported;
+
+        return $this;
+    }
+
+    /**
+     * Get isImported.
+     *
+     * @return bool|null
+     */
+    public function getIsImported()
+    {
+        return $this->isImported;
+    }
+
+    /**
+     * @var \AppBundle\Entity\ImportedUnit
+     */
+    private $importedUnit;
+
+
+    /**
+     * Set importedUnit.
+     *
+     * @param \AppBundle\Entity\ImportedUnit|null $importedUnit
+     *
+     * @return Unit
+     */
+    public function setImportedUnit(\AppBundle\Entity\ImportedUnit $importedUnit = null)
+    {
+        $this->importedUnit = $importedUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get importedUnit.
+     *
+     * @return \AppBundle\Entity\ImportedUnit|null
+     */
+    public function getImportedUnit()
+    {
+        return $this->importedUnit;
+    }
+    /**
+     * @var int
+     */
+    private $unitType;
+
+
+    /**
+     * Set unitType.
+     *
+     * @param int $unitType
+     *
+     * @return Unit
+     */
+    public function setUnitType($unitType)
+    {
+        $this->unitType = $unitType;
+
+        return $this;
+    }
+
+    /**
+     * Get unitType.
+     *
+     * @return int
+     */
+    public function getUnitType()
+    {
+        return $this->unitType;
     }
 }

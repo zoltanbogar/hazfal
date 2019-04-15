@@ -152,4 +152,10 @@ class ImportedDocument extends ImportedEntity
     {
         return $this->filename;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

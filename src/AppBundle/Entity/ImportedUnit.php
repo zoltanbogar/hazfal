@@ -329,4 +329,10 @@ class ImportedUnit extends ImportedEntity
     {
         return $this->unit;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

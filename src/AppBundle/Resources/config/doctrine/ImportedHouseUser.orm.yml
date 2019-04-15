@@ -1,76 +1,76 @@
 AppBundle\Entity\ImportedHouseUser:
-  type: entity
-  table: imported_house_users
-  repositoryClass: AppBundle\Repository\ImportedHouseUserRepository
-  fields:
-    email:
-      type: string
-      length: 255
-      nullable: true
-    mailingAddress:
-      type: string
-      length: 255
-      column: mailing_address
-      nullable: true
-    phoneNumber:
-      type: string
-      length: 255
-      column: phone_number
-      nullable: true
-    firstName:
-      type: string
-      length: 255
-      column: first_name
-    lastName:
-      type: string
-      length: 255
-      column: last_name
-    companyName:
-      type: string
-      length: 255
-      column: company_name
-      nullable: true
-    companyAddress:
-      type: string
-      length: 255
-      column: company_address
-      nullable: true
-    companyTaxNumber:
-      type: string
-      length: 255
-      column: company_tax_number
-      nullable: true
-    registrationToken:
-      type: string
-      length: 255
-      column: registration_token
-      nullable: true
-    inviteSentAt:
-      type: datetime
-      column: invite_sent_at
-      nullable: true
-    userId:
-      type: integer
-      nullable: true
-      column: user_id
-    houseId:
-      type: integer
-      column: house_id
-    localContactNumber:
-      type: string
-      length: 255
-      nullable: true
-      column: local_contact_number
-    website:
-      type: string
-      length: 255
-      nullable: true
-    logoImage:
-      type: string
-      length: 255
-      column: logo_image
-      nullable: true
-    house_user_type:
-      type: string
-      length: 255
-  lifecycleCallbacks: {  }
+    type: entity
+    table: imported_house_users
+    repositoryClass: AppBundle\Repository\ImportedHouseUserRepository
+    fields:
+        email:
+            type: string
+            length: 255
+            nullable: true
+        mailingAddress:
+            type: string
+            length: 255
+            column: mailing_address
+            nullable: true
+        phoneNumber:
+            type: string
+            length: 255
+            column: phone_number
+            nullable: true
+        firstName:
+            type: string
+            length: 255
+            column: first_name
+        lastName:
+            type: string
+            length: 255
+            column: last_name
+        companyName:
+            type: string
+            length: 255
+            column: company_name
+            nullable: true
+        companyAddress:
+            type: string
+            length: 255
+            column: company_address
+            nullable: true
+        companyTaxNumber:
+            type: string
+            length: 255
+            column: company_tax_number
+            nullable: true
+        registrationToken:
+            type: string
+            length: 255
+            column: registration_token
+            nullable: true
+        inviteSentAt:
+            type: datetime
+            column: invite_sent_at
+            nullable: true
+        userId:
+            type: integer
+            nullable: true
+            column: user_id
+        houseId:
+            type: integer
+            column: house_id
+        localContactNumber:
+            type: string
+            length: 255
+            nullable: true
+            column: local_contact_number
+        website:
+            type: string
+            length: 255
+            nullable: true
+        logoImage:
+            type: string
+            length: 255
+            column: logo_image
+            nullable: true
+        house_user_type:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

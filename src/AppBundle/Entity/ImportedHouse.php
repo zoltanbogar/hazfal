@@ -355,4 +355,10 @@ class ImportedHouse extends ImportedEntity
     {
         return $this->house;
     }
+    /**
+     * @var int
+     */
+    private $id;
+
+
 }

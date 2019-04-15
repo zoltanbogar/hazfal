@@ -3,77 +3,6 @@ AppBundle\Entity\Unit:
     table: unit
     repositoryClass: AppBundle\Repository\UnitRepository
     id:
-<<<<<<< HEAD
-      type: integer
-      id: true
-      generator:
-        strategy: AUTO
-  fields:
-    building:
-      type: string
-      length: 255
-    floor:
-      type: smallint
-    door:
-      type: smallint
-    floorArea:
-      type: float
-      column: floor_area
-    type:
-      type: smallint
-    balance:
-      type: integer
-      nullable: true
-    houseShare:
-      type: string
-      length: 255
-      column: house_share
-    createdAt:
-      type: datetime
-      column: created_at
-    updatedAt:
-      type: datetime
-      column: updated_at
-    deletedAt:
-      type: datetime
-      nullable: true
-      column: deleted_at
-    isImported:
-      type: boolean
-      column: is_imported
-      nullable: true
-  oneToMany:
-    payments:
-      targetEntity: Payment
-      mappedBy: unit
-    bills:
-      targetEntity: Bill
-      mappedBy: unit
-    orders:
-      targetEntity: Order
-      mappedBy: unit
-  oneToOne:
-    importedUnit:
-      targetEntity: ImportedUnit
-      inversedBy: unit
-      joinColumn:
-        name: imported_unit_id
-        referencedColumnName: id
-  manyToOne:
-    house:
-      targetEntity: House
-      inversedBy: units
-      joinColumn:
-        name: house_id
-        referencedColumnName: id
-    unitTenant:
-      targetEntity: UnitTenant
-      inversedBy: units
-      joinColumn:
-        name: unit_tenant_id
-        referencedColumnName: id
-  lifecycleCallbacks: {  }
-=======
         id:
             type: integer
             id: true
@@ -90,8 +19,9 @@ AppBundle\Entity\Unit:
         floorArea:
             type: float
             column: floor_area
-        type:
+        unitType:
             type: smallint
+            column: unit_type
         balance:
             type: integer
             nullable: true
@@ -105,6 +35,13 @@ AppBundle\Entity\Unit:
         updatedAt:
             type: datetime
             column: updated_at
+        deletedAt:
+            type: datetime
+            nullable: true
+            column: deleted_at
+        isImported:
+            type: boolean
+            column: is_imported
             nullable: true
     oneToMany:
         payments:
@@ -116,6 +53,13 @@ AppBundle\Entity\Unit:
         orders:
             targetEntity: Order
             mappedBy: unit
+    oneToOne:
+        importedUnit:
+            targetEntity: ImportedUnit
+            inversedBy: unit
+            joinColumn:
+                name: imported_unit_id
+                referencedColumnName: id
     manyToOne:
         house:
             targetEntity: House
@@ -130,4 +74,3 @@ AppBundle\Entity\Unit:
                 name: unit_tenant_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }
->>>>>>> feature/SalesAndManagers
