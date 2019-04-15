@@ -247,6 +247,9 @@ class ImportController extends Controller
             $objHouse->setCreatedAt(new \DateTime('now'));
             $objHouse->setUpdatedAt(new \DateTime('now'));
 
+            $objHouse->setIsImported(1);
+            $objHouse->setImportedHouse($objImportedHouse);
+
             $entityManager->persist($objHouse);
 
             $objImportedHouse->setIsAccepted(1);
@@ -398,7 +401,10 @@ class ImportController extends Controller
             $objUnit->setCreatedAt(new \DateTime('now'));
             $objUnit->setUpdatedAt(new \DateTime('now'));
 
-            $entityManager->persist($objHouse);
+            $objUnit->setIsImported(1);
+            $objUnit->setImportedUnit($objImportedUnit);
+
+            $entityManager->persist($objUnit);
 
             $objImportedUnit->setIsAccepted(1);
             $objImportedUnit->setAcceptedAt(new \DateTime('now'));

@@ -34,6 +34,8 @@ class TokenListener
             return;
         } else if ($controller[0] instanceof ExceptionController || $controller[0] instanceof ProfilerController) {
             return;
+        } else {
+            if (strpos($event->getRequest()->attributes->get('_route'), 'admin') !== FALSE) return;
         }
 
         $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');

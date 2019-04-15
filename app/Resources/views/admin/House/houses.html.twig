@@ -35,6 +35,7 @@
                                     <th>Helyrajzi szám</th>
                                     <th>Létrehozva</th>
                                     <th>Módosítva</th>
+                                    <th>Import forrás</th>
                                     <th>Műveletek</th>
                                 </tr>
                                 </thead>
@@ -51,6 +52,7 @@
                                         <td>{{ house.lotNumber|e }}</td>
                                         <td>{{ house.createdAt|date("Y. m. d. H:i") }}</td>
                                         <td>{{ house.updatedAt|date("Y. m. d. H:i") }}</td>
+                                        <td>{{ house.isImported ? house.importedHouse.importSource.name : '-' }}</td>
                                         <td>
                                             <a class="readButton"
                                                href="{{ path('admin_get_house_read', {'houseId': house.id}) }}">

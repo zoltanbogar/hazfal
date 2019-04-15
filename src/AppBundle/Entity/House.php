@@ -3,17 +3,12 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 /**
  * House
  */
 class House
 {
-    use ORMBehaviors\SoftDeletable\SoftDeletable;
-
     /**
      * @var int
      */
@@ -650,5 +645,121 @@ class House
     public function getMalfunctions()
     {
         return $this->malfunctions;
+    }
+    /**
+     * @var \DateTime|null
+     */
+    private $deletedAt;
+
+
+    /**
+     * Set deletedAt.
+     *
+     * @param \DateTime|null $deletedAt
+     *
+     * @return House
+     */
+    public function setDeletedAt($deletedAt = null)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt.
+     *
+     * @return \DateTime|null
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+    /**
+     * @var \AppBundle\Entity\ImportedHouse
+     */
+    private $importedHouse;
+
+
+    /**
+     * Set importedHouse.
+     *
+     * @param \AppBundle\Entity\ImportedHouse|null $importedHouse
+     *
+     * @return House
+     */
+    public function setImportedHouse(\AppBundle\Entity\ImportedHouse $importedHouse = null)
+    {
+        $this->importedHouse = $importedHouse;
+
+        return $this;
+    }
+
+    /**
+     * Get importedHouse.
+     *
+     * @return \AppBundle\Entity\ImportedHouse|null
+     */
+    public function getImportedHouse()
+    {
+        return $this->importedHouse;
+    }
+    /**
+     * @var bool|null
+     */
+    private $isImported;
+
+
+    /**
+     * Set isImported.
+     *
+     * @param bool|null $isImported
+     *
+     * @return House
+     */
+    public function setIsImported($isImported = null)
+    {
+        $this->isImported = $isImported;
+
+        return $this;
+    }
+
+    /**
+     * Get isImported.
+     *
+     * @return bool|null
+     */
+    public function getIsImported()
+    {
+        return $this->isImported;
+    }
+    /**
+     * @var \AppBundle\Entity\HouseUser
+     */
+    private $houseManager;
+
+
+    /**
+     * Set houseManager.
+     *
+     * @param \AppBundle\Entity\HouseUser|null $houseManager
+     *
+     * @return House
+     */
+    public function setHouseManager(\AppBundle\Entity\HouseUser $houseManager = null)
+    {
+        $this->houseManager = $houseManager;
+
+        return $this;
+    }
+
+    /**
+     * Get houseManager.
+     *
+     * @return \AppBundle\Entity\HouseUser|null
+     */
+    public function getHouseManager()
+    {
+        return $this->houseManager;
     }
 }

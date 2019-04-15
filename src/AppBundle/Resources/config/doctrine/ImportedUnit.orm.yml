@@ -34,4 +34,8 @@ AppBundle\Entity\ImportedUnit:
     tenant_id:
       type: integer
       nullable: true
+  oneToOne:
+    unit:
+      targetEntity: Unit
+      mappedBy: importedUnit
   lifecycleCallbacks: {  }

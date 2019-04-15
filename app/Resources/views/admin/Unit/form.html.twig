@@ -67,7 +67,6 @@
                                     {% else %}
                                         <input type="text" class="form-control" id="inputTenant"
                                                name="inputTenant"
-                                               placeholder="Lakó"
                                                value="{{ objUnit.unitTenant.tenant ? objUnit.unitTenant.tenant.firstName ~ " " ~ objUnit.unitTenant.tenant.lastName : NULL }}" {{ isEditable ?: 'disabled' }}>
                                     {% endif %}
                                 </div>
@@ -77,6 +76,40 @@
                                            aria-describedby="inputHouseShare"
                                            value="{{ objUnit.houseShare }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
+                                {% if objUnit.unitTenant.tenant.user and isEditable == false %}
+                                    <div class="form-group">
+                                        <label for="inputUser">Felhasználó</label>
+                                        <input type="text" class="form-control" id="inputUser"
+                                               name="inputUser"
+                                               value="{{ objUnit.unitTenant.tenant.user.firstName ~ " " ~ objUnit.unitTenant.tenant.user.lastName }}" {{ isEditable ?: 'disabled' }}>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputUserEmail">E-mail cím</label>
+                                        <input type="text" class="form-control" id="inputUserEmail"
+                                               name="inputUserEmail"
+                                               value="{{ objUnit.unitTenant.tenant.user.email }}" {{ isEditable ?: 'disabled' }}>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputUserBirth">Születési hely, idő</label>
+                                        <input type="text" class="form-control" id="inputUserBirth"
+                                               name="inputUserBirth"
+                                               value="{{ objUnit.unitTenant.tenant.user.placeOfBirth|e ~ ", " ~ objUnit.unitTenant.tenant.user.dateOfBirth|date('Y. m. d.') }}" {{ isEditable ?: 'disabled' }}>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputUserOfficialAddress">Lakcím</label>
+                                        <input type="text" class="form-control" id="inputUserOfficialAddress"
+                                               name="inputUserOfficialAddress"
+                                               value="{{ objUnit.unitTenant.tenant.user.officialAddress }}" {{ isEditable ?: 'disabled' }}>
+                                    </div>
+                                    {% if objUnit.unitTenant.tenant.user.phoneNumber %}
+                                        <div class="form-group">
+                                            <label for="inputUserPhone">Telefonszám</label>
+                                            <input type="text" class="form-control" id="inputUserPhone"
+                                                   name="inputUserPhone"
+                                                   value="{{ objUnit.unitTenant.tenant.user.phoneNumber }}" {{ isEditable ?: 'disabled' }}>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>

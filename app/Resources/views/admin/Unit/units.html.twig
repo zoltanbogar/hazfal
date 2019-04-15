@@ -38,6 +38,7 @@
                                     <th>Lakó</th>
                                     <th>Létrehozva</th>
                                     <th>Módosítva</th>
+                                    <th>Import forrás</th>
                                     <th>Műveletek</th>
                                 </tr>
                                 </thead>
@@ -56,6 +57,7 @@
                                         <td>{{ (unit.unitTenant and unit.unitTenant.tenant) ? unit.unitTenant.tenant.firstName ~ " " ~ unit.unitTenant.tenant.lastName : '' }}</td>
                                         <td>{{ unit.createdAt|date("Y. m. d. H:i") }}</td>
                                         <td>{{ unit.updatedAt|date("Y. m. d. H:i") }}</td>
+                                        <td>{{ unit.isImported ? unit.importedUnit.importSource.name : '-' }}</td>
                                         <td>
                                             <a class="readButton"
                                                href="{{ path('admin_get_unit_read', {'unitId': unit.id}) }}">

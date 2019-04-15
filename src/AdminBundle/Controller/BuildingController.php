@@ -3,6 +3,7 @@
 namespace AdminBundle\Controller;
 
 use AppBundle\Entity\House;
+use AppBundle\Entity\Manager;
 use AppBundle\Entity\Unit;
 use AppBundle\Entity\UnitTenant;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,10 +54,15 @@ class BuildingController extends Controller
             ->getRepository('AppBundle:House')
             ->find($houseId);
 
+        $objManager = $this->getDoctrine()
+            ->getRepository('AppBundle:Manager')
+            ->findAll();
+
         return $this->render(
             'Admin\House\form.html.twig',
             [
                 'objHouse' => $objHouse,
+                'objManager' => $objManager,
                 'isEditable' => TRUE,
                 'isNew' => FALSE,
                 'error' => NULL,
@@ -79,6 +85,7 @@ class BuildingController extends Controller
                 'inputLotNumber' => 'required|numeric',
                 'inputLatitude' => 'required|numeric',
                 'inputLongitude' => 'required|numeric',
+                'inputHouseManager' => 'required|numeric',
                 'inputCountryCode' => 'required|min:2|max:2',
             ],
             $request
@@ -112,15 +119,33 @@ class BuildingController extends Controller
             $objHouse->setGpsLongitude($request->get('inputLongitude'));
             //$objHouse->setStatus(1);
             $objHouse->setUpdatedAt(new \DateTime('now'));
+            $objManager = $this->getDoctrine()->getRepository(Manager::class)->find($request->get('inputHouseManager'));
+            if ($objManager) {
+                $objHouse->setHouseManager($objManager);
+            } else {
+                $error = [
+                    'strParameter' => 'invalid_manager',
+                    'errorText' => 'Képviselő nem adható hozzá!',
+                ];
+                $success = FALSE;
+            }
+            i
 
-            $entityManager->persist($objHouse);
-            $entityManager->flush();
+            if (!$error) {
+                $entityManager->persist($objHouse);
+                $entityManager->flush();
+            }
         }
+
+        $objManager = $this->getDoctrine()
+            ->getRepository('AppBundle:Manager')
+            ->findAll();
 
         return $this->render(
             'Admin\House\form.html.twig',
             [
                 'objHouse' => $objHouse,
+                'objManager' => $objManager,
                 'isEditable' => TRUE,
                 'isNew' => FALSE,
                 'error' => $error,

@@ -61,6 +61,10 @@ AppBundle\Entity\House:
     updatedAt:
       type: datetime
       column: updated_at
+    isImported:
+      type: boolean
+      column: is_imported
+      nullable: true
   oneToMany:
     documents:
       targetEntity: Document
@@ -77,4 +81,18 @@ AppBundle\Entity\House:
     malfunctions:
       targetEntity: Malfunction
       mappedBy: house
+  manyToOne:
+    houseManager:
+      targetEntity: HouseUser
+      inversedBy: houses
+      joinColumn:
+        name: house_manager_id
+        referencedColumnName: id
+  oneToOne:
+    importedHouse:
+      targetEntity: ImportedHouse
+      inversedBy: house
+      joinColumn:
+        name: imported_house_id
+        referencedColumnName: id
   lifecycleCallbacks: {  }

@@ -504,4 +504,69 @@ class Unit
     {
         return $this->deletedAt;
     }
+
+    /**
+     * @var bool|null
+     */
+    private $isImported;
+
+    /**
+     * @var int|null
+     */
+    private $importId;
+
+
+    /**
+     * Set isImported.
+     *
+     * @param bool|null $isImported
+     *
+     * @return Unit
+     */
+    public function setIsImported($isImported = null)
+    {
+        $this->isImported = $isImported;
+
+        return $this;
+    }
+
+    /**
+     * Get isImported.
+     *
+     * @return bool|null
+     */
+    public function getIsImported()
+    {
+        return $this->isImported;
+    }
+
+    /**
+     * @var \AppBundle\Entity\ImportedUnit
+     */
+    private $importedUnit;
+
+
+    /**
+     * Set importedUnit.
+     *
+     * @param \AppBundle\Entity\ImportedUnit|null $importedUnit
+     *
+     * @return Unit
+     */
+    public function setImportedUnit(\AppBundle\Entity\ImportedUnit $importedUnit = null)
+    {
+        $this->importedUnit = $importedUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get importedUnit.
+     *
+     * @return \AppBundle\Entity\ImportedUnit|null
+     */
+    public function getImportedUnit()
+    {
+        return $this->importedUnit;
+    }
 }

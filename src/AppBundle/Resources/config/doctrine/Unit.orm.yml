@@ -38,6 +38,10 @@ AppBundle\Entity\Unit:
       type: datetime
       nullable: true
       column: deleted_at
+    isImported:
+      type: boolean
+      column: is_imported
+      nullable: true
   oneToMany:
     payments:
       targetEntity: Payment
@@ -48,6 +52,13 @@ AppBundle\Entity\Unit:
     orders:
       targetEntity: Order
       mappedBy: unit
+  oneToOne:
+    importedUnit:
+      targetEntity: ImportedUnit
+      inversedBy: unit
+      joinColumn:
+        name: imported_unit_id
+        referencedColumnName: id
   manyToOne:
     house:
       targetEntity: House

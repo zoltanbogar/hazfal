@@ -54,4 +54,8 @@ AppBundle\Entity\ImportedHouse:
       length: 255
       column: gps_longitude
       nullable: true
+  oneToOne:
+    house:
+      targetEntity: House
+      mappedBy: importedHouse
   lifecycleCallbacks: {  }

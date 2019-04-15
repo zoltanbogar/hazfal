@@ -506,4 +506,45 @@ class HouseUser
         return $this->house;
     }
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $houses;
+
+
+    /**
+     * Add house.
+     *
+     * @param \AppBundle\Entity\House $house
+     *
+     * @return HouseUser
+     */
+    public function addHouse(\AppBundle\Entity\House $house)
+    {
+        $this->houses[] = $house;
+
+        return $this;
+    }
+
+    /**
+     * Remove house.
+     *
+     * @param \AppBundle\Entity\House $house
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeHouse(\AppBundle\Entity\House $house)
+    {
+        return $this->houses->removeElement($house);
+    }
+
+    /**
+     * Get houses.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHouses()
+    {
+        return $this->houses;
+    }
 }

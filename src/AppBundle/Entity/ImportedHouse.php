@@ -326,4 +326,33 @@ class ImportedHouse extends ImportedEntity
     {
         return $this->gpsLongitude;
     }
+    /**
+     * @var \AppBundle\Entity\House
+     */
+    private $house;
+
+
+    /**
+     * Set house.
+     *
+     * @param \AppBundle\Entity\House|null $house
+     *
+     * @return ImportedHouse
+     */
+    public function setHouse(\AppBundle\Entity\House $house = null)
+    {
+        $this->house = $house;
+
+        return $this;
+    }
+
+    /**
+     * Get house.
+     *
+     * @return \AppBundle\Entity\House|null
+     */
+    public function getHouse()
+    {
+        return $this->house;
+    }
 }
