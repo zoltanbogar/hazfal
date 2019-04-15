@@ -1,5 +1,4 @@
 AppBundle\Entity\HouseUser:
-<<<<<<< HEAD
   type: entity
   table: house_users
   inheritanceType: JOINED
