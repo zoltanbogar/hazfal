@@ -94,4 +94,3 @@ AppBundle\Entity\House:
             joinColumn:
                 name: imported_house_id
                 referencedColumnName: id
-    lifecycleCallbacks: {}

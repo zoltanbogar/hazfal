@@ -88,4 +88,3 @@ AppBundle\Entity\HouseUser:
             joinColumn:
                 name: user_id
                 referencedColumnName: id
-    lifecycleCallbacks: {}
