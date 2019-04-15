@@ -94,4 +94,21 @@ class Comment extends SocialEntity
     {
         return $this->socialEntity;
     }
+<<<<<<< .merge_file_a06544
+=======
+    /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+
+>>>>>>> .merge_file_a09816
 }

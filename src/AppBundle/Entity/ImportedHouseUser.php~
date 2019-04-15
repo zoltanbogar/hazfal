@@ -506,4 +506,13 @@ class ImportedHouseUser extends ImportedEntity
     private $deletedAt;
 
 
+<<<<<<< .merge_file_a07672
+=======
+    /**
+     * @var int
+     */
+    private $id;
+
+
+>>>>>>> .merge_file_a01112
 }

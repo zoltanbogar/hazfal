@@ -2,7 +2,6 @@ AppBundle\Entity\Reaction:
     type: entity
     table: reaction
     repositoryClass: AppBundle\Repository\ReactionRepository
-
     fields:
         reactionType:
             type: smallint

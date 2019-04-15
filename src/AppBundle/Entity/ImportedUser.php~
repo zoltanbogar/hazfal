@@ -384,4 +384,13 @@ class ImportedUser extends ImportedEntity
     {
         return $this->joinToken;
     }
+<<<<<<< HEAD
+=======
+    /**
+     * @var int
+     */
+    private $id;
+
+
+>>>>>>> develop
 }

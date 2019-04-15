@@ -837,6 +837,10 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->phoneConformationCode;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
     /**
      * @var string
      */
@@ -867,7 +871,28 @@ class User extends BaseUser// implements UserInterface
         return $this->profileImage;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $registrations;
+
+
+    /**
+     * Add registration.
+     *
+     * @param \AppBundle\Entity\Registration $registration
+     *
+     * @return User
+     */
+    public function addRegistration(\AppBundle\Entity\Registration $registration)
+    {
+        $this->registrations[] = $registration;
+    }
+>>>>>>> develop
     /**
      * @var \AppBundle\Entity\Permission
      */
@@ -889,6 +914,36 @@ class User extends BaseUser// implements UserInterface
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Remove registration.
+     *
+     * @param \AppBundle\Entity\Registration $registration
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeRegistration(\AppBundle\Entity\Registration $registration)
+    {
+        return $this->registrations->removeElement($registration);
+    }
+
+    /**
+     * Get registrations.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRegistrations()
+    {
+        return $this->registrations;
+    }
+
+    public function getFullName()
+    {
+        return $this->getFirstName() . " " . $this->getLastName();
+    }
+
+     /**
+>>>>>>> develop
      * Get permission.
      *
      * @return \AppBundle\Entity\Permission|null
@@ -897,5 +952,8 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->permission;
     }
+<<<<<<< HEAD
 >>>>>>> feature/SalesAndManagers
+=======
+>>>>>>> develop
 }

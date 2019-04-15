@@ -297,4 +297,13 @@ class ImportedPayment extends ImportedEntity
     {
         return $this->userId;
     }
+<<<<<<< .merge_file_a13036
+=======
+    /**
+     * @var int
+     */
+    private $id;
+
+
+>>>>>>> .merge_file_a05140
 }

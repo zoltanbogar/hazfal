@@ -569,4 +569,35 @@ class Unit
     {
         return $this->importedUnit;
     }
+
+    /**
+     * @var int
+     */
+    private $unitType;
+
+
+    /**
+     * Set unitType.
+     *
+     * @param int $unitType
+     *
+     * @return Unit
+     */
+    public function setUnitType($unitType)
+    {
+        $this->unitType = $unitType;
+
+        return $this;
+    }
+
+    /**
+     * Get unitType.
+     *
+     * @return int
+     */
+    public function getUnitType()
+    {
+        return $this->unitType;
+    }
+
 }

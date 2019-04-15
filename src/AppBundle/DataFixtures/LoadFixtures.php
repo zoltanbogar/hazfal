@@ -106,7 +106,7 @@ class LoadFixtures extends Fixture
             $objUnit->setFloor($i);
             $objUnit->setDoor($i);
             $objUnit->setFloorArea($i * 1337);
-            $objUnit->setType(1);
+            $objUnit->setUnitType(1);
             $objUnit->setBalance(rand(-1, 1) * $i * 1337);
             $objUnit->setHouseShare("0.5");
             $objUnit->setCreatedAt(new \DateTime('now'));
@@ -179,7 +179,7 @@ class LoadFixtures extends Fixture
         $objUser->setEmail('chris_waltz@gmail.com');
         $objUser->setEmailCanonical('chris_waltz@gmail.com');
         $objUser->setEnabled(1);
-        $objUser->setPassword('admin');
+        $objUser->setPlainPassword('admin');
         $objUser->setRoles(['ROLE_USER']);
         $manager->persist($objUser);
 

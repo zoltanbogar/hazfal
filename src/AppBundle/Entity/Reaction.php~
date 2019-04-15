@@ -36,4 +36,13 @@ class Reaction extends SocialEntity
     {
         return $this->reactionType;
     }
+<<<<<<< .merge_file_a07724
+=======
+    /**
+     * @var int
+     */
+    private $id;
+
+
+>>>>>>> .merge_file_a05588
 }

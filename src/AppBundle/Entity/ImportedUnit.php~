@@ -210,6 +210,10 @@ class ImportedUnit extends ImportedEntity
     {
         return $this->houseShare;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
     /**
      * @var int|null
      */
@@ -239,6 +243,10 @@ class ImportedUnit extends ImportedEntity
     {
         return $this->unit_type;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
     /**
      * @var int|null
      */
@@ -297,4 +305,43 @@ class ImportedUnit extends ImportedEntity
     {
         return $this->tenant_id;
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * @var \AppBundle\Entity\unit
+     */
+    private $unit;
+
+
+    /**
+     * Set unit.
+     *
+     * @param \AppBundle\Entity\unit|null $unit
+     *
+     * @return ImportedUnit
+     */
+    public function setUnit(\AppBundle\Entity\unit $unit = null)
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * Get unit.
+     *
+     * @return \AppBundle\Entity\unit|null
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+    /**
+     * @var int
+     */
+    private $id;
+
+
+>>>>>>> develop
 }

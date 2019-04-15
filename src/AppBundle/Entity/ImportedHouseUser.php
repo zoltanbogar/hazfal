@@ -504,6 +504,4 @@ class ImportedHouseUser extends ImportedEntity
      * @var \DateTime|null
      */
     private $deletedAt;
-
-
 }

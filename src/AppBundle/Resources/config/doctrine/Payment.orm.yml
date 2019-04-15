@@ -9,12 +9,6 @@ AppBundle\Entity\Payment:
             generator:
                 strategy: AUTO
     fields:
-        unitId:
-            type: integer
-            column: unit_id
-        paymentMethodId:
-            type: integer
-            column: payment_method_id
         paymentDate:
             type: datetime
             column: payment_date
