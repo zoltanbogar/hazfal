@@ -129,7 +129,7 @@ class BuildingController extends Controller
                 ];
                 $success = FALSE;
             }
-            i
+            
 
             if (!$error) {
                 $entityManager->persist($objHouse);
