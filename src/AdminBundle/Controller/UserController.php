@@ -71,7 +71,7 @@ class UserController extends Controller
             ->getRepository('AppBundle:Permission')
             ->findAll();
 
-        if($objectType == 'sales') {
+        if ($objectType == 'sales') {
             $isSalesUser = true;
         }
 
@@ -176,14 +176,17 @@ class UserController extends Controller
 
             foreach ($inputPermissionIDs as $permissionID) {
                 $objPermission = $entityManager->getRepository('AppBundle:Permission')->find($permissionID);
-                $objUser->addPermission($objPermission);
 
-                $entityManager->persist($objUser);
-                $entityManager->flush();
+                if (!is_null($objPermission)) {
+                    $objUser->addPermission($objPermission);
+
+                    $entityManager->persist($objUser);
+                    $entityManager->flush();
+                }
             }
 
             foreach ($objUser->getPermissions() as $permission) {
-                if($permission->getSlug() == 'sales') {
+                if ($permission->getSlug() == 'sales') {
                     $objectType = 'sales';
                 }
             }
@@ -278,8 +281,9 @@ class UserController extends Controller
             }
 
             foreach ($objUser->getPermissions() as $permission) {
-                if($permission->getSlug() == 'sales') {
+                if ($permission->getSlug() == 'sales') {
                     $objectType = 'sales';
+                    break;
                 }
             }
         }
