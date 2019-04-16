@@ -42,14 +42,19 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
     public function findUsersByPermission($permissionSlug)
     {
-        $query_string = 'SELECT u FROM AppBundle:User u JOIN u.permission p WHERE p.slug = :slug';
+        $query_string = 'SELECT u FROM AppBundle:User u';
         $query = $this->getEntityManager()->createQuery($query_string);
-        $query->setParameters(
-            array(
-                'slug' => $permissionSlug
-            )
-        );
+        $users = $query->getResult();
+        $result = [];
 
-        return $query->getResult();
+        foreach ($users as $user) {
+            foreach ($user->getPermissions() as $permission) {
+                if ($permission->getSlug() == $permissionSlug) {
+                    $result[] = $user;
+                }
+            }
+        }
+
+        return $result;
     }
 }

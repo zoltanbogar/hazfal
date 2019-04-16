@@ -23,7 +23,7 @@
                             {{ objUser.id is null ? 'Új felhasználó hozzáadása' : '# '~objUser.id~' felhasználó' }}
                         {% else %}
                             {% set path = path('admin_get_sales_users') %}
-                            {{ objUser.id is null ? 'Új sales felhasználó hozzáadása' : '# '~objUser.id~' sales felhasználó' }}
+                            {{ objUser.id is null ? 'Új sales ügynök hozzáadása' : '# '~objUser.id~' sales ügynök' }}
                         {% endif %}
                         <span class="pull-right">
                         <a href="{{ path }}" class="btn btn-secondary">
@@ -47,17 +47,25 @@
                                 <div class="form-group">
                                     <label for="inputPermissionId">Jogosultság</label>
                                     <br>
-                                    {% for permission in objPermissions %}
-                                        {% for userPermissions in objUser.permissions %}
-                                            {% set checked = '' %}
-                                            {% if userPermissions.id == permission.id %}
-                                                {% set checked = 'checked' %}
-                                            {% endif %}
-                                            <input type="checkbox" id="inputPermissionId-{{ loop.index }}" name="inputPermissionId[]" {{ checked }}>
+                                    {% if isNew %}
+                                        {% for permission in objPermissions %}
+                                            <input type="checkbox" id="inputPermissionId-{{ loop.index }}" name="inputPermissionId[]" value="{{ permission.id }}" {{ isSalesUser and permission.slug == 'sales' ? 'checked disabled' : 'disabled' }}>
                                             <label for="inputPermissionId-{{ loop.index }}">{{ permission.name }}</label>
                                             <br>
                                         {% endfor %}
-                                    {% endfor %}
+                                    {% else %}
+                                        {% for permission in objPermissions %}
+                                            {% set checked = '' %}
+                                            {% for userPermission in objUser.permissions %}
+                                                {% if userPermission.id == permission.id %}
+                                                    {% set checked = 'checked' %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            <input type="checkbox" id="inputPermissionId-{{ loop.index }}" name="inputPermissionId[]" value="{{ permission.id }}" {{ checked }} {{ isEditable ?: 'disabled' }}>
+                                            <label for="inputPermissionId-{{ loop.index }}">{{ permission.name }}</label>
+                                            <br>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label for="inputIsActive">Státusz</label>
