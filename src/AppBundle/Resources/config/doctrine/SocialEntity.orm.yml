@@ -12,13 +12,13 @@ AppBundle\Entity\SocialEntity:
         document: AppBundle\Entity\Document
         malfunction: AppBundle\Entity\Malfunction
         reaction: AppBundle\Entity\Reaction
-    repositoryClass: SocialEntityRepository
     id:
         id:
             type: integer
             id: true
             generator:
                 strategy: AUTO
+    repositoryClass: SocialEntityRepository
     fields:
         createdAt:
             type: datetime
@@ -26,7 +26,6 @@ AppBundle\Entity\SocialEntity:
         updatedAt:
             type: datetime
             column: updated_at
-            nullable: true
         deletedAt:
             type: datetime
             column: deleted_at
@@ -37,5 +36,8 @@ AppBundle\Entity\SocialEntity:
             mappedBy: socialEntity
         comments:
             targetEntity: Comment
+            mappedBy: parentSocialEntity
+        reactions:
+            targetEntity: Reaction
             mappedBy: socialEntity
     lifecycleCallbacks: {  }

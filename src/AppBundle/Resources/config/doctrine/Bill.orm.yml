@@ -7,7 +7,7 @@ AppBundle\Entity\Bill:
             type: integer
             id: true
             generator:
-                strategy: AUTO
+            strategy: AUTO
     fields:
         billCategory:
             type: string

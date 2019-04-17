@@ -23,9 +23,12 @@ use AppBundle\Entity\Tenant;
 use AppBundle\Entity\Unit;
 use AppBundle\Entity\UnitTenant;
 use AppBundle\Entity\User;
+use AppBundle\Entity\Reaction;
+use AppBundle\Entity\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Doctrine\Common\Collections\Criteria;
 
@@ -79,8 +82,51 @@ class SocialEntityController extends Controller
         if (!$objPost) {
             return $this->container->get('response_handler')->errorHandler("post_not_exists", "Not found", 404);
         }
+        $returnData = [];
+        foreach ($objPost as $post) {
+            $objUser = $post->getUser();
+            $socialEntity = $this->getDoctrine()->getRepository(SocialEntity::class)->find($post->getId());
+            $reactionTypes = [];
+            $postReactions = $socialEntity->getReactions();
+            foreach ($postReactions as $reaction) {
+                if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+                    $reactionTypes[] = $reaction->getReactionTypeName();
+            }
+            $comments = [];
+            foreach ($post->getComments() as $comment) {
+                $commentUser = $comment->getUser();
 
-        return $this->container->get('response_handler')->successHandler($objPost, $request->query->all());
+                $commentReactionTypes = [];
+                foreach ($comment->getReactions() as $reaction) {
+                if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
+                    $commentReactionTypes[] = $reaction->getReactionTypeName();
+                }
+                $comments[] = [
+                    'id' => $comment->getId(),
+                    'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                    'userId' => $commentUser->getId(),
+                    'content' => $comment->getContent(),
+                    'when' => $comment->getWhenCreated(),
+                    'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                    'reactionTypes' => $commentReactionTypes,
+                    'reactionCount' => $comment->getReactions()->count()
+                ];
+            }
+            $returnData[] = [
+                'id' => $post->getId(),
+                'content' => $post->getContent(),
+                'createdAt' => $post->getWhenCreated(),
+                'userName' => $objUser->getLastName()." ".$objUser->getFirstName(),
+                'userId' => $objUser->getId(),
+                'isUrgent' => $post->getIsUrgent(),
+                'comments' => $comments,
+                'reactionTypes' => $reactionTypes,
+                'reactionCount' => $post->getReactions()->count(),
+                'posterImage' => "/assets/images/profile/".$objUser->getProfileImage(),
+                'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
+            ];
+        }
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
     public function getMalfunctionsByHouseIdAction(Request $request)
@@ -91,18 +137,27 @@ class SocialEntityController extends Controller
 
         $numHouseID = $request->get("house_id");
         $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
-
         if (!$objHouse) {
             return $this->container->get('response_handler')->errorHandler("house_not_exists", "Not found", 404);
         }
-
+        
         $objMalfunction = $objHouse->getMalfunctions();
-
+        
         if (!$objMalfunction) {
             return $this->container->get('response_handler')->errorHandler("malfunction_not_exists", "Not found", 404);
         }
-
-        return $this->container->get('response_handler')->successHandler($objMalfunction, $request->query->all());
+        $returnData = [];
+        foreach($objMalfunction as $malfunction) {
+            $returnData[] = [
+                'id' => $malfunction->getId(),
+                'status' => $malfunction->getStatus(),
+                'subject' => $malfunction->getSubject(),
+                'content' => $malfunction->getContent(),
+                'createdAt' => $malfunction->getCreatedAt()->format('Y.m.d')
+            ];
+        }
+        
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
     public function postPostToHouseAction(Request $request)
@@ -116,23 +171,41 @@ class SocialEntityController extends Controller
         if ($type !== "post") {
             return $this->container->get('response_handler')->errorHandler("no_valid_type_provided", "Invalid parameters", 422);
         }
-
-        if (!$request->get('subject') || !$request->get('content') || !$request->get('house_id')) {
+        
+        if (!$request->get('subject') || !$request->get('content') || !$request->get('house_id') || !$request->get('user_id')) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
 
         $entityManager = $this->getDoctrine()->getManager();
 
+        $user_id = $request->get('user_id');
+        $objUser = $entityManager->find(User::class, $user_id);
         $objPost = new Post();
         $objPost->setSubject($request->get('subject'));
         $objPost->setContent($request->get('content'));
         $objPost->setIsUrgent($request->get('is_urgent') ?? 0);
+        $objPost->setUser($objUser);
 
         $objHouse = $entityManager->find(House::class, $request->get('house_id'));
         $objPost->setHouse($objHouse);
         $objPost->setCreatedAt(new \DateTime('now'));
         $objPost->setUpdatedAt(new \DateTime('now'));
         $objPost->setDeletedAt(NULL);
+
+        $file = $request->files->get('file');
+        if($file) {
+            $image = new Image();
+            $image->setSocialEntity($objPost);
+            $image->setFilename('/assets/images/post/'.$file->getFilename().'.'.$file->guessExtension());
+            
+            try {
+                $file->move($this->getParameter('assets_path').'images/post/', $file->getFilename().'.'.$file->guessExtension() );
+            } catch (\Throwable $th) {
+                return $this->container->get('response_handler')->errorHandler("cannot_move_image", $th->getMessage(), 500);
+            }
+            $entityManager->persist($image);
+            $objPost->setImage($image);
+        }
 
         try {
             $entityManager->persist($objPost);
@@ -148,8 +221,50 @@ class SocialEntityController extends Controller
         if (!$objPosts) {
             return $this->container->get('response_handler')->errorHandler("post_not_exists", "Not found", 404);
         }
+        $returnData = [];
+        foreach ($objPosts as $post) {
+            $user = $post->getUser();
+            $socialEntity = $this->getDoctrine()->getRepository(SocialEntity::class)->find($post->getId());
+            $reactionTypes = [];
+            foreach ($post->getReactions() as $reaction) {
+                if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+                    $reactionTypes[] = $reaction->getReactionTypeName();
+            }
+            $comments = [];
+            foreach ($post->getComments() as $comment) {
+                $commentUser = $comment->getUser();
 
-        return $this->container->get('response_handler')->successHandler($objPosts, $request->query->all());
+                $commentReactionTypes = [];
+                foreach ($comment->getReactions() as $reaction) {
+                if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
+                    $commentReactionTypes[] = $reaction->getReactionTypeName();
+                }
+
+                $comments[] = [
+                    'id' => $comment->getId(),
+                    'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                    'content' => $comment->getContent(),
+                    'when' => $comment->getWhenCreated(),
+                    'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                    'reactionTypes' => $commentReactionTypes,
+                    'reactionCount' => $comment->getReactions()->count()
+                ];
+            }
+            $returnData[] = [
+                'id' => $post->getId(),
+                'content' => $post->getContent(),
+                'createdAt' => $post->getWhenCreated(),
+                'userName' => $user->getLastName()." ".$user->getFirstName(),
+                'userId' => $user->getId(),
+                'isUrgent' => $post->getIsUrgent(),
+                'comments' => $comments,
+                'reactionTypes' => $reactionTypes,
+                'reactionCount' => $post->getReactions()->count(),
+                'posterImage' => "/assets/images/profile/".$user->getProfileImage(),
+                'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
+            ];
+        }
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
     public function postMalfunctionToHouseAction(Request $request)
@@ -193,35 +308,32 @@ class SocialEntityController extends Controller
 
     public function postCommentToSocialEntityAction(Request $request)
     {
-        if ($request->query->get('type') === NULL) {
+        if ($request->get('type') === NULL) {
             return $this->container->get('response_handler')->errorHandler("type_not_exists", "Not found", 404);
         }
 
-        $type = $request->query->get('type');
-
+        $type = $request->get('type');
+        
         if ($type !== "comment") {
             return $this->container->get('response_handler')->errorHandler("no_valid_type_provided", "Invalid parameters", 422);
         }
 
-        if (!$request->query->get('content') || !$request->query->get('social_entity_id')) {
+        if (!$request->get('content') || !$request->get('social_entity_id')) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
 
-        //FIXME user_id-t a bejelentkezett usertől kell szerezni
-        $user_id = 1;
+        $user_id = $request->get('user_id');
 
         $entityManager = $this->getDoctrine()->getManager();
 
         $objComment = new Comment();
-        $objComment->setContent($request->query->get('content'));
+        $objComment->setContent($request->get('content'));
 
-        $objSocialEntity = $entityManager->find(SocialEntity::class, $request->query->get('social_entity_id'));
+        $objSocialEntity = $entityManager->find(SocialEntity::class, $request->get('social_entity_id'));
 
-        //FIXME user id
-        //$objUser = $entityManager->find(User::class, $request->query->get('user_id'));
         $objUser = $entityManager->find(User::class, $user_id);
         $objComment->setUser($objUser);
-        $objComment->setSocialEntity($objSocialEntity);
+        $objComment->setParentSocialEntity($objSocialEntity);
         $objComment->setCreatedAt(new \DateTime('now'));
         $objComment->setUpdatedAt(new \DateTime('now'));
         $objComment->setDeletedAt(NULL);
@@ -233,8 +345,232 @@ class SocialEntityController extends Controller
             return $this->container->get('response_handler')->errorHandler("cannot_save_post", $objException->getMessage(), 500);
         }
 
-        return $this->container->get('response_handler')->successHandler($objComment, $request->query->all());
+        $post = $entityManager->find(Post::class, $request->get('social_entity_id'));
+        $postUser = $post->getUser();
+
+        $reactionTypes = [];
+        foreach ($post->getReactions() as $reaction) {
+            if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+                $reactionTypes[] = $reaction->getReactionTypeName();
+        }
+        $comments = [];
+        foreach ($post->getComments() as $comment) {
+            $commentUser = $comment->getUser();
+
+            $commentReactionTypes = [];
+            foreach ($comment->getReactions() as $reaction) {
+            if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
+                $commentReactionTypes[] = $reaction->getReactionTypeName();
+            }
+
+
+            $comments[] = [
+                'id' => $comment->getId(),
+                'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                'userId' => $commentUser->getId(),
+                'content' => $comment->getContent(),
+                'when' => $comment->getWhenCreated(),
+                'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                'reactionTypes' => $commentReactionTypes,
+                'reactionCount' => $comment->getReactions()->count()
+            ];
+        }
+        $returnData = [
+            'id' => $post->getId(),
+            'content' => $post->getContent(),
+            'createdAt' => $post->getWhenCreated(),
+            'userName' => $postUser->getLastName()." ".$postUser->getFirstName(),
+            'userId' => $postUser->getId(),
+            'isUrgent' => $post->getIsUrgent(),
+            'comments' => $comments,
+            'reactionTypes' => $reactionTypes,
+            'reactionCount' => $post->getReactions()->count(),
+            'posterImage' => "/assets/images/profile/".$postUser->getProfileImage(),
+            'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
+        ];
+
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
+
+    /**
+     * post a reaction to a social entity
+     * @author pali
+     */
+    public function postReactionToSocialEntityAction(Request $request)
+    {
+
+        if (!$request->get('reaction_type') || !$request->get('social_entity_id')) {
+            return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
+        }
+
+        //FIXME user_id-t a bejelentkezett usertől kell szerezni
+        $userId = $request->get('user_id');
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $allReactions = Reaction::getReactionTypes();
+        $reactionType = array_search($request->get('reaction_type'), $allReactions);
+        if(!$reactionType) {
+            return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
+        }
+
+        $reaction = $this->getDoctrine()->getRepository(Reaction::class)->findOneBy(['userId' => $userId, 'socialEntityId' => $request->get('social_entity_id')]);
+        if(!$reaction) {
+            $reaction = new Reaction();
+        }
+        $reaction->setReactionType($reactionType);
+
+        $objSocialEntity = $entityManager->find(SocialEntity::class, $request->get('social_entity_id'));
+
+        $objUser = $entityManager->find(User::class, $userId);
+        $reaction->setUser($objUser);
+        $reaction->setSocialEntity($objSocialEntity);
+        $reaction->setCreatedAt(new \DateTime('now'));
+        $reaction->setUpdatedAt(new \DateTime('now'));
+        $reaction->setDeletedAt(NULL);
+
+        try {
+            $entityManager->persist($reaction);
+            $entityManager->flush();
+        } catch (\Exception $objException) {
+            return $this->container->get('response_handler')->errorHandler("cannot_save_post", $objException->getMessage(), 500);
+        }
+
+        $post = $entityManager->find(Post::class, $request->get('social_entity_id'));
+        $postUser = $post->getUser();
+        $socialEntity = $objSocialEntity;
+        $reactionTypes = [];
+        foreach ($post->getReactions() as $reaction) {
+            if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+                $reactionTypes[] = $reaction->getReactionTypeName();
+        }
+        $comments = [];
+        foreach ($post->getComments() as $comment) {
+            $commentUser = $comment->getUser();
+
+            $commentReactionTypes = [];
+            foreach ($comment->getReactions() as $reaction) {
+            if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
+                $commentReactionTypes[] = $reaction->getReactionTypeName();
+            }
+            $comments[] = [
+                'id' => $comment->getId(),
+                'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                'content' => $comment->getContent(),
+                'when' => $comment->getWhenCreated(),
+                'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                'reactionTypes' => $commentReactionTypes,
+                'reactionCount' => $comment->getReactions()->count()
+            ];
+        }
+        $returnData = [
+            'id' => $post->getId(),
+            'content' => $post->getContent(),
+            'createdAt' => $post->getWhenCreated(),
+            'userName' => $postUser->getLastName()." ".$postUser->getFirstName(),
+            'userId' => $postUser->getId(),
+            'isUrgent' => $post->getIsUrgent(),
+            'comments' => $comments,
+            'reactionTypes' => $reactionTypes,
+            'reactionCount' => $post->getReactions()->count(),
+            'posterImage' => "/assets/images/profile/".$postUser->getProfileImage(),
+            'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
+        ];
+
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
+    
+    }
+
+
+    /**
+     * post a reaction to a social entity
+     * @author pali
+     */
+    public function postReactionToCommentAction(Request $request)
+    {
+
+        if (!$request->get('reaction_type') || !$request->get('social_entity_id')) {
+            return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
+        }
+
+        //FIXME user_id-t a bejelentkezett usertől kell szerezni
+        $userId = $request->get('user_id');
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $allReactions = Reaction::getReactionTypes();
+        $reactionType = array_search($request->get('reaction_type'), $allReactions);
+        if(!$reactionType) {
+            return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
+        }
+
+        $reaction = $this->getDoctrine()->getRepository(Reaction::class)->findOneBy(['userId' => $userId, 'socialEntityId' => $request->get('social_entity_id')]);
+        if(!$reaction) {
+            $reaction = new Reaction();
+        }
+        $reaction->setReactionType($reactionType);
+
+        $objSocialEntity = $entityManager->find(SocialEntity::class, $request->get('social_entity_id'));
+
+        $objUser = $entityManager->find(User::class, $userId);
+        $reaction->setUser($objUser);
+        $reaction->setSocialEntity($objSocialEntity);
+        $reaction->setCreatedAt(new \DateTime('now'));
+        $reaction->setUpdatedAt(new \DateTime('now'));
+        $reaction->setDeletedAt(NULL);
+
+        try {
+            $entityManager->persist($reaction);
+            $entityManager->flush();
+        } catch (\Exception $objException) {
+            return $this->container->get('response_handler')->errorHandler("cannot_save_post", $objException->getMessage(), 500);
+        }
+
+        $post = $entityManager->find(Post::class, $request->get('post_id'));
+        $postUser = $post->getUser();
+        $socialEntity = $objSocialEntity;
+        $reactionTypes = [];
+        foreach ($post->getReactions() as $reaction) {
+            if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+                $reactionTypes[] = $reaction->getReactionTypeName();
+        }
+        $comments = [];
+        foreach ($post->getComments() as $comment) {
+            $commentUser = $comment->getUser();
+
+            $commentReactionTypes = [];
+            foreach ($comment->getReactions() as $reaction) {
+            if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
+                $commentReactionTypes[] = $reaction->getReactionTypeName();
+            }
+            $comments[] = [
+                'id' => $comment->getId(),
+                'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                'content' => $comment->getContent(),
+                'when' => $comment->getWhenCreated(),
+                'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                'reactionTypes' => $commentReactionTypes,
+                'reactionCount' => $comment->getReactions()->count()
+            ];
+        }
+        $returnData = [
+            'id' => $post->getId(),
+            'content' => $post->getContent(),
+            'createdAt' => $post->getWhenCreated(),
+            'userName' => $postUser->getLastName()." ".$postUser->getFirstName(),
+            'userId' => $postUser->getId(),
+            'isUrgent' => $post->getIsUrgent(),
+            'comments' => $comments,
+            'reactionTypes' => $reactionTypes,
+            'reactionCount' => $post->getReactions()->count(),
+            'posterImage' => "/assets/images/profile/".$postUser->getProfileImage(),
+            'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
+        ];
+
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
+    
+    }
+
 
     public function getCommentsBySocialEntityIdAction(Request $request)
     {

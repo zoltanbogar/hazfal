@@ -82,10 +82,9 @@ AppBundle\Entity\HouseUser:
             joinColumn:
                 name: house_id
                 referencedColumnName: id
-    oneToOne:
         user:
             targetEntity: User
-            inversedBy: houseUser
+            inversedBy: houseUsers
             joinColumn:
                 name: user_id
                 referencedColumnName: id

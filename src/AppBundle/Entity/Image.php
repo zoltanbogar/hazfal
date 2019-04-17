@@ -60,11 +60,11 @@ class Image
     /**
      * Set socialEntity.
      *
-     * @param \AppBundle\Entity\Image|null $socialEntity
+     * @param \AppBundle\Entity\SocialEntity|null $socialEntity
      *
-     * @return Image
+     * @return SocialEntity
      */
-    public function setSocialEntity(\AppBundle\Entity\Image $socialEntity = null)
+    public function setSocialEntity(\AppBundle\Entity\SocialEntity $socialEntity = null)
     {
         $this->socialEntity = $socialEntity;
 
@@ -74,7 +74,7 @@ class Image
     /**
      * Get socialEntity.
      *
-     * @return \AppBundle\Entity\Image|null
+     * @return \AppBundle\Entity\SocialEntity|null
      */
     public function getSocialEntity()
     {

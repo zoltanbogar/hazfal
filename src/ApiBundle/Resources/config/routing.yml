@@ -31,6 +31,11 @@ api_get_user:
   path: /user/{user_id}
   defaults: { _controller: ApiBundle:User:getUserById , user_id: 0 }
   methods: GET
+api_save_user_data:
+  path: /user/save
+  defaults: { _controller: ApiBundle:User:putSaveUserData }
+  methods: PUT
+
 api_get_documents_by_house_id:
   path: /documents/{house_id}
   defaults: { _controller: ApiBundle:SocialEntity:getDocumentsByHouseId }
@@ -38,6 +43,10 @@ api_get_documents_by_house_id:
 api_get_house_user_by_id:
   path: /house-user/{house_user_id}
   defaults: { _controller: ApiBundle:User:getHouseUserById }
+  methods: GET
+api_get_house_user_by_token:
+  path: /registration/house-user/{token}
+  defaults: { _controller: ApiBundle:Security:getHouseUserByToken }
   methods: GET
 api_get_posts_by_house:
   path: /posts/{house_id}
@@ -62,6 +71,14 @@ api_post_malfunction_to_house:
 api_post_comment_to_social_entity:
   path: /comment/post
   defaults: { _controller: ApiBundle:SocialEntity:postCommentToSocialEntity }
+  methods: POST
+api_post_reaction_to_social_entity:
+  path: /reaction/post
+  defaults: { _controller: ApiBundle:SocialEntity:postReactionToSocialEntity }
+  methods: POST
+api_post_reaction_to_comment:
+  path: /reaction/comment
+  defaults: { _controller: ApiBundle:SocialEntity:postReactionToComment }
   methods: POST
 api_get_comments_by_social_entity:
   path: /comments/{social_entity_id}
@@ -127,6 +144,12 @@ api_get_export_payments:
 api_payments_borgun_success:
   path: /payments/borgun/success
   defaults: { _controller: ApiBundle:Finance:successfulBorgunPayment }
+api_payments_borgun_unsuccess:
+  path: /payments/borgun/unsuccess
+  defaults: { _controller: ApiBundle:Finance:unsuccessBorgunPayment }
+api_payments_borgun_canceled:
+  path: /payments/borgun/canceled
+  defaults: { _controller: ApiBundle:Finance:unsuccessBorgunPayment }
 api_payments_borgun_init:
   path: /payments/borgun/init-payment
   defaults: { _controller: ApiBundle:Finance:initBorgunPayment }
@@ -148,3 +171,8 @@ api_get_confirm_registration:
   path: confirm-registration/{hash}
   defaults: { _controller: ApiBundle:Security:getConfirmRegistration }
   methods: GET
+
+api_confirm_user:
+  path: /registration/user/confirm
+  defaults: { _controller: ApiBundle:Default:getConfirmUser }
+  methods: get

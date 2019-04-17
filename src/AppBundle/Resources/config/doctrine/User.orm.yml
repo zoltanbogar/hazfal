@@ -79,6 +79,18 @@ AppBundle\Entity\User:
             type: string
             nullable: true
             column: profile_image
+        facebook:
+            type: string
+            length: 255
+            column: facebook
+        twitter:
+            type: string
+            length: 255
+            column: twitter
+        instagram:
+            type: string
+            length: 255
+            column: instagram
     oneToMany:
         documents:
             targetEntity: Document
@@ -98,9 +110,14 @@ AppBundle\Entity\User:
         registrations:
             targetEntity: Registration
             mappedBy: user
-    oneToOne:
-        houseUser:
+        posts:
+            targetEntity: Post
+            mappedBy: user
+        houseUsers:
             targetEntity: HouseUser
+            mappedBy: user
+        reactions:
+            targetEntity: Reaction
             mappedBy: user
     manyToMany:
         permissions:

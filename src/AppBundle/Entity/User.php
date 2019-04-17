@@ -71,6 +71,21 @@ class User extends BaseUser// implements UserInterface
     private $localPhoneNumber;
 
     /**
+     * @var string
+     */
+    private $facebook;
+
+    /**
+     * @var string
+     */
+    private $twitter;
+
+    /**
+     * @var string
+     */
+    private $instagram;
+
+    /**
      * @var int|null
      */
     private $idNumber;
@@ -93,7 +108,12 @@ class User extends BaseUser// implements UserInterface
     /**
      * @var \AppBundle\Entity\HouseUser
      */
-    private $houseUser;
+    private $houseUsers;
+
+    /**
+     * @var \AppBundle\Entity\Post
+     */
+    private $posts;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -497,6 +517,42 @@ class User extends BaseUser// implements UserInterface
     }
 
     /**
+     * Add HouseUser.
+     *
+     * @param \AppBundle\Entity\HouseUser $houseUser
+     *
+     * @return SocialEntity
+     */
+    public function addHouseUser(\AppBundle\Entity\HouseUser $houseUser)
+    {
+        $this->houseUsers[] = $houseUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove HouseUser.
+     *
+     * @param \AppBundle\Entity\HouseUser $houseUser
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeHouseUser(\AppBundle\Entity\HouseUser $houseUser)
+    {
+        return $this->houseUsers->removeElement($houseUser);
+    }
+
+    /**
+     * Get HouseUsers.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHouseUsers()
+    {
+        return $this->houseUsers;
+    }
+
+    /**
      * Set houseUser.
      *
      * @param \AppBundle\Entity\HouseUser|null $houseUser
@@ -742,6 +798,11 @@ class User extends BaseUser// implements UserInterface
      */
     private $orders;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $reactions;
+
 
     /**
      * Add order.
@@ -983,4 +1044,115 @@ class User extends BaseUser// implements UserInterface
     {
         return $this->permissions;
     }
+
+
+    /**
+     * Set Facebook.
+     *
+     * @param string $facebook
+     *
+     * @return User
+     */
+    public function setFacebook($facebook)
+    {
+        $this->facebook = $facebook;
+
+        return $this;
+    }
+
+    /**
+     * Get Facebook.
+     *
+     * @return string
+     */
+    public function getFacebook()
+    {
+        return $this->facebook;
+    }
+
+
+    /**
+     * Set Twitter.
+     *
+     * @param string $facebook
+     *
+     * @return User
+     */
+    public function setTwitter($twitter)
+    {
+        $this->twitter = $twitter;
+
+        return $this;
+    }
+
+    /**
+     * Get Twitter.
+     *
+     * @return string
+     */
+    public function getTwitter()
+    {
+        return $this->twitter;
+    }
+
+    /**
+     * Set Instagram.
+     *
+     * @param string $facebook
+     *
+     * @return User
+     */
+    public function setInstagram($instagram)
+    {
+        $this->instagram = $instagram;
+
+        return $this;
+    }
+
+    /**
+     * Get Instagram.
+     *
+     * @return string
+     */
+    public function getInstagram()
+    {
+        return $this->instagram;
+    }
+
+    /**
+     * Add Reaction.
+     *
+     * @param \AppBundle\Entity\Reaction $reaction
+     *
+     * @return User
+     */
+    public function addReaction(\AppBundle\Entity\Reaction $reaction)
+    {
+        $this->reactions[] = $reaction;
+
+        return $this;
+    }
+
+    /**
+     * Remove Reaction.
+     *
+     * @param \AppBundle\Entity\Reaction $reaction
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeReaction(\AppBundle\Entity\Reaction $reaction)
+    {
+        return $this->reactions->removeElement($reaction);
+    }
+
+    /**
+     * Get reactions.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReactions()
+    {
+        return $this->reactions;
+    }
+
 }

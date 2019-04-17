@@ -6,4 +6,23 @@ AppBundle\Entity\Reaction:
         reactionType:
             type: smallint
             column: reaction_type
+        userId:
+            type: integer
+            column: user_id
+        socialEntityId:
+            type: integer
+            column: social_entity_id
+    manyToOne:
+        socialEntity:
+            targetEntity: SocialEntity
+            inversedBy: reactions
+            joinColumn:
+                name: social_entity_id
+                referencedColumnName: id
+        user:
+            targetEntity: User
+            inversedBy: reactions
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
     lifecycleCallbacks: {  }

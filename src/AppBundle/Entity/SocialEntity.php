@@ -33,11 +33,18 @@ class SocialEntity
     private $images;
 
     /**
+     * @var \AppBundle\Entity\Reaction
+     */
+    private $reactions;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->reactions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -197,5 +204,71 @@ class SocialEntity
     public function getComments()
     {
         return $this->comments;
+    }
+
+
+    /**
+     * Add Reaction.
+     *
+     * @param \AppBundle\Entity\Reaction $reaction
+     *
+     * @return SocialEntity
+     */
+    public function addReaction(\AppBundle\Entity\Reaction $reaction)
+    {
+        $this->reactions[] = $reaction;
+
+        return $this;
+    }
+
+    /**
+     * Remove Reaction.
+     *
+     * @param \AppBundle\Entity\Reaction $reaction
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeReaction(\AppBundle\Entity\Reaction $reaction)
+    {
+        return $this->reactions->removeElement($reaction);
+    }
+
+    /**
+     * Get reactions.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReactions()
+    {
+        return $this->reactions;
+    }
+
+    /**
+     * when was the social entity created
+     * eg. 2 perce | 2 órája | 2 napja | 2 hete
+     *
+     * @return void
+     */
+    public function getWhenCreated()
+    {
+        $now = new \DateTime('now');
+        $createdAt = $this->getCreatedAt();
+        $dateDiff = $createdAt->diff($now);
+        if( $dateDiff->y > 0 ) {
+            return $dateDiff->y." éve";
+        } elseif( $dateDiff->m > 0 ) {
+            return $dateDiff->m." hónapja";
+        } elseif( $dateDiff->d > 0 ) {
+            $days = $dateDiff->d;
+            if( $dateDiff->d > 7 ) {
+                $days = round( $dateDiff->d / 7);
+            }
+            return $days." napja";
+        } elseif( $dateDiff->h > 0 ) {
+            return $dateDiff->h." órája";
+        } elseif( $dateDiff->i > 0 ) {
+            return $dateDiff->i." perce";
+        } 
+        return 'Éppen most';
     }
 }

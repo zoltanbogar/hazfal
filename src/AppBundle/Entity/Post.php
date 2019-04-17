@@ -99,6 +99,16 @@ class Post extends SocialEntity
      */
     private $house;
 
+    /**
+     * @var \AppBundle\Entity\User
+     */
+    private $user;
+
+    /**
+     * @var \AppBundle\Entity\Image
+     */
+    private $image;
+
 
     /**
      * Set house.
@@ -123,4 +133,54 @@ class Post extends SocialEntity
     {
         return $this->house;
     }
+
+
+    /**
+     * Set user.
+     *
+     * @param \AppBundle\Entity\User|null $house
+     *
+     * @return Post
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get User.
+     *
+     * @return \AppBundle\Entity\User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set image.
+     *
+     * @param \AppBundle\Entity\Image|null $house
+     *
+     * @return Post
+     */
+    public function setImage(\AppBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image.
+     *
+     * @return \AppBundle\Entity\Image|null
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
 }

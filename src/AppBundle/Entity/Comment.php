@@ -7,15 +7,25 @@ namespace AppBundle\Entity;
  */
 class Comment extends SocialEntity
 {
+
     /**
      * @var string
      */
     private $content;
+    /**
+     * @var int
+     */
+    private $socialEntityId;
 
     /**
      * @var \AppBundle\Entity\User
      */
     private $user;
+
+    /**
+     * @var \AppBundle\Entity\SocialEntity
+     */
+    private $parentSocialEntity;
 
 
     /**
@@ -94,18 +104,48 @@ class Comment extends SocialEntity
     {
         return $this->socialEntity;
     }
-
     /**
-     * @var int
+     * Set socialEntity.
+     *
+     * @param \AppBundle\Entity\SocialEntity|null $socialEntity
+     *
+     * @return Comment
      */
-    private $id;
+    public function setParentSocialEntity(\AppBundle\Entity\SocialEntity $socialEntity = null)
+    {
+        $this->parentSocialEntity = $socialEntity;
+
+        return $this;
+    }
 
     /**
+     * Get socialEntity.
+     *
+     * @return \AppBundle\Entity\SocialEntity|null
+     */
+    public function getParentSocialEntity()
+    {
+        return $this->parentSocialEntity;
+    }
+
+    /**
+     * Get parentSocialEntityId.
+     *
      * @return int
      */
-    public function getId(): int
+    public function getParentSocialEntityId()
     {
-        return $this->id;
+        return $this->parentSocialEntity;
+    }
+
+    /**
+     * Get socialEntityId.
+     *
+     * @return int
+     */
+    public function getSocialEntityId()
+    {
+        return $this->socialEntityId;
     }
 
 }
