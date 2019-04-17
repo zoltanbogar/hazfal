@@ -1,22 +1,28 @@
 AppBundle\Entity\Post:
-    type: entity
-    table: post
-    repositoryClass: AppBundle\Repository\PostRepository
-    fields:
-        subject:
-            type: string
-            length: 255
-        content:
-            type: text
-        isUrgent:
-            type: boolean
-            nullable: true
-            column: is_urgent
-    manyToOne:
-        house:
-            targetEntity: House
-            inversedBy: posts
-            joinColumn:
-                name: house_id
-                referencedColumnName: id
-    lifecycleCallbacks: {  }
+  type: entity
+  table: post
+  repositoryClass: AppBundle\Repository\PostRepository
+  fields:
+    subject:
+      type: string
+      length: 255
+    content:
+      type: text
+    isUrgent:
+      type: boolean
+      nullable: true
+      column: is_urgent
+  manyToOne:
+    house:
+      targetEntity: House
+      inversedBy: posts
+      joinColumn:
+        name: house_id
+        referencedColumnName: id
+    user:
+      targetEntity: User
+      inversedBy: posts
+      joinColumn:
+        name: user_id
+        referencedColumnName: id
+  lifecycleCallbacks: {  }

@@ -7,11 +7,31 @@ namespace AppBundle\Entity;
  */
 class Reaction extends SocialEntity
 {
+
     /**
      * @var int
      */
     private $reactionType;
 
+    /**
+     * @var \AppBundle\Entity\SocialEntity
+     */
+    private $socialEntity;
+
+    /**
+     * @var int
+     */
+    private $userId;
+
+    /**
+     * @var int
+     */
+    private $socialEntityId;
+
+    /**
+     * @var \AppBundle\Entity\User
+     */
+    private $user;
 
     /**
      * Set reactionType.
@@ -35,5 +55,77 @@ class Reaction extends SocialEntity
     public function getReactionType()
     {
         return $this->reactionType;
+    }
+
+    /**
+     * Set user.
+     *
+     * @param int $user
+     *
+     * @return Reaction
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return int
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * return the type name of the reaction
+     *
+     * @return string
+     */
+    public function getReactionTypeName():string
+    {
+        $typeNames = self::getReactionTypes();
+        return $typeNames[$this->getReactionType()];
+    }
+
+    public static function getReactionTypes():array
+    {
+        return $typeNames = [
+            1 => 'smiley',
+            2 => 'thumbsup',
+            3 => 'heart',
+            4 => 'rage',
+            5 => 'laughing',
+            6 => 'hushed',
+            7 => 'cry'
+        ];
+    }
+
+    /**
+     * Set socialEntity.
+     *
+     * @param \AppBundle\Entity\SocialEntity|null $socialEntity
+     *
+     * @return Comment
+     */
+    public function setSocialEntity(\AppBundle\Entity\SocialEntity $socialEntity = null)
+    {
+        $this->socialEntity = $socialEntity;
+
+        return $this;
+    }
+
+    /**
+     * Get socialEntity.
+     *
+     * @return \AppBundle\Entity\SocialEntity|null
+     */
+    public function getSocialEntity()
+    {
+        return $this->socialEntity;
     }
 }

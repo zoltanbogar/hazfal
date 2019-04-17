@@ -56,7 +56,27 @@ class UserController extends Controller
             return $this->container->get('response_handler')->errorHandler("house_users_not_exist", "Not found", 404);
         }
 
-        return $this->container->get('response_handler')->successHandler($objHouseUsers, $request->query->all());
+        $returnData = [
+            'actives' => [],
+            'inactives' => ""
+        ];
+        $inactives = [];
+        foreach($objHouseUsers as $houseUser) {
+            if($user = $houseUser->getUser()) {
+                $returnData['actives'][] = [
+                    'id' => $user->getId(),
+                    'image' => "/assets/images/profile/".$user->getProfileImage(),
+                    'fullName' => $houseUser->getFullname(),
+                    'unit' => "A. ép. 3. em. 12.",
+                    'titles' => [ ['success', 'szv'], ['info', 'a'] ] //first is the color of badge, second is the text of the badge
+                ];
+            } else {
+                $inactives[] = $houseUser->getFullname().' <span class="help">(A. ép. 3. em. 12.)</span>';
+            }
+        }
+        $returnData['inactivesCount'] = count($inactives);
+        $returnData['inactives'] = implode( ', ' , $inactives );
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
     public function getHouseUsersByUnitIdAction(Request $request)
@@ -101,8 +121,47 @@ class UserController extends Controller
         if (!$objUser) {
             return $this->container->get('response_handler')->errorHandler("user_not_exists", "Not found", 404);
         }
+        $units = [];
+        $houseUsers = $objUser->getHouseUsers();
+        foreach ($houseUsers as $houseUser) {
+            if($houseUser) {
+                $house = $houseUser->getHouse();
+                $tenant = $houseUser->getUnitTenant();
+                if($tenant) {
+                    foreach ($tenant->getUnits() as $unit) {
+                        $units[] = [
+                            'id' => $unit->getId(),
+                            'address' => $unit->getBuilding().". ".$unit->getFloor()." em. ".$unit->getDoor()." ajtó",
+                            'type' => $unit->getType()
+                        ];
+                    }
+                }
+                $userData['houses'][] = [
+                    'id' => $house->getId(),
+                    'address' => $house->getPostalCode(). " ".$house->getCity().", ".$house->getStreet()." ".$house->getBuilding(),
+                    'units' => $units
+                ];
+                
+            }
+        }
 
-        return $this->container->get('response_handler')->successHandler($objUser, $request->query->all());
+        $returnData = [
+            'id' => $objUser->getId(),
+            'bio' => $objUser->getBio(),
+            'firstName' => $objUser->getFirstName(),
+            'lastName' => $objUser->getLastName(),
+            'fullName' => $objUser->getFullname(),
+            'phoneNumber' => $objUser->getPhoneNumber(),
+            'localPhoneNumber' => $objUser->getLocalPhoneNumber(),
+            'email' => $objUser->getEmail(),
+            'officialAddress' => $objUser->getOfficialAddress(),
+            'facebook' => $objUser->getFacebook(),
+            'twitter' => $objUser->getTwitter(),
+            'instagram' => $objUser->getInstagram(),
+            'units' => $units,
+            'profileImage' => "/assets/images/profile/".$objUser->getProfileImage()
+        ];
+        return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
     public function getHouseUserByIdAction(Request $request)
@@ -399,4 +458,39 @@ class UserController extends Controller
             $request->query->all()
         );
     }
+
+
+    public function putSaveUserDataAction(Request $request)
+    {
+
+        $token = $request->headers->get('X-AUTH-TOKEN');
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objUser = $entityManager->getRepository(User::class)->findUserByApiKey($token);
+
+        if (!$objUser) {
+            return $this->container->get('response_handler')->errorHandler("invalid_token", "Invalid parameters", 422);
+        }
+        
+        $objUser->setFirstName($request->get('firstName'));
+        $objUser->setLastName($request->get('lastName'));
+        $objUser->setPhoneNumber($request->get('phoneNumber'));
+        $objUser->setLocalPhoneNumber($request->get('localPhoneNumber'));
+        $objUser->setBio($request->get('bio'));
+        $objUser->setEmail($request->get('email'));
+        $objUser->setOfficialAddress($request->get('officialAddress'));
+        $objUser->setTwitter($request->get('twitter'));
+        $objUser->setFacebook($request->get('facebook'));
+        $objUser->setInstagram($request->get('instagram'));
+
+        $entityManager->persist($objUser);
+        $entityManager->flush();
+        $response = [
+            'success' => true,
+            'message' => 'Elmentve'
+        ];
+        return $this->container->get('response_handler')->successHandler($response, []);
+    }
+
+
 }

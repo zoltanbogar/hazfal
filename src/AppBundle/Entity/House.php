@@ -762,4 +762,15 @@ class House
     {
         return $this->houseManager;
     }
+
+    /**
+     * return the full address of the house
+     * eg.: 1021 Budapest, Budakeszi út 77/B.
+     * @author pali
+     *
+     * @return string
+     */
+    public function getAddress() {
+        return $this->getPostalCode()." ".$this->getCity().", ".$this->getStreet()." ".$this->getBuilding();
+    }
 }

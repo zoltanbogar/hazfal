@@ -114,7 +114,8 @@ security:
   access_control:
     #- { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/registration, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/registration/*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/payments/*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/admin, roles: ROLE_USER }
     - { path: ^/, roles: ROLE_USER }

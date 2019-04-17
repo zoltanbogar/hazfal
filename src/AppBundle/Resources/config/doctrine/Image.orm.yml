@@ -14,7 +14,7 @@ AppBundle\Entity\Image:
             length: 255
     manyToOne:
         socialEntity:
-            targetEntity: Image
+            targetEntity: SocialEntity
             inversedBy: images
             joinColumn:
                 name: social_entity_id

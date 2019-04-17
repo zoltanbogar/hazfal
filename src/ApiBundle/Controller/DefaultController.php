@@ -101,7 +101,12 @@ class DefaultController extends Controller
         $entityManager->persist($objUser);
         $entityManager->flush();
 
-        return $this->container->get('response_handler')->successHandler('SMS Sent!', []);
+        $response = [
+            'success' => true,
+            'message' => 'SMS elküldve!'
+        ];
+
+        return $this->container->get('response_handler')->successHandler($response, []);
     }
 
     public function putSavePhoneNumberAction(Request $request)
@@ -130,12 +135,39 @@ class DefaultController extends Controller
             return $this->container->get('response_handler')->errorHandler("invalid_sms_code", "Invalid parameters", 422);
         }
 
+        $objUser->setEnabled(true);
         $objUser->setPhoneConformationSentAt(NULL);
         $objUser->setPhoneConformationCode(NULL);
 
         $entityManager->persist($objUser);
         $entityManager->flush();
+        $response = [
+            'success' => true,
+            'message' => 'Telefonszám elmentve'
+        ];
+        return $this->container->get('response_handler')->successHandler($response, []);
+    }
 
-        return $this->container->get('response_handler')->successHandler('Phone number saved!', []);
+
+    public function getConfirmUserAction(Request $request)
+    {
+        $token = $request->headers->get('X-AUTH-TOKEN');
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objUser = $entityManager->getRepository(User::class)->findUserByApiKey($token);
+
+        if (!$objUser) {
+            return $this->container->get('response_handler')->errorHandler("invalid_token", "Invalid parameters", 422);
+        }
+
+        $objUser->setEnabled(true);
+
+        $entityManager->persist($objUser);
+        $entityManager->flush();
+        $response = [
+            'success' => true,
+            'message' => 'Regisztráció megerősítve!'
+        ];
+        return $this->container->get('response_handler')->successHandler($response, []);
     }
 }

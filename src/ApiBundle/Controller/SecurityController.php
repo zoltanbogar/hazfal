@@ -67,28 +67,32 @@ class SecurityController extends Controller
         $userData = [];
         $userData['id'] = $objUser->getId();
         $userData['accessToken'] = $objUser->getApiKey();
-        $userData['name'] = $objUser->getLastName() . " " . $objUser->getFirstName();
-        $userData['profileUrl'] = "/assets/images/profile.jpg";
+        $userData['name'] = $objUser->getLastName()." ".$objUser->getFirstName();
+        $userData['profileUrl'] = "/assets/images/profile/".$objUser->getProfileImage() ;
         $userData['houses'] = [];
         $units = [];
 
-        $houseUser = $objUser->getHouseUser();
-        if ($houseUser) {
-            $house = $houseUser->getHouse();
-            $tenant = $houseUser->getUnitTenant();
-            foreach ($tenant->getUnits() as $unit) {
-                $units[] = [
-                    'id' => $unit->getId(),
-                    'address' => $unit->getBuilding() . ". " . $unit->getFloor() . " em. " . $unit->getDoor() . " ajtó",
-                    'type' => $unit->getType(),
+        $houseUsers = $objUser->getHouseUsers();
+        foreach ($houseUsers as $houseUser) {
+            if($houseUser) {
+                $house = $houseUser->getHouse();
+                $tenant = $houseUser->getUnitTenant()->first();
+                if($tenant) {
+                    foreach ($tenant->getUnits() as $unit) {
+                        $units[] = [
+                            'id' => $unit->getId(),
+                            'address' => $unit->getBuilding().". ".$unit->getFloor()." em. ".$unit->getDoor()." ajtó",
+                            'type' => $unit->getType()
+                        ];
+                    }
+                }
+                $userData['houses'][] = [
+                    'id' => $house->getId(),
+                    'address' => $house->getPostalCode(). " ".$house->getCity().", ".$house->getStreet()." ".$house->getBuilding(),
+                    'units' => $units
                 ];
+                
             }
-            $userData['houses'][] = [
-                'id' => $house->getId(),
-                'address' => $house->getPostalCode() . " " . $house->getCity() . ", " . $house->getStreet() . " " . $house->getBuilding(),
-                'units' => $units,
-            ];
-
         }
 
         return $this->container->get('response_handler')->successHandler($userData, $request->query->all());
@@ -96,18 +100,18 @@ class SecurityController extends Controller
 
     public function getRegistrationByTokenAction(Request $request)
     {
-        if (!$request->get("token") || !$request->get("username") || !$request->get("first_name")) {
-            return $this->container->get('response_handler')->errorHandler("invalid_params", "Invalid parameters", 422);
+        if (!$request->get("token") || !$request->get("first_name") || !$request->get("last_name") || !$request->get("gender")) {
+            return $this->container->get('response_handler')->errorHandler("invalid_params", "Minden mező kitöltése kötelező", 422);
         }
 
         $strToken = $request->get("token");
         $objHouseUser = $this->getDoctrine()->getRepository(HouseUser::class)->findBy(['registrationToken' => $strToken]);
 
         if (!$objHouseUser) {
-            return $this->container->get('response_handler')->errorHandler("token_not_exists", "Not found", 404);
+            return $this->container->get('response_handler')->errorHandler("token_not_exists", "Regisztrációs kód nem található", 404);
         } else {
             if (count($objHouseUser) > 1) {
-                return $this->container->get('response_handler')->errorHandler("more_than_one_house_user_found", "Invalid credentials", 422);
+                return $this->container->get('response_handler')->errorHandler("more_than_one_house_user_found", "Több felhasználónál is szerepel a kód", 422);
             }
         }
 
@@ -115,40 +119,40 @@ class SecurityController extends Controller
         $objUser = $objHouseUser->getUser();
 
         if ($objUser !== NULL) {
-            return $this->container->get('response_handler')->errorHandler("user_with_token_already_registered", "Invalid parameters", 422);
+            return $this->container->get('response_handler')->errorHandler("user_with_token_already_registered", "A kód (".$strToken.") már fel lett használva", 422);
         }
-
+        /**
         $objUser = $this->getDoctrine()->getRepository(User::class)->findUserByUsername($request->get("username"));
 
         if ($objUser) {
             return $this->container->get('response_handler')->errorHandler("username_already_registered", "Invalid parameters", 422);
         }
-
+        */
         $objUser = $this->getDoctrine()->getRepository(User::class)->findUserByEmail($request->get("email"));
 
         if ($objUser) {
-            return $this->container->get('response_handler')->errorHandler("user_email_already_registered", "Invalid parameters", 422);
+            return $this->container->get('response_handler')->errorHandler("user_email_already_registered", "E-mail cím foglalt", 422);
         }
 
         $entityManager = $this->getDoctrine()->getManager();
         $userManager = $this->get('fos_user.user_manager');
         $user = $userManager->createUser();
 
-        $strDateOfBirth = new \DateTime($request->get("date_of_birth"));
+        //$strDateOfBirth = new \DateTime($request->get("date_of_birth"));
         $user->setFirstName($request->get("first_name"));
         $user->setLastName($request->get("last_name"));
         $user->setRegistrationDate(new \DateTime('now'));
-        $user->setDateOfBirth($strDateOfBirth);
-        $user->setPlaceOfBirth($request->get("place_of_birth"));
-        $user->setBio($request->get("bio"));
-        $user->setSex($request->get("sex"));
+        $user->setDateOfBirth(null);
+        $user->setPlaceOfBirth('');
+        $user->setBio('');
+        $user->setSex($request->get("gender"));
         //$user->setPhoneNumber($request->get("phone_number"));
-        $user->setLocalPhoneNumber($request->get("local_phone_number"));
-        $user->setOfficialAddress($request->get("official_address"));
-        $user->setCurrentLocation($request->get("current_location"));
+        $user->setLocalPhoneNumber("");
+        $user->setOfficialAddress("");
+        $user->setCurrentLocation("");
         $user->setJoinToken($request->get("token"));
         $user->setApiKey(substr(base64_encode(sha1(mt_rand())), 0, 64));
-        $user->setUsername($request->get("username"));
+        $user->setUsername("");
         $user->setEmail($request->get("email"));
         $user->setPlainPassword($request->get("password"));
         $user->setPassword($request->get("password"));
@@ -207,6 +211,55 @@ class SecurityController extends Controller
 
         return $this->container->get('response_handler')->successHandler($user, $request->query->all());
     }
+
+    /**
+     * get the houseuser by a token for registration
+     * @author pali
+     * @param Request $request
+     * @return Symfony\Component\HttpFoundation\Response
+     */
+    public function getHouseUserByTokenAction(Request $request)
+    {
+        if (!$request->get("token")) {
+            return $this->container->get('response_handler')->errorHandler("no_house_user_token_provided", "Hiányzó belépő kód", 422);
+        }
+
+        $strToken = $request->get("token");
+        $objHouseUser = $this->getDoctrine()->getRepository(HouseUser::class)->findBy(['registrationToken' => $strToken]);
+
+        if (!$objHouseUser) {
+            return $this->container->get('response_handler')->errorHandler("token_not_exists", "Nem megfelelő kód", 404);
+        } else {
+            if (count($objHouseUser) > 1) {
+                return $this->container->get('response_handler')->errorHandler("more_than_one_house_user_found", "Invalid credentials", 422);
+            }
+        }
+
+        $objHouseUser = $objHouseUser[0];
+        $objUser = $objHouseUser->getUser();
+
+        if ($objUser !== NULL) {
+            return $this->container->get('response_handler')->errorHandler("user_with_token_already_registered", "A kódot már felasználták", 422);
+        }
+        $objHouse = $objHouseUser->getHouse();
+
+        if ($objHouse === NULL) {
+            return $this->container->get('response_handler')->errorHandler("house_doesnt_exists", "A kódhoz nem tartozik ház", 422);
+        }
+
+        $returnParams = [
+            'success' => true,
+            'data' => [
+                "id" => $objHouseUser->getId(),
+                "name" => $objHouseUser->getLastName()." ".$objHouseUser->getFirstName(),
+                "houseAddress" => $objHouse->getAddress(),
+                'token' => $strToken,
+            ]
+        ];
+
+        return $this->container->get('response_handler')->successHandler($returnParams, $request->query->all());
+    }
+
 
     public function getConfirmRegistrationAction($hash, Request $request)
     {

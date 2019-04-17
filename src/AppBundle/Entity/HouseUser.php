@@ -547,4 +547,9 @@ class HouseUser
     {
         return $this->houses;
     }
+
+    public function getFullname() 
+    {
+        return $this->getLastName(). " " . $this->getFirstName();
+    }
 }

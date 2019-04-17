@@ -12,10 +12,10 @@ AppBundle\Entity\Comment:
             joinColumn:
                 name: user_id
                 referencedColumnName: id
-        socialEntity:
+        parentSocialEntity:
             targetEntity: SocialEntity
             inversedBy: comments
             joinColumn:
-                name: social_entity_id
+                name: parent_social_entity_id
                 referencedColumnName: id
     lifecycleCallbacks: {  }

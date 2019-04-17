@@ -408,6 +408,8 @@ class FinanceController extends Controller
     public function successfulBorgunPaymentAction(Request $request)
     {
         if ($request->get('status') !== 'OK') {
+            error_log('status_not_ok: '.$orderId);
+            return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen");
             return $this->container->get('response_handler')->errorHandler("status_not_ok", "Invalid parameters", 400);
         }
 
@@ -422,30 +424,41 @@ class FinanceController extends Controller
         $buyerEmail = $request->get('buyeremail');
         $step = $request->get('step');
         $isDebit = $request->get('isdebit');
+        $defaultCurrency = $this->getParameter('borgun_default_curreny');
+
+        $secretKey = $this->getParameter('borgun_secret');
+
+        $message = utf8_encode($orderID.'|'.$amount.'|'.$defaultCurrency);
+
+        $checkhash = hash_hmac('sha256', $message, $secretKey);
 
         $objOrder = $this->getDoctrine()->getRepository(Order::class)->findBy(
             [
-                'orderId' => $orderID,
-                'isPaid' => 0,
-                'checkHash' => $orderHash,
+                'orderId' => $orderID
             ]
         );
 
         if (!$objOrder || count($objOrder) > 1) {
-            return $this->container->get('response_handler')->errorHandler("status_not_ok", "Invalid parameters", 400);
+            error_log('Sikertelen fizetes: '.$orderId);
+            return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen");
+            //return $this->container->get('response_handler')->errorHandler("cant_find_object", "Invalid parameters", 400);
             //mit csinálunk, ha nem egyezik?
         }
 
         $objOrder = $objOrder[0];
-
+        $objOrder->setIsPaid(1);
         $entityManager = $this->getDoctrine()->getManager();
-
+        
+        $entityManager->persist($objOrder);
         $objPayment = new Payment();
+
         if (TRUE) { //FIXME
             $numPaymentMethodID = 1; //$request->get("unit_id");
             $objPaymentMethod = $this->getDoctrine()->getRepository(PaymentMethod::class)->find($numPaymentMethodID);
             if (!$objPaymentMethod) {
-                return $this->container->get('response_handler')->errorHandler("invalid_payment_method_id", "Invalid parameters", 422);
+                error_log('invalid payment method: '.$orderId);
+                return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen");
+                //return $this->container->get('response_handler')->errorHandler("invalid_payment_method_id", "Invalid parameters", 422);
             }
             $objPayment->setPaymentMethod($objPaymentMethod);
         }
@@ -460,8 +473,8 @@ class FinanceController extends Controller
 
         $entityManager->persist($objPayment);
         $entityManager->flush();
-
-        return $this->container->get('response_handler')->successHandler("Payment saved!", []);
+        
+        return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikeres");
     }
 
     public function initBorgunPaymentAction(Request $request)
@@ -473,11 +486,11 @@ class FinanceController extends Controller
         if (!$request->get('unit_id') || !is_numeric($request->get('unit_id'))) {
             return $this->container->get('response_handler')->errorHandler("no_unit_id_found", "Not found", 404);
         }
-        $tblParam = json_decode($param, TRUE);
+        $tblParam = $param;
         $tblItems = [];
         $numSumAmount = 0;
 
-        foreach ($tblParam as $rowParam) {
+        foreach ($tblParam as $key => $rowParam) {
             $objBill = $this->getDoctrine()->getRepository(Bill::class)->findBy(
                 [
                     'amount' => $rowParam["amount"],
@@ -492,10 +505,10 @@ class FinanceController extends Controller
 
             $objBill = $objBill[0];
             $tblItems[] = [
-                'itemdescription_0' => $objBill->getDetails(),
-                'itemcount_0' => 1,
-                'itemunitamount_0' => $objBill->getAmount(),
-                'itemamount_0' => $objBill->getAmount(),
+                'Itemdescription_'.$key => $objBill->getDetails(),
+                'Itemcount_'.$key => 1,
+                'Itemunitamount_'.$key => $objBill->getAmount(),
+                'Itemamount_'.$key => $objBill->getAmount(),
             ];
             $numSumAmount += (int)$objBill->getAmount();
         }
@@ -535,7 +548,7 @@ class FinanceController extends Controller
         $merchantID = $this->getParameter('borgun_merchantid');
         $paymentGatewayID = $this->getParameter('borgun_paymentgatewayid');
         $successURL = $this->getParameter('borgun_returnurlsuccess');
-        $successAPIURL = $this->getParameter('borgun_returnurlsuccessserver');
+        $successAPIURL =$this->getParameter('borgun_returnurlsuccessserver');
         $cancelURL = $this->getParameter('borgun_returnurlcancel');
         $errorURL = $this->getParameter('borgun_returnurlerror');
         $secretKey = $this->getParameter('borgun_secret');
@@ -555,24 +568,38 @@ class FinanceController extends Controller
 
         $response = [
             'action' => $postURL,
-            'merchantid' => $merchantID,
+            'Merchantid' => $merchantID,
             'paymentgatewayid' => $paymentGatewayID,
             'checkhash' => $checkhash,
-            'orderid' => $strOrderID,
+            'Orderid' => $strOrderID,
+            'amount' => $numSumAmount,
             'currency' => $defaultCurrency,
             'language' => $defaultLanguage,
-            'buyername' => 'Frici',
-            'buyeremail' => 'frici@myemail.com',
+            'buyername' => $objUser->getFullname(),
+            'buyeremail' => $objUser->getEmail(),
             'returnurlsuccess' => $successURL,
-            'returnurlsuccessserver' => $successAPIURL,
+            'returnurlsuccessserver' => $successAPIURL, // conditional
             'returnurlcancel' => $cancelURL,
             'returnurlerror' => $errorURL,
-            'pagetype ' => 0,
-            'skipreceiptpage ' => 0,
+            'pagetype' => 0,
+            'skipreceiptpage' => 0,
             'merchantemail' => 'info@hazfal.hu',
-            'items' => $tblItems,
+            //'items' => $tblItems,
         ];
-
+        foreach ($tblItems as $key => $item) {
+            foreach($item as $billKey => $billItem) {
+                $response[$billKey] = $billItem;
+            }
+        }
         return $this->container->get('response_handler')->successHandler($response, []);
+    }
+
+    public function unsuccessBorgunPaymentAction(Request $request)
+    {
+        $params = $request->getContent();
+        $baseUrl = $this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen";
+        if($params)
+            $baseUrl .= "?".$params;
+        return $this->redirect($baseUrl);
     }
 }
