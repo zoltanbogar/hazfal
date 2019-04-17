@@ -239,13 +239,9 @@ class Document extends SocialEntity
     {
         return $this->house;
     }
-<<<<<<< .merge_file_a04996
-=======
+
     /**
      * @var int
      */
     private $id;
-
-
->>>>>>> .merge_file_a09432
 }

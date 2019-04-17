@@ -141,6 +141,39 @@ api_get_export_payments:
   defaults: { _controller: ApiBundle:Finance:getExportPayments }
   methods: GET
 
+api_post_bulk_import_house:
+  path: /bulk-import/house
+  defaults: { _controller: ApiBundle:Building:postBulkImportHouse }
+  methods: POST
+api_post_bulk_import_unit:
+  path: /bulk-import/unit
+  defaults: { _controller: ApiBundle:Building:postBulkImportUnit }
+  methods: POST
+api_post_bulk_import_user:
+  path: /bulk-import/user
+  defaults: { _controller: ApiBundle:User:postBulkImportUser }
+  methods: POST
+api_post_bulk_import_house_user:
+  path: /bulk-import/house-user
+  defaults: { _controller: ApiBundle:User:postBulkImportHouseUser }
+  methods: POST
+api_post_bulk_import_manager:
+  path: /bulk-import/manager
+  defaults: { _controller: ApiBundle:User:postBulkImportManager }
+  methods: POST
+api_post_bulk_import_document:
+  path: /bulk-import/document
+  defaults: { _controller: ApiBundle:SocialEntity:postBulkImportDocument }
+  methods: POST
+api_post_bulk_import_bill:
+  path: /bulk-import/bill
+  defaults: { _controller: ApiBundle:Finance:postBulkImportBill }
+  methods: POST
+api_post_bulk_import_payment:
+  path: /bulk-import/payment
+  defaults: { _controller: ApiBundle:Finance:postBulkImportPayment }
+  methods: POST
+
 api_payments_borgun_success:
   path: /payments/borgun/success
   defaults: { _controller: ApiBundle:Finance:successfulBorgunPayment }

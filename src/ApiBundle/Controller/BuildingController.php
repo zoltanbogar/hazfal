@@ -247,4 +247,147 @@ class BuildingController extends Controller
             $request->query->all()
         );
     }
+
+    public function postBulkImportHouseAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), true);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'name' => 'required',
+                    'region' => 'required',
+                    'building' => 'required',
+                    'postal_code' => 'required|numeric',
+                    'city' => 'required',
+                    'street' => 'required',
+                    'unit' => 'required',
+                    'lot_number' => 'required|numeric',
+                    'gps_latitude' => 'required|numeric',
+                    'gps_longitude' => 'required|numeric',
+                    'id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedHouse::class)->findBy(['externalId' => $rowPayload['id'], 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objHouse = new ImportedHouse();
+            $objHouse->setName($rowPayload['name']);
+            $objHouse->setCountryCode($rowPayload['country_code'] ?? 'HU');
+            $objHouse->setRegion($rowPayload['region']);
+            $objHouse->setPostalCode($rowPayload['postal_code']);
+            $objHouse->setCity($rowPayload['city']);
+            $objHouse->setStreet($rowPayload['street']);
+            $objHouse->setBuilding($rowPayload['building']);
+            $objHouse->setUnit($rowPayload['unit']);
+            $objHouse->setLotNumber($rowPayload['lot_number']);
+            $objHouse->setGpsLatitude($rowPayload['gps_latitude']);
+            $objHouse->setGpsLongitude($rowPayload['gps_longitude']);
+            $objHouse->setImportedAt(new \DateTime('now'));
+            $objHouse->setExternalId($rowPayload['id']);
+            $objHouse->setIsAccepted(0);
+            $objHouse->setImportSource($objImportSource);
+
+            $entityManager->persist($objHouse);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", " . $rowPayload["name"] . " importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function postBulkImportUnitAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), true);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'building' => 'required',
+                    'floor' => 'required|numeric',
+                    'door' => 'required|numeric',
+                    'floor_area' => 'required|numeric',
+                    'type' => 'required|numeric',
+                    'balance' => 'required|numeric',
+                    'house_share' => 'required|numeric',
+                    'id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedUnit::class)->findBy(['externalId' => $rowPayload['id'], 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objUnit = new ImportedUnit();
+            $objUnit->setBuilding($rowPayload['building']);
+            $objUnit->setFloor($rowPayload['floor']);
+            $objUnit->setDoor($rowPayload['door']);
+            $objUnit->setFloorArea($rowPayload['floor_area']);
+            $objUnit->setUnitType($rowPayload['type']);
+            $objUnit->setBalance($rowPayload['balance']);
+            $objUnit->setHouseShare($rowPayload['house_share']);
+            $objUnit->setHouseId($rowPayload["house_id"]);
+            $objUnit->setTenantId($rowPayload["unit_tenant_id"]);
+            $objUnit->setImportedAt(new \DateTime('now'));
+            $objUnit->setExternalId($rowPayload['id']);
+            $objUnit->setIsAccepted(0);
+            $objUnit->setImportSource($objImportSource);
+
+            $entityManager->persist($objUnit);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Ház azonosító: " . $rowPayload["house_id"] . ", Lakó azonosító: " . $rowPayload["unit_tenant_id"] . ", " . $rowPayload["building"] . ", " . $rowPayload["floor"] . "/" . $rowPayload["door"] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
 }

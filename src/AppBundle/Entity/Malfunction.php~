@@ -123,13 +123,4 @@ class Malfunction extends SocialEntity
     {
         return $this->house;
     }
-<<<<<<< HEAD
-=======
-    /**
-     * @var int
-     */
-    private $id;
-
-
->>>>>>> develop
 }

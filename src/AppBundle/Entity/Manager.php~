@@ -65,13 +65,4 @@ class Manager extends HouseUser
     {
         return $this->logoImage;
     }
-<<<<<<< .merge_file_a15688
-=======
-    /**
-     * @var int
-     */
-    private $id;
-
-
->>>>>>> .merge_file_a11232
 }

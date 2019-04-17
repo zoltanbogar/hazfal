@@ -152,13 +152,4 @@ class ImportedDocument extends ImportedEntity
     {
         return $this->filename;
     }
-<<<<<<< .merge_file_a16516
-=======
-    /**
-     * @var int
-     */
-    private $id;
-
-
->>>>>>> .merge_file_a16864
 }

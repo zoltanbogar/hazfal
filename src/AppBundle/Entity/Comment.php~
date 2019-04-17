@@ -94,8 +94,7 @@ class Comment extends SocialEntity
     {
         return $this->socialEntity;
     }
-<<<<<<< .merge_file_a06544
-=======
+
     /**
      * @var int
      */
@@ -109,6 +108,4 @@ class Comment extends SocialEntity
         return $this->id;
     }
 
-
->>>>>>> .merge_file_a09816
 }

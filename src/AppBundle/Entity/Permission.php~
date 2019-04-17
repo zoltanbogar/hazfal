@@ -167,8 +167,6 @@ class Permission
     {
         return $this->deletedAt;
     }
-<<<<<<< .merge_file_a09600
-=======
     /**
      * @var string
      */
@@ -198,9 +196,6 @@ class Permission
     {
         return $this->slug;
     }
-<<<<<<< HEAD
->>>>>>> .merge_file_a11108
-=======
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -249,5 +244,4 @@ class Permission
     {
         return $this->users;
     }
->>>>>>> develop
 }
