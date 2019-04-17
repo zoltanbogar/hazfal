@@ -91,7 +91,7 @@ class SecurityController extends Controller
                     'address' => $house->getPostalCode(). " ".$house->getCity().", ".$house->getStreet()." ".$house->getBuilding(),
                     'units' => $units
                 ];
-                
+
             }
         }
 
@@ -138,21 +138,21 @@ class SecurityController extends Controller
         $userManager = $this->get('fos_user.user_manager');
         $user = $userManager->createUser();
 
-        //$strDateOfBirth = new \DateTime($request->get("date_of_birth"));
+        $strDateOfBirth = new \DateTime($request->get("date_of_birth"));
         $user->setFirstName($request->get("first_name"));
         $user->setLastName($request->get("last_name"));
         $user->setRegistrationDate(new \DateTime('now'));
-        $user->setDateOfBirth(null);
-        $user->setPlaceOfBirth('');
-        $user->setBio('');
+        $user->setDateOfBirth($strDateOfBirth);
+        $user->setPlaceOfBirth($request->get("place_of_birth"));
+        $user->setBio($request->get("bio"));
         $user->setSex($request->get("gender"));
         //$user->setPhoneNumber($request->get("phone_number"));
-        $user->setLocalPhoneNumber("");
-        $user->setOfficialAddress("");
-        $user->setCurrentLocation("");
+        $user->setLocalPhoneNumber($request->get("local_phone_number"));
+        $user->setOfficialAddress($request->get("official_address"));
+        $user->setCurrentLocation($request->get("current_location"));
         $user->setJoinToken($request->get("token"));
         $user->setApiKey(substr(base64_encode(sha1(mt_rand())), 0, 64));
-        $user->setUsername("");
+        $user->setUsername($request->get("username"));
         $user->setEmail($request->get("email"));
         $user->setPlainPassword($request->get("password"));
         $user->setPassword($request->get("password"));
