@@ -65,10 +65,15 @@ class UserController extends Controller
     public function getUserAddAction($objectType, Request $request)
     {
         $objUser = new User();
+        $isSalesUser = false;
 
         $objPermissions = $this->getDoctrine()
             ->getRepository('AppBundle:Permission')
             ->findAll();
+
+        if ($objectType == 'sales') {
+            $isSalesUser = true;
+        }
 
         return $this->render(
             'Admin\User\form.html.twig',
@@ -78,6 +83,7 @@ class UserController extends Controller
                 'objPermissions' => $objPermissions,
                 'isEditable' => TRUE,
                 'isNew' => TRUE,
+                'isSalesUser' => $isSalesUser,
                 'error' => NULL,
                 'success' => NULL,
             ]
@@ -134,6 +140,7 @@ class UserController extends Controller
         $error = NULL;
         $success = TRUE;
         $objUserID = 0;
+        $objectType = 'user';
 
         if ($validator['hasError']) {
             $error = $validator;
@@ -142,8 +149,7 @@ class UserController extends Controller
 
         if (!$error) {
             $entityManager = $this->getDoctrine()->getManager();
-
-            $objPermission = $entityManager->getRepository('AppBundle:Permission')->find($request->get('inputPermissionId'));
+            $inputPermissionIDs = $request->get('inputPermissionId');
             $strDateOfBirth = new \DateTime($request->get("inputDateOfBirth"));
 
             $objUser = new User();
@@ -164,10 +170,26 @@ class UserController extends Controller
             $objUser->setOfficialAddress($request->get('inputOfficialAddress'));
             $objUser->setCurrentLocation($request->get('inputCurrentLocation'));
             $objUser->setBio($request->get('inputBio'));
-            $objUser->setPermission($objPermission);
 
             $entityManager->persist($objUser);
             $entityManager->flush();
+
+            foreach ($inputPermissionIDs as $permissionID) {
+                $objPermission = $entityManager->getRepository('AppBundle:Permission')->find($permissionID);
+
+                if (!is_null($objPermission)) {
+                    $objUser->addPermission($objPermission);
+
+                    $entityManager->persist($objUser);
+                    $entityManager->flush();
+                }
+            }
+
+            foreach ($objUser->getPermissions() as $permission) {
+                if ($permission->getSlug() == 'sales') {
+                    $objectType = 'sales';
+                }
+            }
 
             $objUserID = $objUser->getId();
         }
@@ -176,6 +198,7 @@ class UserController extends Controller
             'admin_get_user_read',
             [
                 'userId' => $objUserID,
+                'objectType' => $objectType,
                 'error' => NULL,
                 'success' => $success
             ]
@@ -205,6 +228,7 @@ class UserController extends Controller
 
         $error = NULL;
         $success = TRUE;
+        $objectType = 'user';
 
         if ($validator['hasError']) {
             $error = $validator;
@@ -221,8 +245,7 @@ class UserController extends Controller
 
         if (!$error) {
             $entityManager = $this->getDoctrine()->getManager();
-
-            $objPermission = $entityManager->getRepository('AppBundle:Permission')->find($request->get('inputPermissionId'));
+            $inputPermissionIDs = $request->get('inputPermissionId');
             $strDateOfBirth = new \DateTime($request->get("inputDateOfBirth"));
 
             $objUser->setUsername($request->get('inputUserName'));
@@ -239,16 +262,37 @@ class UserController extends Controller
             $objUser->setOfficialAddress($request->get('inputOfficialAddress'));
             $objUser->setCurrentLocation($request->get('inputCurrentLocation'));
             $objUser->setBio($request->get('inputBio'));
-            $objUser->setPermission($objPermission);
 
             $entityManager->persist($objUser);
             $entityManager->flush();
+
+            foreach ($objUser->getPermissions() as $permission) {
+                $objUser->removePermission($permission);
+                $entityManager->persist($objUser);
+                $entityManager->flush();
+            }
+
+            foreach ($inputPermissionIDs as $permissionID) {
+                $objPermission = $entityManager->getRepository('AppBundle:Permission')->find($permissionID);
+
+                $objUser->addPermission($objPermission);
+                $entityManager->persist($objUser);
+                $entityManager->flush();
+            }
+
+            foreach ($objUser->getPermissions() as $permission) {
+                if ($permission->getSlug() == 'sales') {
+                    $objectType = 'sales';
+                    break;
+                }
+            }
         }
 
         return $this->render(
             'Admin\User\form.html.twig',
             [
                 'objUser' => $objUser,
+                'objectType' => $objectType,
                 'objPermissions' => $objPermissions,
                 'isEditable' => TRUE,
                 'isNew' => FALSE,
