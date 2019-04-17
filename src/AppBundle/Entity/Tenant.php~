@@ -66,10 +66,6 @@ class Tenant extends HouseUser
         return $this->unitTenant;
     }
 
-<<<<<<< .merge_file_a08656
-<<<<<<< HEAD
-=======
->>>>>>> .merge_file_a12476
 
     /**
      * Add unitTenant.
@@ -96,15 +92,4 @@ class Tenant extends HouseUser
     {
         return $this->unitTenant->removeElement($unitTenant);
     }
-<<<<<<< .merge_file_a08656
-=======
->>>>>>> feature/SalesAndManagers
-=======
-    /**
-     * @var int
-     */
-    private $id;
-
-
->>>>>>> .merge_file_a12476
 }

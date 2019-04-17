@@ -123,13 +123,4 @@ class Post extends SocialEntity
     {
         return $this->house;
     }
-<<<<<<< .merge_file_a00852
-=======
-    /**
-     * @var int
-     */
-    private $id;
-
-
->>>>>>> .merge_file_a07760
 }

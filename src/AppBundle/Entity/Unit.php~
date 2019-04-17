@@ -333,11 +333,7 @@ class Unit
      *
      * @return Unit
      */
-<<<<<<< .merge_file_a10680
-    public function setHouse(\AppBundle\Entity\House $house = null)
-=======
     public function setHouse(\AppBundle\Entity\House $house = NULL)
->>>>>>> .merge_file_a08288
     {
         $this->house = $house;
 
@@ -361,11 +357,7 @@ class Unit
      *
      * @return Unit
      */
-<<<<<<< .merge_file_a10680
-    public function setUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant = null)
-=======
     public function setUnitTenant(\AppBundle\Entity\UnitTenant $unitTenant = NULL)
->>>>>>> .merge_file_a08288
     {
         $this->unitTenant = $unitTenant;
 
@@ -381,10 +373,7 @@ class Unit
     {
         return $this->unitTenant;
     }
-<<<<<<< .merge_file_a10680
-=======
 
->>>>>>> .merge_file_a08288
     /**
      * @var \DateTime
      */
@@ -443,10 +432,7 @@ class Unit
     {
         return $this->updatedAt;
     }
-<<<<<<< .merge_file_a10680
-=======
 
->>>>>>> .merge_file_a08288
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -488,42 +474,6 @@ class Unit
     {
         return $this->orders;
     }
-<<<<<<< .merge_file_a10680
-    /**
-<<<<<<< HEAD
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $importedBills;
-
-
-    /**
-     * Add importedBill.
-     *
-     * @param \AppBundle\Entity\ImportedBill $importedBill
-     *
-     * @return Unit
-     */
-    public function addImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
-    {
-        $this->importedBills[] = $importedBill;
-=======
-     * @var \DateTime|null
-     */
-    private $deletedAt;
-
-
-    /**
-     * Set deletedAt.
-     *
-     * @param \DateTime|null $deletedAt
-     *
-     * @return Unit
-     */
-    public function setDeletedAt($deletedAt = null)
-    {
-        $this->deletedAt = $deletedAt;
->>>>>>> develop
-=======
 
     /**
      * @var \DateTime|null
@@ -576,43 +526,11 @@ class Unit
     public function setIsImported($isImported = null)
     {
         $this->isImported = $isImported;
->>>>>>> .merge_file_a08288
 
         return $this;
     }
 
     /**
-<<<<<<< .merge_file_a10680
-<<<<<<< HEAD
-     * Remove importedBill.
-     *
-     * @param \AppBundle\Entity\ImportedBill $importedBill
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removeImportedBill(\AppBundle\Entity\ImportedBill $importedBill)
-    {
-        return $this->importedBills->removeElement($importedBill);
-    }
-
-    /**
-     * Get importedBills.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getImportedBills()
-    {
-        return $this->importedBills;
-=======
-     * Get deletedAt.
-     *
-     * @return \DateTime|null
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
->>>>>>> develop
-=======
      * Get isImported.
      *
      * @return bool|null
@@ -651,6 +569,7 @@ class Unit
     {
         return $this->importedUnit;
     }
+
     /**
      * @var int
      */
@@ -679,6 +598,6 @@ class Unit
     public function getUnitType()
     {
         return $this->unitType;
->>>>>>> .merge_file_a08288
     }
+
 }

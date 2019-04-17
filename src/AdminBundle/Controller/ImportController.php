@@ -302,7 +302,7 @@ class ImportController extends Controller
             $error = $request->query->get('error');
         }
         $objUnits = $this->getDoctrine()
-            ->getRepository('AppBundle:ImportedUnit')
+            ->getRepository(ImportedUnit::class)
             ->findBy(['isAccepted' => 0]);
 
         return $this->render(

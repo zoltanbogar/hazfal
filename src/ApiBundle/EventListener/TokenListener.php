@@ -2,6 +2,7 @@
 
 namespace ApiBundle\EventListener;
 
+use AppBundle\Entity\ImportSource;
 use AppBundle\Entity\User;
 
 use Doctrine\ORM\EntityManager;
@@ -38,6 +39,15 @@ class TokenListener
             return;
         } else {
             if (strpos($event->getRequest()->attributes->get('_route'), 'admin') !== FALSE) return;
+
+            if (strpos($event->getRequest()->attributes->get('_route'), 'import') !== FALSE) {
+                $token = $event->getRequest()->query->get('api_key');
+                if ($token) {
+                    $importSource = $this->entityManager->getRepository(ImportSource::class)->findSourceByApiKey($token);
+                    if ($importSource) return;
+                }
+            }
+            return;
         }
 
         $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');

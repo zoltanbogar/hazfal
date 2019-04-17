@@ -1,201 +1,215 @@
-#admin_login:
-#path: /admin/login
-#defaults: { _controller: AdminBundle:Security:getLogin }
-#methods: GET
-#admin_post_login:
-#  path: /admin/login
-#  defaults: { _controller: AdminBundle:Security:postLogin }
-#  methods: POST
-#fos_user_security_check:
-#  path: /login_check
-#  defaults: { _controller: fos_user.security.controller:checkAction }
-#  methods: POST
-#fos_user_security_login:
-#  path: /admin/login
-#  defaults: { _controller: fos_user.security.controller:loginAction }
-#  methods: GET POST
-
 admin_post_loginn:
-    path:     /admin/login
-    defaults: { _controller: AdminBundle:Security:loginAdmin }
-after_login_route_name:
-    path: /admin/faszom
-    defaults: { _controller: AdminBundle:Security:loginAdminasdasdsa }
-login_failure_route_name:
-    path: /admin/bmeg
-    defaults: { _controller: AdminBundle:Security:loginassdasdas }
+  path:     /admin/login
+  defaults: { _controller: AdminBundle:Security:loginAdmin }
+  host: %admin_domain%
 admin_get_dashboard:
-    path: /admin
-    defaults: { _controller: AdminBundle:Dashboard:index }
-    methods: GET
+  path: /admin
+  defaults: { _controller: AdminBundle:Dashboard:index }
+  methods: GET
+  host: %admin_domain%
 admin_logout:
-    path: /admin/logout
-    defaults: { _controller: AdminBundle:Security:logoutAdmin }
-    methods: GET
+  path: /admin/logout
+  defaults: { _controller: AdminBundle:Security:logoutAdmin }
+  methods: GET
+  host: %admin_domain%
 
 #Houses
 admin_get_houses:
-    path: /admin/houses
-    defaults: { _controller: AdminBundle:Building:getHouses }
-    methods: GET
+  path: /admin/houses
+  defaults: { _controller: AdminBundle:Building:getHouses }
+  methods: GET
+  host: %admin_domain%
 admin_get_house_read:
-    path: /admin/houses/{houseId}/read
-    defaults: { _controller: AdminBundle:Building:getHouseRead }
-    methods: GET
+  path: /admin/houses/{houseId}/read
+  defaults: { _controller: AdminBundle:Building:getHouseRead }
+  methods: GET
+  host: %admin_domain%
 admin_get_house_edit:
-    path: /admin/houses/{houseId}/edit
-    defaults: { _controller: AdminBundle:Building:getHouseEdit }
-    methods: GET
+  path: /admin/houses/{houseId}/edit
+  defaults: { _controller: AdminBundle:Building:getHouseEdit }
+  methods: GET
+  host: %admin_domain%
 admin_get_house_delete:
-    path: /admin/houses/{houseId}/delete
-    defaults: { _controller: AdminBundle:Building:getHouseDelete }
-    methods: GET
+  path: /admin/houses/{houseId}/delete
+  defaults: { _controller: AdminBundle:Building:getHouseDelete }
+  methods: GET
+  host: %admin_domain%
 admin_get_house_add:
-    path: /admin/houses/add
-    defaults: { _controller: AdminBundle:Building:getHouseAdd }
-    methods: GET
+  path: /admin/houses/add
+  defaults: { _controller: AdminBundle:Building:getHouseAdd }
+  methods: GET
+  host: %admin_domain%
 admin_post_house_edit:
-    path: /admin/houses/{houseId}/edit
-    defaults: { _controller: AdminBundle:Building:postHouseEdit }
-    methods: POST
+  path: /admin/houses/{houseId}/edit
+  defaults: { _controller: AdminBundle:Building:postHouseEdit }
+  methods: POST
+  host: %admin_domain%
 admin_post_house_add:
-    path: /admin/houses/add
-    defaults: { _controller: AdminBundle:Building:postHouseAdd }
-    methods: POST
+  path: /admin/houses/add
+  defaults: { _controller: AdminBundle:Building:postHouseAdd }
+  methods: POST
+  host: %admin_domain%
 
 #Units
 admin_get_units:
-    path: /admin/units
-    defaults: { _controller: AdminBundle:Building:getUnits }
-    methods: GET
+  path: /admin/units
+  defaults: { _controller: AdminBundle:Building:getUnits }
+  methods: GET
+  host: %admin_domain%
 admin_get_unit_read:
-    path: /admin/units/{unitId}/read
-    defaults: { _controller: AdminBundle:Building:getUnitRead }
-    methods: GET
+  path: /admin/units/{unitId}/read
+  defaults: { _controller: AdminBundle:Building:getUnitRead }
+  methods: GET
+  host: %admin_domain%
 admin_get_unit_edit:
-    path: /admin/units/{unitId}/edit
-    defaults: { _controller: AdminBundle:Building:getUnitEdit }
-    methods: GET
+  path: /admin/units/{unitId}/edit
+  defaults: { _controller: AdminBundle:Building:getUnitEdit }
+  methods: GET
+  host: %admin_domain%
 admin_get_unit_delete:
-    path: /admin/units/{unitId}/delete
-    defaults: { _controller: AdminBundle:Building:getUnitDelete }
-    methods: GET
+  path: /admin/units/{unitId}/delete
+  defaults: { _controller: AdminBundle:Building:getUnitDelete }
+  methods: GET
+  host: %admin_domain%
 admin_get_unit_add:
-    path: /admin/units/add
-    defaults: { _controller: AdminBundle:Building:getUnitAdd }
-    methods: GET
+  path: /admin/units/add
+  defaults: { _controller: AdminBundle:Building:getUnitAdd }
+  methods: GET
+  host: %admin_domain%
 admin_post_unit_edit:
-    path: /admin/units/{unitId}/edit
-    defaults: { _controller: AdminBundle:Building:postUnitEdit }
-    methods: POST
+  path: /admin/units/{unitId}/edit
+  defaults: { _controller: AdminBundle:Building:postUnitEdit }
+  methods: POST
+  host: %admin_domain%
 admin_post_unit_add:
-    path: /admin/units/add
-    defaults: { _controller: AdminBundle:Building:postUnitAdd }
-    methods: POST
+  path: /admin/units/add
+  defaults: { _controller: AdminBundle:Building:postUnitAdd }
+  methods: POST
+  host: %admin_domain%
 
 #HouseUsers
 admin_get_house_users:
-    path: /admin/house-users
-    defaults: { _controller: AdminBundle:HouseUser:getHouseUsers }
-    methods: GET
+  path: /admin/house-users
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUsers }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_house_user_read:
-    path: /admin/house-users/{houseUserId}/read
-    defaults: { _controller: AdminBundle:HouseUser:getHouseUserRead }
-    methods: GET
+  path: /admin/house-users/{houseUserId}/read
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUserRead }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_house_user_edit:
-    path: /admin/house-users/{houseUserId}/edit
-    defaults: { _controller: AdminBundle:HouseUser:getHouseUserEdit }
-    methods: GET
+  path: /admin/house-users/{houseUserId}/edit
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUserEdit }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_house_user_delete:
-    path: /admin/house-users/{houseUserId}/delete
-    defaults: { _controller: AdminBundle:HouseUser:getHouseUserDelete }
-    methods: GET
+  path: /admin/house-users/{houseUserId}/delete
+  defaults: { _controller: AdminBundle:HouseUser:getHouseUserDelete }
+  methods: GET
+  host: %admin_domain%
 
 admin_post_house_user_edit:
-    path: /admin/house-users/{houseUserId}/edit
-    defaults: { _controller: AdminBundle:HouseUser:postHouseUserEdit }
-    methods: POST
+  path: /admin/house-users/{houseUserId}/edit
+  defaults: { _controller: AdminBundle:HouseUser:postHouseUserEdit }
+  methods: POST
+  host: %admin_domain%
 
 #Users
 admin_get_users:
-    path: /admin/users
-    defaults: { _controller: AdminBundle:User:getUsers }
-    methods: GET
+  path: /admin/users
+  defaults: { _controller: AdminBundle:User:getUsers }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_user_read:
-    path: /admin/users/{userId}/read/{objectType}
-    defaults: { _controller: AdminBundle:User:getUserRead }
-    methods: GET
+  path: /admin/users/{userId}/read/{objectType}
+  defaults: { _controller: AdminBundle:User:getUserRead }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_user_add:
-    path: /admin/users/add/{objectType}
-    defaults: { _controller: AdminBundle:User:getUserAdd }
-    methods: GET
+  path: /admin/users/add/{objectType}
+  defaults: { _controller: AdminBundle:User:getUserAdd }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_user_edit:
-    path: /admin/users/{userId}/edit/{objectType}
-    defaults: { _controller: AdminBundle:User:getUserEdit }
-    methods: GET
+  path: /admin/users/{userId}/edit/{objectType}
+  defaults: { _controller: AdminBundle:User:getUserEdit }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_user_delete:
-    path: /admin/users/{userId}/delete
-    defaults: { _controller: AdminBundle:User:getUserDelete }
-    methods: GET
+  path: /admin/users/{userId}/delete
+  defaults: { _controller: AdminBundle:User:getUserDelete }
+  methods: GET
+  host: %admin_domain%
 
 admin_post_user_add:
-    path: /admin/users/add
-    defaults: { _controller: AdminBundle:User:postUserAdd }
-    methods: POST
+  path: /admin/users/add
+  defaults: { _controller: AdminBundle:User:postUserAdd }
+  methods: POST
+  host: %admin_domain%
 
 admin_post_user_edit:
-    path: /admin/users/{userId}/edit
-    defaults: { _controller: AdminBundle:User:postUserEdit }
-    methods: POST
+  path: /admin/users/{userId}/edit
+  defaults: { _controller: AdminBundle:User:postUserEdit }
+  methods: POST
+  host: %admin_domain%
 
 #Managers
 admin_get_managers:
-    path: /admin/managers
-    defaults: { _controller: AdminBundle:Manager:getManagers }
-    methods: GET
+  path: /admin/managers
+  defaults: { _controller: AdminBundle:Manager:getManagers }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_manager_read:
-    path: /admin/managers/{managerId}/read
-    defaults: { _controller: AdminBundle:Manager:getManagerRead }
-    methods: GET
+  path: /admin/managers/{managerId}/read
+  defaults: { _controller: AdminBundle:Manager:getManagerRead }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_manager_add:
-    path: /admin/managers/add
-    defaults: { _controller: AdminBundle:Manager:getManagerAdd }
-    methods: GET
+  path: /admin/managers/add
+  defaults: { _controller: AdminBundle:Manager:getManagerAdd }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_manager_edit:
-    path: /admin/managers/{managerId}/edit
-    defaults: { _controller: AdminBundle:Manager:getManagerEdit }
-    methods: GET
+  path: /admin/managers/{managerId}/edit
+  defaults: { _controller: AdminBundle:Manager:getManagerEdit }
+  methods: GET
+  host: %admin_domain%
 
 admin_get_manager_delete:
-    path: /admin/managers/{managerId}/delete
-    defaults: { _controller: AdminBundle:Manager:getManagerDelete }
-    methods: GET
+  path: /admin/managers/{managerId}/delete
+  defaults: { _controller: AdminBundle:Manager:getManagerDelete }
+  methods: GET
+  host: %admin_domain%
 
 admin_post_manager_add:
-    path: /admin/managers/add
-    defaults: { _controller: AdminBundle:Manager:postManagerAdd }
-    methods: POST
+  path: /admin/managers/add
+  defaults: { _controller: AdminBundle:Manager:postManagerAdd }
+  methods: POST
+  host: %admin_domain%
 
 admin_post_manager_edit:
-    path: /admin/managers/{managerId}/edit
-    defaults: { _controller: AdminBundle:Manager:postManagerEdit }
-    methods: POST
+  path: /admin/managers/{managerId}/edit
+  defaults: { _controller: AdminBundle:Manager:postManagerEdit }
+  methods: POST
+  host: %admin_domain%
 
 #Managers
 admin_get_sales_users:
-    path: /admin/sales-users
-    defaults: { _controller: AdminBundle:Sales:getSalesUsers }
-    methods: GET
+  path: /admin/sales-users
+  defaults: { _controller: AdminBundle:Sales:getSalesUsers }
+  methods: GET
+  host: %admin_domain%
 #-----------------------------------------------------------------
 
 #Import
@@ -203,88 +217,110 @@ admin_get_import_house_users:
   path: /admin/import/house-users
   defaults: { _controller: AdminBundle:Import:getHouseUsers }
   methods: GET
+  host: %admin_domain%
 admin_get_import_users:
   path: /admin/import/users
   defaults: { _controller: AdminBundle:Import:getUsers }
   methods: GET
+  host: %admin_domain%
 admin_get_import_houses:
   path: /admin/import/houses
   defaults: { _controller: AdminBundle:Import:getHouses }
   methods: GET
+  host: %admin_domain%
 admin_get_import_units:
   path: /admin/import/units
   defaults: { _controller: AdminBundle:Import:getUnits }
   methods: GET
+  host: %admin_domain%
 admin_get_import_payments:
   path: /admin/import/payments
   defaults: { _controller: AdminBundle:Import:getPayments }
   methods: GET
+  host: %admin_domain%
 admin_get_import_bills:
   path: /admin/import/bills
   defaults: { _controller: AdminBundle:Import:getBills }
   methods: GET
+  host: %admin_domain%
 admin_get_import_documents:
   path: /admin/import/documents
   defaults: { _controller: AdminBundle:Import:getDocuments }
   methods: GET
+  host: %admin_domain%
 admin_get_import_house_user_import:
   path: /admin/import/house-users/{importedHouseUserId}/import
   defaults: { _controller: AdminBundle:Import:getHouseUserImport }
   methods: GET
+  host: %admin_domain%
 admin_get_import_house_user_delete:
   path: /admin/import/house-users/{importedHouseUserId}/delete
   defaults: { _controller: AdminBundle:Import:getHouseUserDelete }
   methods: GET
+  host: %admin_domain%
 admin_get_import_user_import:
   path: /admin/import/users/{importedUserId}/import
   defaults: { _controller: AdminBundle:Import:getUserImport }
   methods: GET
+  host: %admin_domain%
 admin_get_import_user_delete:
   path: /admin/import/users/{importedUserId}/delete
   defaults: { _controller: AdminBundle:Import:getUserDelete }
   methods: GET
+  host: %admin_domain%
 admin_get_import_house_import:
   path: /admin/import/houses/{importedHouseId}/import
   defaults: { _controller: AdminBundle:Import:getHouseImport }
   methods: GET
+  host: %admin_domain%
 admin_get_import_house_delete:
   path: /admin/import/houses/{importedHouseId}/delete
   defaults: { _controller: AdminBundle:Import:getHouseDelete }
   methods: GET
+  host: %admin_domain%
 admin_get_import_unit_import:
   path: /admin/import/units/{importedUnitId}/import
   defaults: { _controller: AdminBundle:Import:getUnitImport }
   methods: GET
+  host: %admin_domain%
 admin_get_import_unit_delete:
   path: /admin/import/units/{importedUnitId}/delete
   defaults: { _controller: AdminBundle:Import:getUnitDelete }
   methods: GET
+  host: %admin_domain%
 admin_get_import_payment_import:
   path: /admin/import/payments/{importedPaymentId}/import
   defaults: { _controller: AdminBundle:Import:getPaymentImport }
   methods: GET
+  host: %admin_domain%
 admin_get_import_payment_delete:
   path: /admin/import/payments/{importedPaymentId}/delete
   defaults: { _controller: AdminBundle:Import:getPaymentDelete }
   methods: GET
+  host: %admin_domain%
 admin_get_import_bill_import:
   path: /admin/import/bills/{importedBillId}/import
   defaults: { _controller: AdminBundle:Import:getBillImport }
   methods: GET
+  host: %admin_domain%
 admin_get_import_bill_delete:
   path: /admin/import/bills/{importedBillId}/delete
   defaults: { _controller: AdminBundle:Import:getBillDelete }
   methods: GET
+  host: %admin_domain%
 admin_get_import_document_import:
   path: /admin/import/documents/{importedDocumentId}/import
   defaults: { _controller: AdminBundle:Import:getDocumentImport }
   methods: GET
+  host: %admin_domain%
 admin_get_import_document_delete:
   path: /admin/import/documents/{importedDocumentId}/delete
   defaults: { _controller: AdminBundle:Import:getDocumentDelete }
   methods: GET
+  host: %admin_domain%
 #-----------------------------------------------------------------
 admin_get_navigate:
-    path: /admin/{pageName}
-    defaults: { _controller: AdminBundle:Dashboard:navigate }
-    methods: GET
+  path: /admin/{pageName}
+  defaults: { _controller: AdminBundle:Dashboard:navigate }
+  methods: GET
+  host: %admin_domain%

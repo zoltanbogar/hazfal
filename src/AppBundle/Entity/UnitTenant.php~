@@ -273,8 +273,7 @@ class UnitTenant
     {
         return $this->units;
     }
-<<<<<<< HEAD
-=======
+
     /**
      * @var int|null
      */
@@ -304,5 +303,5 @@ class UnitTenant
     {
         return $this->unitTenantType;
     }
->>>>>>> develop
+
 }
