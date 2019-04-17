@@ -239,8 +239,6 @@ class ImportedBill extends ImportedEntity
     {
         return $this->unit;
     }
-<<<<<<< .merge_file_a07700
-=======
     /**
      * @var int
      */
@@ -270,11 +268,4 @@ class ImportedBill extends ImportedEntity
     {
         return $this->unitId;
     }
-    /**
-     * @var int
-     */
-    private $id;
-
-
->>>>>>> .merge_file_a16676
 }

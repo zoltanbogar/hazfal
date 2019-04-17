@@ -326,8 +326,6 @@ class ImportedHouse extends ImportedEntity
     {
         return $this->gpsLongitude;
     }
-<<<<<<< .merge_file_a15596
-=======
     /**
      * @var \AppBundle\Entity\House
      */
@@ -357,11 +355,4 @@ class ImportedHouse extends ImportedEntity
     {
         return $this->house;
     }
-    /**
-     * @var int
-     */
-    private $id;
-
-
->>>>>>> .merge_file_a07552
 }

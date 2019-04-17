@@ -32,3 +32,4 @@ parameters:
     borgun_secret: 99887766
     borgun_default_curreny: HUF
     borgun_default_language: HU
+    admin_domain: admin.hazfal.hu

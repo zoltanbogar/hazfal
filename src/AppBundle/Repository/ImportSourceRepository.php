@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class ImportSourceRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findSourceByApiKey($strApiKey)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.apiKey = :apikey')
+            ->setParameter('apikey', $strApiKey)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
