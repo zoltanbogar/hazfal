@@ -1,0 +1,27 @@
+AppBundle\Entity\PaymentMethod:
+    type: entity
+    table: payment_method
+    repositoryClass: AppBundle\Repository\PaymentMethodRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        slug:
+            type: string
+            length: 255
+        description:
+            type: text
+    oneToMany:
+        payments:
+            targetEntity: Payment
+            mappedBy: paymentMethod
+        orders:
+            targetEntity: Order
+            mappedBy: paymentMethod
+    lifecycleCallbacks: {  }

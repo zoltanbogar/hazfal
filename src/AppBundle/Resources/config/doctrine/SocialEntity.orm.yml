@@ -1,0 +1,43 @@
+AppBundle\Entity\SocialEntity:
+    type: entity
+    table: social_entities
+    inheritanceType: JOINED
+    discriminatorColumn:
+        name: type
+        type: string
+    discriminatorMap:
+        social_entity: AppBundle\Entity\SocialEntity
+        post: AppBundle\Entity\Post
+        comment: AppBundle\Entity\Comment
+        document: AppBundle\Entity\Document
+        malfunction: AppBundle\Entity\Malfunction
+        reaction: AppBundle\Entity\Reaction
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    repositoryClass: SocialEntityRepository
+    fields:
+        createdAt:
+            type: datetime
+            column: created_at
+        updatedAt:
+            type: datetime
+            column: updated_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: true
+    oneToMany:
+        images:
+            targetEntity: Image
+            mappedBy: socialEntity
+        comments:
+            targetEntity: Comment
+            mappedBy: parentSocialEntity
+        reactions:
+            targetEntity: Reaction
+            mappedBy: socialEntity
+    lifecycleCallbacks: {  }

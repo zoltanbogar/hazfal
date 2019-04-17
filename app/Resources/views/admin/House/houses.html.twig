@@ -1,0 +1,102 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4 class="c-grey-900 mB-20"><a href="{{ path('admin_get_houses') }}">Házak listája</a>
+                                </h4>
+                                <div style="align-self: center;">
+                                    <a href="{{ path('admin_get_house_add') }}" class="btn btn-primary"><i
+                                                class="ti-plus mR-10"></i> Új ház hozzáadása</a>
+                                </div>
+                            </div>
+                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
+                                   width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Név</th>
+                                    <th>Irányítószám</th>
+                                    <th>Város</th>
+                                    <th>Utca</th>
+                                    <th>Épület</th>
+                                    <th>Egység</th>
+                                    <th>Helyrajzi szám</th>
+                                    <th>Létrehozva</th>
+                                    <th>Módosítva</th>
+                                    <th>Import forrás</th>
+                                    <th>Műveletek</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for house in objHouses %}
+                                    <tr>
+                                        <td>{{ house.id|e }}</td>
+                                        <td>{{ house.name|e }}</td>
+                                        <td>{{ house.postalCode|e }}</td>
+                                        <td>{{ house.city|e }}</td>
+                                        <td>{{ house.street|e }}</td>
+                                        <td>{{ house.building|e }}</td>
+                                        <td>{{ house.unit|e }}</td>
+                                        <td>{{ house.lotNumber|e }}</td>
+                                        <td>{{ house.createdAt|date("Y. m. d. H:i") }}</td>
+                                        <td>{{ house.updatedAt|date("Y. m. d. H:i") }}</td>
+                                        <td>{{ house.isImported ? house.importedHouse.importSource.name : '-' }}</td>
+                                        <td>
+                                            <a class="readButton"
+                                               href="{{ path('admin_get_house_read', {'houseId': house.id}) }}">
+                                                <i class="ti-search mR-10"></i>
+                                            </a>
+                                            <a class="editButton"
+                                               href="{{ path('admin_get_house_edit', {'houseId': house.id}) }}">
+                                                <i class="ti-pencil mR-10"></i>
+                                            </a>
+                                            <a class="deleteButton"
+                                               href="{{ path('admin_get_house_delete', {'houseId': house.id}) }}">
+                                                <i class="ti-trash mR-10"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const initConfirmationClickEventHandler = () => {
+            $('.deleteButton').off('click').on("click", function (e) {
+                e.preventDefault();
+
+                var choice = confirm('Biztosan törölni akarod?');
+
+                if (choice) {
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        };
+
+        $('.paginate_button').on('click', () => initConfirmationClickEventHandler());
+
+        initConfirmationClickEventHandler();
+    </script>
+{% endblock %}

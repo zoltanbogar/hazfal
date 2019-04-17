@@ -1,0 +1,52 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    Sikeres törlés!
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4 class="c-grey-900 mB-20"><a href="{{ path('admin_get_users') }}">Felhasználók listája</a></h4>
+                                <div style="align-self: center;">
+                                    <a href="{{ path('admin_get_user_add', {'objectType' : 'user'}) }}" class="btn btn-primary"><i
+                                                class="ti-plus mR-10"></i> Új felhasználó hozzáadása</a>
+                                </div>
+                            </div>
+                            {% include 'Admin/userTableLayout.html.twig' with {'object' : objUsers, 'objectType' : 'user'} %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.deleteButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan törölni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+    </script>
+{% endblock %}

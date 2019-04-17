@@ -1,0 +1,36 @@
+AppBundle\Entity\Notification:
+    type: entity
+    table: notification
+    repositoryClass: AppBundle\Repository\NotificationRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        type:
+            type: smallint
+        content:
+            type: text
+        seenAt:
+            type: datetime
+            column: seen_at
+        pushSeenAt:
+            type: string
+            length: 255
+            column: push_seen_at
+        createdAt:
+            type: datetime
+            column: created_at
+    manyToOne:
+        user:
+            targetEntity: User
+            inversedBy: notifications
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

@@ -1,0 +1,114 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.errorTitle }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    {{ success.successTitle }} - {{ success.successText }}
+                </div>
+                <br/>
+            {% endif %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <div style="display: flex; justify-content: space-between">
+                                <h4 class="c-grey-900 mB-20"><a href="{{ path('admin_get_import_house_users') }}">Technikai
+                                        felhasználók listája</a></h4>
+                            </div>
+                            <table id="dataTable" class="table table-striped table-bordered" cellspacing="0"
+                                   width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Típus</th>
+                                    <th>Import forrás</th>
+                                    <th>Külső ID</th>
+                                    <th>Importálva</th>
+                                    <th>Email cím</th>
+                                    <th>Levelezési cím</th>
+                                    <th>Telefonszám</th>
+                                    <th>Név</th>
+                                    <th>Cégnév</th>
+                                    <th>Felhasználó</th>
+                                    <th>Ház</th>
+                                    <th>Műveletek</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for houseUser in objHouseUsers %}
+                                    <tr>
+                                        <td>{{ houseUser.id|e }}</td>
+                                        <td>
+                                            {% if houseUser.houseUserType == 'tenant' %}
+                                                Lakó
+                                            {% elseif houseUser.houseUserType == 'manager' %}
+                                                Közös képviselő
+                                            {% elseif houseUser.houseUserType == 'sales' %}
+                                                Sales
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ houseUser.importSource.name }}</td>
+                                        <td>{{ houseUser.externalId|e }}</td>
+                                        <td>{{ houseUser.importedAt|date("Y. m. d.") }}</td>
+                                        <td>{{ houseUser.email|e }}</td>
+                                        <td>{{ houseUser.mailingAddress|e }}</td>
+                                        <td>{{ houseUser.phoneNumber|e }}</td>
+                                        <td>{{ houseUser.firstName|e ~ " " ~ houseUser.lastName }}</td>
+                                        <td>{{ houseUser.companyName|e }}</td>
+                                        <td>{{ houseUser.userId|e }}</td>
+                                        <td>{{ houseUser.houseId|e }}</td>
+                                        <td>
+                                            <a class="readButton"
+                                               href="{{ path('admin_get_import_house_user_import', {'importedHouseUserId': houseUser.id}) }}">
+                                                <i class="ti-plus mR-10"></i>
+                                            </a>
+                                            <a class="deleteButton"
+                                               href="{{ path('admin_get_import_house_user_delete', {'importedHouseUserId': houseUser.id}) }}">
+                                                <i class="ti-trash mR-10"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.readButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan importálni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+
+        $('.deleteButton').on("click", function (e) {
+            e.preventDefault();
+
+            var choice = confirm('Biztosan törölni akarod?');
+
+            if (choice) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,33 @@
+AppBundle\Entity\Permission:
+    type: entity
+    table: permissions
+    repositoryClass: AppBundle\Repository\PermissionRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        slug:
+            type: string
+            length: 255
+        createdAt:
+            type: datetime
+            column: created_at
+        updatedAt:
+            type: datetime
+            column: updated_at
+            nullable: true
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: true
+    manyToMany:
+        users:
+            targetEntity: AppBundle\Entity\User
+            mappedBy: permissions
+    lifecycleCallbacks: {  }

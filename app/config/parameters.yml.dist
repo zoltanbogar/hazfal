@@ -17,3 +17,18 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    twilio_phone: +18669546381
+    twilio_account_sid: AC72f570abe2a7b2714c5d92ab7fb1f178
+    twilio_auth_token: d0174cd43bcd8edfef02fa9590c3ffea
+
+    borgun_url: https://test.borgun.is/SecurePay/default.aspx
+    borgun_merchantid: 9275444
+    borgun_paymentgatewayid: 16
+    borgun_returnurlsuccess: https://webhook.site/09452dc1-3ea3-45ee-8464-7a03862360d2
+    borgun_returnurlsuccessserver: https://webhook.site/09452dc1-3ea3-45ee-8464-7a03862360d2
+    borgun_returnurlcancel: https://webhook.site/09452dc1-3ea3-45ee-8464-7a03862360d2
+    borgun_returnurlerror: https://webhook.site/09452dc1-3ea3-45ee-8464-7a03862360d2
+    borgun_secret: 99887766
+    borgun_default_curreny: HUF
+    borgun_default_language: HU

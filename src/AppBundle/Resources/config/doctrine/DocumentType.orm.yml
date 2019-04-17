@@ -1,0 +1,19 @@
+AppBundle\Entity\DocumentType:
+    type: entity
+    table: document_type
+    repositoryClass: AppBundle\Repository\DocumentTypeRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+    oneToMany:
+        documents:
+            targetEntity: Document
+            mappedBy: documentType
+    lifecycleCallbacks: {  }
