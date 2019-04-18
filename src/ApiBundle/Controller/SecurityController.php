@@ -67,31 +67,30 @@ class SecurityController extends Controller
         $userData = [];
         $userData['id'] = $objUser->getId();
         $userData['accessToken'] = $objUser->getApiKey();
-        $userData['name'] = $objUser->getLastName()." ".$objUser->getFirstName();
-        $userData['profileUrl'] = "/assets/images/profile/".$objUser->getProfileImage() ;
+        $userData['name'] = $objUser->getLastName() . " " . $objUser->getFirstName();
+        $userData['profileUrl'] = "/assets/images/profile/" . $objUser->getProfileImage();
         $userData['houses'] = [];
         $units = [];
 
         $houseUsers = $objUser->getHouseUsers();
         foreach ($houseUsers as $houseUser) {
-            if($houseUser) {
+            if ($houseUser) {
                 $house = $houseUser->getHouse();
                 $tenant = $houseUser->getUnitTenant()->first();
-                if($tenant) {
+                if ($tenant) {
                     foreach ($tenant->getUnits() as $unit) {
                         $units[] = [
                             'id' => $unit->getId(),
-                            'address' => $unit->getBuilding().". ".$unit->getFloor()." em. ".$unit->getDoor()." ajtó",
+                            'address' => $unit->getBuilding() . ". " . $unit->getFloor() . " em. " . $unit->getDoor() . " ajtó",
                             'type' => $unit->getType()
                         ];
                     }
                 }
                 $userData['houses'][] = [
                     'id' => $house->getId(),
-                    'address' => $house->getPostalCode(). " ".$house->getCity().", ".$house->getStreet()." ".$house->getBuilding(),
+                    'address' => $house->getPostalCode() . " " . $house->getCity() . ", " . $house->getStreet() . " " . $house->getBuilding(),
                     'units' => $units
                 ];
-
             }
         }
 
@@ -119,15 +118,15 @@ class SecurityController extends Controller
         $objUser = $objHouseUser->getUser();
 
         if ($objUser !== NULL) {
-            return $this->container->get('response_handler')->errorHandler("user_with_token_already_registered", "A kód (".$strToken.") már fel lett használva", 422);
+            return $this->container->get('response_handler')->errorHandler("user_with_token_already_registered", "A kód (" . $strToken . ") már fel lett használva", 422);
         }
         /**
-        $objUser = $this->getDoctrine()->getRepository(User::class)->findUserByUsername($request->get("username"));
-
-        if ($objUser) {
-            return $this->container->get('response_handler')->errorHandler("username_already_registered", "Invalid parameters", 422);
-        }
-        */
+         * $objUser = $this->getDoctrine()->getRepository(User::class)->findUserByUsername($request->get("username"));
+         *
+         * if ($objUser) {
+         * return $this->container->get('response_handler')->errorHandler("username_already_registered", "Invalid parameters", 422);
+         * }
+         */
         $objUser = $this->getDoctrine()->getRepository(User::class)->findUserByEmail($request->get("email"));
 
         if ($objUser) {
@@ -251,7 +250,7 @@ class SecurityController extends Controller
             'success' => true,
             'data' => [
                 "id" => $objHouseUser->getId(),
-                "name" => $objHouseUser->getLastName()." ".$objHouseUser->getFirstName(),
+                "name" => $objHouseUser->getLastName() . " " . $objHouseUser->getFirstName(),
                 "houseAddress" => $objHouse->getAddress(),
                 'token' => $strToken,
             ]
