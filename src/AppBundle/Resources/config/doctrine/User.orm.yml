@@ -83,14 +83,17 @@ AppBundle\Entity\User:
       type: string
       length: 255
       column: facebook
+      nullable: true
     twitter:
       type: string
       length: 255
       column: twitter
+      nullable: true
     instagram:
       type: string
       length: 255
       column: instagram
+      nullable: true
   oneToMany:
     documents:
       targetEntity: Document
