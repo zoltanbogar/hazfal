@@ -1,0 +1,50 @@
+{% extends "Email/base.email.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        <div class="row py-5">
+            <div class="col-12 col-lg-3 mx-auto ">
+                <div class="text-center">
+                    <img class="my-3" src="{{ absolute_url(asset('assets/images/hazfal-logo-original.svg')) }}" alt="logo" class="img-fluid w-100">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-7 mx-auto">
+                <div class="card my-3 col-12">
+
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <img src="{{ absolute_url(asset('assets/images/email.png')) }}"/>
+                        </div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <div class="title mt-5">Erősítsd meg az email címed</div>
+                        </div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <div class="content mt-5">Ahhoz, hogy véglegesítsd a Házfal regisztrációdat vissza kell igazolnod az email címed. Kérlek, kattints az alábbi gombra a megerősítéshez.</div>
+                        </div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <a href="{{ link }}" class="btn btn-primary px-5 btn-lg mt-5">Megerősítés</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center login-footer mt-5">
+                <p class="text-muted"> Házfal Csoport Zrt. &copy; 2019. </p>
+                <p class="text-muted"> Leiratkozás • Email beállítások </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
