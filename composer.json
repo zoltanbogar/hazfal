@@ -37,7 +37,6 @@
     "symfony/polyfill-apcu": "^1.0",
     "symfony/swiftmailer-bundle": "^2.6.4",
     "symfony/symfony": "3.4.*",
-    "tlamedia/sparkpost-bundle": "^1.1",
     "twig/twig": "^1.0||^2.0",
     "twilio/sdk": "^5.30"
   },
