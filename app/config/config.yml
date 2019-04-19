@@ -37,6 +37,8 @@ framework:
 
 # Twig Configuration
 twig:
+  globals:
+    admin_domain: '%admin_domain%'
   debug: '%kernel.debug%'
   strict_variables: '%kernel.debug%'
 
