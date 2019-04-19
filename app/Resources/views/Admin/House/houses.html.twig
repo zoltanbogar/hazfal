@@ -33,6 +33,7 @@
                                     <th>Épület</th>
                                     <th>Egység</th>
                                     <th>Helyrajzi szám</th>
+                                    <th>%</th>
                                     <th>Létrehozva</th>
                                     <th>Módosítva</th>
                                     <th>Import forrás</th>
@@ -50,6 +51,7 @@
                                         <td>{{ house.building|e }}</td>
                                         <td>{{ house.unit|e }}</td>
                                         <td>{{ house.lotNumber|e }}</td>
+                                        <td>{{ house.getPercent }}</td>
                                         <td>{{ house.createdAt|date("Y. m. d. H:i") }}</td>
                                         <td>{{ house.updatedAt|date("Y. m. d. H:i") }}</td>
                                         <td>{{ house.isImported ? house.importedHouse.importSource.name : '-' }}</td>

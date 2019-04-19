@@ -13,6 +13,28 @@ class HouseRepository extends \Doctrine\ORM\EntityRepository
 
     public function findAllByHouseId($houseId)
     {
-        return $this->findBy(array('id' => $houseId), array('createdAt' => 'desc'));
+        return $this->findBy(['id' => $houseId], ['createdAt' => 'desc']);
+    }
+
+    public function findAllUnitsInHouseById($numHouseId)
+    {
+        return $this->createQueryBuilder('h')
+            ->leftJoin('h.units', 'u')
+            ->andWhere('h.id = :house_id')
+            ->setParameter('house_id', $numHouseId)
+            ->orderBy('h.id', 'ASC')
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    public function findAllHouseUsersInHouseById($numHouseId)
+    {
+        return $this->createQueryBuilder('h')
+            ->leftJoin('h.houseUsers', 'hu')
+            ->andWhere('h.id = :house_id')
+            ->setParameter('house_id', $numHouseId)
+            ->orderBy('h.id', 'ASC')
+            ->getQuery()
+            ->getSingleResult();
     }
 }

@@ -222,7 +222,7 @@ class LoadFixtures extends Fixture
         $objUser = $manager->getRepository(User::class)->find(1);
         $objPayment->setUser($objUser);
         $objHouseUser = $manager->getRepository(HouseUser::class)->find(11);
-        $objPayment->setUser($objHouseUser);
+        $objPayment->setHouseUser($objHouseUser);
         $objPayment->setPaymentDate(\DateTime::createFromFormat('Y-m-d', '2019-02-04'));
         $objPayment->setBookingDate(\DateTime::createFromFormat('Y-m-d', '2019-03-14'));
         $objPayment->setReceiptNumber('133712378');
@@ -238,7 +238,7 @@ class LoadFixtures extends Fixture
         $objUser = $manager->getRepository(User::class)->find(1);
         $objPayment->setUser($objUser);
         $objHouseUser = $manager->getRepository(HouseUser::class)->find(11);
-        $objPayment->setUser($objHouseUser);
+        $objPayment->setHouseUser($objHouseUser);
         $objPayment->setPaymentDate(\DateTime::createFromFormat('Y-m-d', '2019-03-04'));
         $objPayment->setBookingDate(\DateTime::createFromFormat('Y-m-d', '2019-04-14'));
         $objPayment->setReceiptNumber('133712379');
@@ -254,7 +254,7 @@ class LoadFixtures extends Fixture
         $objUser = $manager->getRepository(User::class)->find(1);
         $objPayment->setUser($objUser);
         $objHouseUser = $manager->getRepository(HouseUser::class)->find(11);
-        $objPayment->setUser($objHouseUser);
+        $objPayment->setHouseUser($objHouseUser);
         $objPayment->setPaymentDate(\DateTime::createFromFormat('Y-m-d', '2019-04-07'));
         $objPayment->setBookingDate(\DateTime::createFromFormat('Y-m-d', '2019-05-24'));
         $objPayment->setReceiptNumber('133712380');

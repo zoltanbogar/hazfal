@@ -105,6 +105,8 @@ class House
     public function __construct()
     {
         $this->documents = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->malfunctions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->units = new \Doctrine\Common\Collections\ArrayCollection();
         $this->houseUsers = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -646,6 +648,7 @@ class House
     {
         return $this->malfunctions;
     }
+
     /**
      * @var \DateTime|null
      */
@@ -659,7 +662,7 @@ class House
      *
      * @return House
      */
-    public function setDeletedAt($deletedAt = null)
+    public function setDeletedAt($deletedAt = NULL)
     {
         $this->deletedAt = $deletedAt;
 
@@ -675,6 +678,7 @@ class House
     {
         return $this->deletedAt;
     }
+
     /**
      * @var \AppBundle\Entity\ImportedHouse
      */
@@ -688,7 +692,7 @@ class House
      *
      * @return House
      */
-    public function setImportedHouse(\AppBundle\Entity\ImportedHouse $importedHouse = null)
+    public function setImportedHouse(\AppBundle\Entity\ImportedHouse $importedHouse = NULL)
     {
         $this->importedHouse = $importedHouse;
 
@@ -704,6 +708,7 @@ class House
     {
         return $this->importedHouse;
     }
+
     /**
      * @var bool|null
      */
@@ -717,7 +722,7 @@ class House
      *
      * @return House
      */
-    public function setIsImported($isImported = null)
+    public function setIsImported($isImported = NULL)
     {
         $this->isImported = $isImported;
 
@@ -733,6 +738,7 @@ class House
     {
         return $this->isImported;
     }
+
     /**
      * @var \AppBundle\Entity\HouseUser
      */
@@ -746,7 +752,7 @@ class House
      *
      * @return House
      */
-    public function setHouseManager(\AppBundle\Entity\HouseUser $houseManager = null)
+    public function setHouseManager(\AppBundle\Entity\HouseUser $houseManager = NULL)
     {
         $this->houseManager = $houseManager;
 
@@ -766,11 +772,33 @@ class House
     /**
      * return the full address of the house
      * eg.: 1021 Budapest, Budakeszi út 77/B.
+     * @return string
      * @author pali
      *
-     * @return string
      */
-    public function getAddress() {
-        return $this->getPostalCode()." ".$this->getCity().", ".$this->getStreet()." ".$this->getBuilding();
+    public function getAddress()
+    {
+        return $this->getPostalCode() . " " . $this->getCity() . ", " . $this->getStreet() . " " . $this->getBuilding();
+    }
+
+    public function getPercent()
+    {
+        $houseUsers = $this->getHouseUsers();
+        $numCountHouseUsers = count($houseUsers);
+        if ($numCountHouseUsers == 0) {
+            return "0%";
+        }
+        $numCountRegisteredUsers = 0;
+        foreach ($houseUsers as $data) {
+            if ($data->getUser()) {
+                $numCountRegisteredUsers++;
+            }
+        }
+
+        if ($numCountRegisteredUsers == 0) {
+            return "0%";
+        }
+
+        return $numCountRegisteredUsers / $numCountHouseUsers * 100 . "%";
     }
 }

@@ -11,6 +11,7 @@
     </tr>
     </thead>
     <tbody>
+    {{ dump(object) }}
     {% for user in object %}
         <tr>
             <td>{{ user.id|e }}</td>

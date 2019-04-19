@@ -36,10 +36,16 @@ class BuildingController extends Controller
             ->getRepository('AppBundle:House')
             ->find($houseId);
 
+        $objUnitsByHouse = $this->getDoctrine()->getRepository(House::class)->findAllUnitsInHouseById($houseId);
+
+        $objHouseUsersByHouse = $this->getDoctrine()->getRepository(House::class)->findAllHouseUsersInHouseById($houseId);
+
         return $this->render(
             'Admin\House\form.html.twig',
             [
                 'objHouse' => $objHouse,
+                'objUnitsByHouse' => $objUnitsByHouse,
+                'objHouseUsersByHouse' => $objHouseUsersByHouse,
                 'isEditable' => FALSE,
                 'isNew' => FALSE,
                 'error' => NULL,
@@ -191,10 +197,16 @@ class BuildingController extends Controller
         //    ->getRepository('AppBundle:House')
         //    ->findAll();
 
+
+        $objManager = $this->getDoctrine()
+            ->getRepository('AppBundle:Manager')
+            ->findAll();
+
         return $this->render(
             'Admin\House\form.html.twig',
             [
                 'objHouse' => $objHouse,
+                'objManager' => $objManager,
                 'isEditable' => TRUE,
                 'isNew' => TRUE,
                 'error' => NULL,

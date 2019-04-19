@@ -308,6 +308,7 @@ class FinanceController extends Controller
         $objBill->setIssuedForMonth($request->get('issued_for_month'));
         $objBill->setIssuedAt(new \DateTime($request->get('issued_at')));
         $objBill->setDueDate(new \DateTime($request->get('due_date')));
+        $objBill->setUnitId($request->get('unit_id'));
         $objBill->setImportedAt(new \DateTime('now'));
         $objBill->setExternalId($request->get('id'));
         $objBill->setIsAccepted(0);

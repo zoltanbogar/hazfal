@@ -292,6 +292,8 @@ class UserController extends Controller
         $objHouseUser->setCompanyAddress($request->get('company_address'));
         $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
         $objHouseUser->setLocalContactNumber($request->get('local_contact_number'));
+        $objHouseUser->setHouseId($request->get('house_id'));
+        $objHouseUser->setHouseUserType($request->get('house_user_type'));
         $objHouseUser->setImportedAt(new \DateTime('now'));
         $objHouseUser->setExternalId($request->get('id'));
         $objHouseUser->setIsAccepted(0);
@@ -385,6 +387,8 @@ class UserController extends Controller
         $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
         $objHouseUser->setWebsite($request->get('website'));
         $objHouseUser->setLogoImage($request->get('logo_image'));
+        $objHouseUser->setHouseId($request->get('house_id'));
+        $objHouseUser->setHouseUserType($request->get('house_user_type'));
         $objHouseUser->setImportedAt(new \DateTime('now'));
         $objHouseUser->setExternalId($request->get('id'));
         $objHouseUser->setIsAccepted(0);
