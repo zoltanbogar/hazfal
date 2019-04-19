@@ -25,7 +25,6 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new AdminBundle\AdminBundle(),
-            new Tla\SparkPostBundle\TlaSparkPostBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], TRUE)) {
