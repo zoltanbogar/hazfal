@@ -68,11 +68,7 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
-  transport: '%mailer_transport%'
-  host: '%mailer_host%'
-  username: '%mailer_user%'
-  password: '%mailer_password%'
-  spool: { type: memory }
+  transport: sparkpost
 
 sensio_framework_extra:
   router:
@@ -109,3 +105,5 @@ nelmio_cors:
       allow_headers: ['*']
       allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
       max_age: 3600
+gintko_swiftmailer_sparkpost:
+  api_key: '76ed2dc43d3b6e7d18d250a8baed5153f2e9a969'
