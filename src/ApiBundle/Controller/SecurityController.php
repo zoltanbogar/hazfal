@@ -288,48 +288,34 @@ class SecurityController extends Controller
     private function sendConfirmationEmailToUser($objUser, $request)
     {
         $hash = $this->saveRegistration($objUser);
-        $sparky = $this->container->get('tla_spark_post.api_client');
 
-        $promise = $sparky->transmissions->post(
-            [
-
-                'content' => [
-                    'from' => [
-                        'name' => 'Hazfal Info',
-                        'email' => 'info@hazfal.hu',
-                    ],
-                    'subject' => 'Házfal regisztráció megerősítés',
-                    'html' => '<html><body><p>Kedves {{name}},</p><p>regisztrációjának befejezéséhez kattintson az alábbi linkre: {{link}}</p></body></html>',
-                    'text' => 'Kedves {{name}}, regisztrációjának befejezéséhez kattintson az alábbi linkre: {{link}}',
-
-                ],
-                'substitution_data' => [
-                    'name' => $objUser->getFullName(),
-                    'link' => $request->getSchemeAndHttpHost() . $this->generateUrl('api_get_confirm_registration', ['hash' => $hash]),
-                ],
-                'recipients' => [
-                    [
-                        'address' => [
-                            'name' => $objUser->getFullName(),
-                            'email' => $objUser->getEmail(),
-                        ],
-                    ],
-                ],
-                'cc' => [
-                    [
-                        'address' => [
-                            'name' => 'Zoltan Bogar',
-                            'email' => 'zoltan.r.bogar@gmail.com',
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        $promise = $sparky->transmissions->get();
+        $message = (new \Swift_Message('Házfal regisztráció megerősítés'))
+            ->setFrom(
+                array(
+                    'info@hazfal.hu' => 'Hazfal Info'
+                )
+            )
+            ->setTo($objUser->getEmail())
+            ->setBody(
+                $this->renderView(
+                    'Email/registration.verify.html.twig',
+                    array(
+                        'link' => $request->getSchemeAndHttpHost() . $this->generateUrl('api_get_confirm_registration', ['hash' => $hash])
+                    )
+                ),
+                'text/html'
+            )->addPart(
+                $this->renderView(
+                    'Email/registration.verify.txt.twig',
+                    array(
+                        'link' => $request->getSchemeAndHttpHost() . $this->generateUrl('api_get_confirm_registration', ['hash' => $hash])
+                    )
+                ),
+                'text/plain'
+            );
 
         try {
-            $promise->wait();
+            $this->container->get('mailer')->send($message);
         } catch (\Throwable $t) {
             echo $t->getCode() . "\n";
             echo $t->getMessage() . "\n";
