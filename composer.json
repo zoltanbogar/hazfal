@@ -25,6 +25,7 @@
     "doctrine/orm": "^2.5",
     "friendsofsymfony/rest-bundle": "^2.5",
     "friendsofsymfony/user-bundle": "~2.0",
+    "g1ntas/swiftmailer-sparkpost-bundle": "^1.0",
     "incenteev/composer-parameter-handler": "^2.0",
     "jms/serializer-bundle": "^3.1",
     "lexik/jwt-authentication-bundle": "^2.6",
