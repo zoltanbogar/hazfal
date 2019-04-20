@@ -25,7 +25,8 @@ security:
             roles: 'ROLE_ADMIN'
 
   role_hierarchy:
-    ROLE_ADMIN: ROLE_USER
+    ROLE_ADMIN: ROLE_ADMIN
+    ROLE_USER: ROLE_USER
 
   firewalls:
     # disables authentication for assets and the profiler, adapt it according to your needs
@@ -55,6 +56,7 @@ security:
       security: true
       anonymous: true
       logout: true
+      user_checker: AppBundle\Security\UserChecker
       #anonymous: ~
       form_login:
         provider: fos_userbundle
@@ -114,9 +116,8 @@ security:
   access_control:
     #- { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/registration/*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/payments/*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/admin, roles: ROLE_USER }
     - { path: ^/, roles: ROLE_USER }
     - { path: ^/*, roles: ROLE_USER  }

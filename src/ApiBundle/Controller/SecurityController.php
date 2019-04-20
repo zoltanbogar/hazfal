@@ -158,6 +158,7 @@ class SecurityController extends Controller
         $user->setPlainPassword($request->get("password"));
         $user->setPassword($request->get("password"));
         $user->setEnabled(FALSE);
+        $user->setRoles(['ROLE_USER']);
 
         //TODO send confirmation email
 

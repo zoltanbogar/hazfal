@@ -181,7 +181,7 @@ class LoadFixtures extends Fixture
         $objUser->setEmailCanonical('chris_waltz@gmail.com');
         $objUser->setEnabled(1);
         $objUser->setPlainPassword('admin');
-        $objUser->setRoles(['ROLE_USER']);
+        $objUser->setRoles(['ROLE_ADMIN']);
         $manager->persist($objUser);
 
         $manager->flush();

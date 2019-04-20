@@ -160,6 +160,7 @@ class UserController extends Controller
             $objUser->setOfficialAddress($request->get('inputOfficialAddress'));
             $objUser->setCurrentLocation($request->get('inputCurrentLocation'));
             $objUser->setBio($request->get('inputBio'));
+            $objUser->setRoles(['ROLE_ADMIN']);
 
             $entityManager->persist($objUser);
             $entityManager->flush();
