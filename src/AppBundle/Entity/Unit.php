@@ -600,4 +600,45 @@ class Unit
         return $this->unitType;
     }
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tenants;
+
+
+    /**
+     * Add tenant.
+     *
+     * @param \AppBundle\Entity\UnitTenant $tenant
+     *
+     * @return Unit
+     */
+    public function addTenant(\AppBundle\Entity\UnitTenant $tenant)
+    {
+        $this->tenants[] = $tenant;
+
+        return $this;
+    }
+
+    /**
+     * Remove tenant.
+     *
+     * @param \AppBundle\Entity\UnitTenant $tenant
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeTenant(\AppBundle\Entity\UnitTenant $tenant)
+    {
+        return $this->tenants->removeElement($tenant);
+    }
+
+    /**
+     * Get tenants.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTenants()
+    {
+        return $this->tenants;
+    }
 }

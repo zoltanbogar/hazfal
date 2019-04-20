@@ -44,12 +44,6 @@
                                                value="{{ objUnit.house.name }}" {{ isEditable ?: 'disabled' }}>
                                     {% endif %}
                                 </div>
-                                {#<div class="form-group">
-                                    <label for="inputIsActive">Aktív</label>
-                                    <input type="text" class="form-control" id="inputIsActive" name="inputIsActive"
-                                           aria-describedby="inputIsActive"
-                                           value="{{ objUnit.deletedAt ? 'Nem aktív' : 'Aktív' }}" {{ isEditable ?: 'disabled' }}>
-                                </div>#}
                                 <div class="form-group">
                                     <label for="inputBalance">Egyenleg</label>
                                     <input type="text" class="form-control" id="inputBalance" name="inputBalance"
@@ -57,59 +51,11 @@
                                            value="{{ objUnit.balance }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputTenant">Lakó</label>
-                                    {% if isEditable == TRUE %}
-                                        <select class="form-control" name="inputTenant" id="inputTenant">
-                                            {% for tenant in objTenant %}
-                                                <option value="{{ tenant.id }}" {{ (objUnit.unitTenant and objUnit.unitTenant.tenant and objUnit.unitTenant.tenant.id == tenant.id) ? 'selected="selected"' : '' }}>{{ tenant.firstName ~ " " ~ tenant.lastName }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    {% else %}
-                                        <input type="text" class="form-control" id="inputTenant"
-                                               name="inputTenant"
-                                               value="{{ objUnit.unitTenant.tenant ? objUnit.unitTenant.tenant.firstName ~ " " ~ objUnit.unitTenant.tenant.lastName : NULL }}" {{ isEditable ?: 'disabled' }}>
-                                    {% endif %}
-                                </div>
-                                <div class="form-group">
                                     <label for="inputHouseShare">Tulajdonrész</label>
                                     <input type="text" class="form-control" id="inputHouseShare" name="inputHouseShare"
                                            aria-describedby="inputHouseShare"
                                            value="{{ objUnit.houseShare }}" {{ isEditable ?: 'disabled' }}>
                                 </div>
-                                {% if isEditable == false and objUnit.unitTenant.tenant.user %}
-                                    <div class="form-group">
-                                        <label for="inputUser">Felhasználó</label>
-                                        <input type="text" class="form-control" id="inputUser"
-                                               name="inputUser"
-                                               value="{{ objUnit.unitTenant.tenant.user.firstName ~ " " ~ objUnit.unitTenant.tenant.user.lastName }}" {{ isEditable ?: 'disabled' }}>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputUserEmail">E-mail cím</label>
-                                        <input type="text" class="form-control" id="inputUserEmail"
-                                               name="inputUserEmail"
-                                               value="{{ objUnit.unitTenant.tenant.user.email }}" {{ isEditable ?: 'disabled' }}>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputUserBirth">Születési hely, idő</label>
-                                        <input type="text" class="form-control" id="inputUserBirth"
-                                               name="inputUserBirth"
-                                               value="{{ objUnit.unitTenant.tenant.user.placeOfBirth|e ~ ", " ~ objUnit.unitTenant.tenant.user.dateOfBirth|date('Y. m. d.') }}" {{ isEditable ?: 'disabled' }}>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputUserOfficialAddress">Lakcím</label>
-                                        <input type="text" class="form-control" id="inputUserOfficialAddress"
-                                               name="inputUserOfficialAddress"
-                                               value="{{ objUnit.unitTenant.tenant.user.officialAddress }}" {{ isEditable ?: 'disabled' }}>
-                                    </div>
-                                    {% if objUnit.unitTenant.tenant.user.phoneNumber %}
-                                        <div class="form-group">
-                                            <label for="inputUserPhone">Telefonszám</label>
-                                            <input type="text" class="form-control" id="inputUserPhone"
-                                                   name="inputUserPhone"
-                                                   value="{{ objUnit.unitTenant.tenant.user.phoneNumber }}" {{ isEditable ?: 'disabled' }}>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -199,16 +145,46 @@
                                                         <thead>
                                                         <tr>
                                                             <th>Id</th>
-                                                            <th>Tárgy</th>
-                                                            <th>Tartalom</th>
-                                                            <th>Sürgős</th>
+                                                            <th>Tulajdonrész</th>
+                                                            <th>E-mail</th>
+                                                            <th>Levelezési cím</th>
+                                                            <th>Telefonszám</th>
+                                                            <th>Vezetékes telefonszám</th>
+                                                            <th>Cégnév</th>
+                                                            <th>Cég cím</th>
+                                                            <th>Reg. token</th>
+                                                            <th>Tech. név</th>
+                                                            <th>Regisztrálva</th>
                                                             <th>Hozzáadva</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        {% for unitTenant in objUnit.unitTenant %}
+                                                        {% for unitTenant in objUnit.tenants %}
                                                             <tr>
-                                                                {{ dump(unitTenant) }}
+                                                                <td>{{ unitTenant.tenant.id }}</td>
+                                                                <td>{{ unitTenant.ownershipShare * 100 ~ '%' }}</td>
+                                                                <td>{{ unitTenant.tenant.email }}</td>
+                                                                <td>{{ unitTenant.tenant.mailingAddress }}</td>
+                                                                <td>{{ unitTenant.tenant.phoneNumber }}</td>
+                                                                <td>{{ unitTenant.tenant.localContactNumber }}</td>
+                                                                <td>{{ unitTenant.tenant.companyName }}</td>
+                                                                <td>{{ unitTenant.tenant.companyAddress }}</td>
+                                                                <td>{{ unitTenant.tenant.registrationToken }}</td>
+                                                                <td>{{ unitTenant.tenant.firstName ~ ' ' ~ unitTenant.tenant.lastName }}</td>
+                                                                <td>
+                                                                    {% if unitTenant.tenant.user %}
+                                                                        <a href="{{ path('admin_get_user_read', {'userId': unitTenant.tenant.user.id, 'objectType': 'user'}) }}">
+                                                                            {{ unitTenant.tenant.user.getFullname }}
+                                                                        </a>
+                                                                        <a class="editButton"
+                                                                           href="{{ path('admin_get_user_edit', {'userId': unitTenant.tenant.user.id, 'objectType': 'user'}) }}">
+                                                                            <i class="ti-pencil mR-10"></i>
+                                                                        </a>
+                                                                    {% else %}
+                                                                        -
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>{{ unitTenant.tenant.createdAt|date('Y. m. d.') }}</td>
                                                             </tr>
                                                         {% endfor %}
                                                         </tbody>

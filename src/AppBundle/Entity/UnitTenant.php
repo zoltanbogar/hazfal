@@ -304,4 +304,33 @@ class UnitTenant
         return $this->unitTenantType;
     }
 
+    /**
+     * @var \AppBundle\Entity\Unit
+     */
+    private $unit;
+
+
+    /**
+     * Set unit.
+     *
+     * @param \AppBundle\Entity\Unit|null $unit
+     *
+     * @return UnitTenant
+     */
+    public function setUnit(\AppBundle\Entity\Unit $unit = null)
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * Get unit.
+     *
+     * @return \AppBundle\Entity\Unit|null
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
 }

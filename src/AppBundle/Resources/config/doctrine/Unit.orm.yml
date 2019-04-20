@@ -53,6 +53,9 @@ AppBundle\Entity\Unit:
     orders:
       targetEntity: Order
       mappedBy: unit
+    tenants:
+      targetEntity: UnitTenant
+      mappedBy: unit
   oneToOne:
     importedUnit:
       targetEntity: ImportedUnit
@@ -66,12 +69,6 @@ AppBundle\Entity\Unit:
       inversedBy: units
       joinColumn:
         name: house_id
-        referencedColumnName: id
-    unitTenant:
-      targetEntity: UnitTenant
-      inversedBy: units
-      joinColumn:
-        name: unit_tenant_id
         referencedColumnName: id
   lifecycleCallbacks: {  }
 
