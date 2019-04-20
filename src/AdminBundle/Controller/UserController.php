@@ -14,24 +14,14 @@ class UserController extends Controller
             $error = $request->query->get('error');
         }
 
-        $users = [];
-
         $objUsers = $this->getDoctrine()
             ->getRepository('AppBundle:User')
-            ->findAll();
-
-        foreach ($objUsers as $user) {
-            foreach ($user->getPermissions() as $permission) {
-                if ($permission->getSlug() != 'sales') {
-                    $users[] = $user;
-                }
-            }
-        }
+            ->findUsersByPermissions(['sales', 'super_admin', 'user']);
 
         return $this->render(
             'Admin\User\users.html.twig',
             [
-                'objUsers' => $users,
+                'objUsers' => $objUsers,
                 'error' => $error ?? NULL,
                 'success' => $request->get('success')
             ]

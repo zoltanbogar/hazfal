@@ -5,6 +5,7 @@ namespace ApiBundle\Controller;
 use ApiBundle\Service\ResponseHandler;
 
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\Permission;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -136,6 +137,7 @@ class SecurityController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $userManager = $this->get('fos_user.user_manager');
         $user = $userManager->createUser();
+        $objPermission = $entityManager->getRepository(Permission::class)->findOneBy(['slug' => 'user']);
 
         $strDateOfBirth = new \DateTime($request->get("date_of_birth"));
         $user->setFirstName($request->get("first_name"));
@@ -155,7 +157,6 @@ class SecurityController extends Controller
         $user->setEmail($request->get("email"));
         $user->setPlainPassword($request->get("password"));
         $user->setPassword($request->get("password"));
-        //$user->setEnabled(TRUE);
         $user->setEnabled(FALSE);
 
         //TODO send confirmation email
@@ -164,6 +165,10 @@ class SecurityController extends Controller
 
         $objHouseUser->setUser($user);
 
+        $entityManager->flush();
+
+        $user->addPermission($objPermission);
+        $entityManager->persist($user);
         $entityManager->flush();
 
         $this->sendConfirmationEmailToUser($user, $request);

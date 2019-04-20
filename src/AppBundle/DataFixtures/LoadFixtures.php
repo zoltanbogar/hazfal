@@ -214,6 +214,14 @@ class LoadFixtures extends Fixture
         $manager->persist($permission);
         $manager->flush();
 
+        $permission = new Permission();
+        $permission->setName('User');
+        $permission->setSlug('user');
+        $permission->setCreatedAt(new \DateTime('now'));
+
+        $manager->persist($permission);
+        $manager->flush();
+
         $objPayment = new Payment();
         $objUnit = $manager->getRepository(Unit::class)->find(15);
         $objPayment->setUnit($objUnit);

@@ -11,13 +11,12 @@
     </tr>
     </thead>
     <tbody>
-    {{ dump(object) }}
     {% for user in object %}
         <tr>
             <td>{{ user.id|e }}</td>
             <td>{{ user.username|e }}</td>
             <td>{{ user.email|e }}</td>
-            <td>{{ user.lastName|e }} {{ user.firstName|e }}</td>
+            <td>{{ user.firstName|e }} {{ user.lastName|e }}</td>
             <td>{{ user.localPhoneNumber|e }}</td>
             <td>
                 <a class="readButton"

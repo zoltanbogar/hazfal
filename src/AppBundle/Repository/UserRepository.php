@@ -40,12 +40,12 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findUsersByPermission($permissionSlug)
+    public function findUsersByPermissions($permissionSlugArray)
     {
-        $query_string = 'SELECT u FROM AppBundle:User u JOIN u.permissions p WHERE p.slug = :slug';
+        $query_string = 'SELECT u FROM AppBundle:User u JOIN u.permissions p WHERE p.slug IN(:slug)';
         $query = $this->getEntityManager()->createQuery($query_string);
         $query->setParameter(
-            'slug', $permissionSlug
+            'slug', $permissionSlugArray
         );
 
         return $query->getResult();
