@@ -352,7 +352,7 @@
                                                         </thead>
                                                         <tbody>
 
-                                                        {% for houseUser in objHouseUsersByHouse.houseUsers %}
+                                                        {% for houseUser in objHouseUsersByHouse.houseUsers if houseUser.user.id != null %}
                                                             <tr>
                                                                 <td>{{ houseUser.user.id|e }}</td>
                                                                 <td>{{ houseUser.user.username|e }}</td>
