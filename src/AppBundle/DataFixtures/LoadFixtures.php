@@ -186,6 +186,32 @@ class LoadFixtures extends Fixture
 
         $manager->flush();
 
+        $objUser2 = new User();
+        $objUser2->setRegistrationDate(new \DateTime('now'));
+        $objUser2->setFirstName('Test');
+        $objUser2->setLastName('User');
+        $objUser2->setDateOfBirth(\DateTime::createFromFormat('Y-m-d', '1966-11-14'));
+        $objUser2->setPlaceOfBirth('Budapest, Magyarország');
+        $objUser2->setBio(
+            'A Lorem Ipsum egy egyszerû szövegrészlete, szövegutánzata a betûszedõ és nyomdaiparnak.'
+        );
+        $objUser2->setSex(1);
+        $objUser2->setLocalPhoneNumber('0666123456');
+        $objUser2->setOfficialAddress('1120 Budapest, Fő utca 1.');
+        $objUser2->setCurrentLocation('1120 Budapest, Fő utca 1.');
+        $objUser2->setJoinToken('654321');
+        $objUser2->setApiKey('12345654321x');
+        $objUser2->setUsername('test_user');
+        $objUser2->setUsernameCanonical('test_user');
+        $objUser2->setEmail('test_user@gmail.com');
+        $objUser2->setEmailCanonical('test_user@gmail.com');
+        $objUser2->setEnabled(1);
+        $objUser2->setPlainPassword('user');
+        $objUser2->setRoles(['ROLE_USER']);
+        $manager->persist($objUser2);
+
+        $manager->flush();
+
         $permission = new Permission();
         $permission->setName('SuperAdmin');
         $permission->setSlug('super_admin');
@@ -220,6 +246,10 @@ class LoadFixtures extends Fixture
         $permission->setCreatedAt(new \DateTime('now'));
 
         $manager->persist($permission);
+        $manager->flush();
+
+        $objUser2->addPermission($permission);
+        $manager->persist($objUser2);
         $manager->flush();
 
         $objPayment = new Payment();
