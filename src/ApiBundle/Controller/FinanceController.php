@@ -360,6 +360,14 @@ class FinanceController extends Controller
 
         $objPayment = new ImportedPayment();
         $objPayment->setUnitId($request->get('unit_id'));
+        if ($request->get('unit_id')) {
+            $numUnitID = $request->get("unit_id");
+            $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+            if (!$objUnit) {
+                return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+            }
+            $objPayment->setUnit($objUnit);
+        }
         $objPayment->setAmount($request->get('amount'));
         $objPayment->setReceiptNumber($request->get('receipt_number'));
         $objPayment->setBookingDate(new \DateTime($request->get('booking_date')));
@@ -370,14 +378,167 @@ class FinanceController extends Controller
         $objPayment->setExternalId($request->get('id'));
         $objPayment->setIsAccepted(0);
         $objPayment->setImportSource($objImportSource);
-        //var_dump($objPayment->getUnitId());
-        //die("asdas");
+
         $entityManager->persist($objPayment);
         $entityManager->flush();
 
         return $this->container->get('response_handler')->successHandler(
             "Payment has been imported!",
             $request->query->all()
+        );
+    }
+
+    public function postBulkImportBillAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'unit_id' => 'required|numeric',
+                    'amount' => 'required|numeric',
+                    'receipt_number' => 'required|numeric',
+                    'issued_for_month' => 'required|numeric',
+                    'bill_category' => 'required',
+                    'details' => 'required',
+                    'issued_at' => 'required|date',
+                    'due_date' => 'required|date',
+                    'api_key' => 'required',
+                    'id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedBill::class)->findBy(['externalId' => $rowPayload['id'], 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objBill = new ImportedBill();
+            if ($rowPayload['unit_id']) {
+                $numUnitID = $rowPayload['unit_id'];
+                $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+                if (!$objUnit) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+                }
+                $objBill->setUnit($objUnit);
+            }
+            $objBill->setAmount($rowPayload['amount']);
+            $objBill->setBillCategory($rowPayload['bill_category']);
+            $objBill->setDetails($rowPayload['details']);
+            $objBill->setReceiptNumber($rowPayload['receipt_number']);
+            $objBill->setIssuedForMonth($rowPayload['issued_for_month']);
+            $objBill->setIssuedAt(new \DateTime($rowPayload['issued_at']));
+            $objBill->setDueDate(new \DateTime($rowPayload['due_date']));
+            $objBill->setImportedAt(new \DateTime('now'));
+            $objBill->setExternalId($rowPayload['id']);
+            $objBill->setIsAccepted(0);
+            $objBill->setImportSource($objImportSource);
+
+            $entityManager->persist($objBill);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Számla azonosító: " . $rowPayload["receipt_number"] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function postBulkImportPaymentAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'unit_id' => 'required|numeric',
+                    //'payment_method_id' => 'required|numeric',
+                    'user_id' => 'required|numeric',
+                    'house_user_id' => 'required|numeric',
+                    'payment_date' => 'required|date',
+                    'booking_date' => 'required|date',
+                    'receipt_number' => 'required|numeric',
+                    'amount' => 'required|numeric',
+                    'api_key' => 'required',
+                    'id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedBill::class)->findBy(['externalId' => $rowPayload['id'], 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objPayment = new ImportedPayment();
+            $objPayment->setUnitId($rowPayload['unit_id']);
+            if ($rowPayload['unit_id']) {
+                $numUnitID = $rowPayload['unit_id'];
+                $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+                if (!$objUnit) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+                }
+                $objPayment->setUnit($objUnit);
+            }
+            $objPayment->setAmount($rowPayload['amount']);
+            $objPayment->setReceiptNumber($rowPayload['receipt_number']);
+            $objPayment->setBookingDate(new \DateTime($rowPayload['booking_date']));
+            $objPayment->setPaymentDate(new \DateTime($rowPayload['payment_date']));
+            $objPayment->setHouseUserId($rowPayload['house_user_id']);
+            $objPayment->setUserId($rowPayload['user_id']);
+            $objPayment->setImportedAt(new \DateTime('now'));
+            $objPayment->setExternalId($rowPayload['id']);
+            $objPayment->setIsAccepted(0);
+            $objPayment->setImportSource($objImportSource);
+
+            $entityManager->persist($objPayment);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Számla azonosító: " . $rowPayload["receipt_number"] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
         );
     }
 
@@ -408,10 +569,11 @@ class FinanceController extends Controller
 
     public function successfulBorgunPaymentAction(Request $request)
     {
+        $orderId = $request->get('orderid');;
         if ($request->get('status') !== 'OK') {
-            error_log('status_not_ok: '.$orderId);
-            return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen");
-            return $this->container->get('response_handler')->errorHandler("status_not_ok", "Invalid parameters", 400);
+            error_log('status_not_ok: ' . $orderId);
+
+            return $this->redirect($this->getParameter('frontend_url') . "/fizetes/bankkartyas-fizetes/sikertelen");
         }
 
         $orderID = $request->get('orderid');
@@ -429,19 +591,20 @@ class FinanceController extends Controller
 
         $secretKey = $this->getParameter('borgun_secret');
 
-        $message = utf8_encode($orderID.'|'.$amount.'|'.$defaultCurrency);
+        $message = utf8_encode($orderID . '|' . $amount . '|' . $defaultCurrency);
 
         $checkhash = hash_hmac('sha256', $message, $secretKey);
 
         $objOrder = $this->getDoctrine()->getRepository(Order::class)->findBy(
             [
-                'orderId' => $orderID
+                'orderId' => $orderID,
             ]
         );
 
         if (!$objOrder || count($objOrder) > 1) {
-            error_log('Sikertelen fizetes: '.$orderId);
-            return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen");
+            error_log('Sikertelen fizetes: ' . $orderId);
+
+            return $this->redirect($this->getParameter('frontend_url') . "/fizetes/bankkartyas-fizetes/sikertelen");
             //return $this->container->get('response_handler')->errorHandler("cant_find_object", "Invalid parameters", 400);
             //mit csinálunk, ha nem egyezik?
         }
@@ -449,7 +612,7 @@ class FinanceController extends Controller
         $objOrder = $objOrder[0];
         $objOrder->setIsPaid(1);
         $entityManager = $this->getDoctrine()->getManager();
-        
+
         $entityManager->persist($objOrder);
         $objPayment = new Payment();
 
@@ -457,8 +620,9 @@ class FinanceController extends Controller
             $numPaymentMethodID = 1; //$request->get("unit_id");
             $objPaymentMethod = $this->getDoctrine()->getRepository(PaymentMethod::class)->find($numPaymentMethodID);
             if (!$objPaymentMethod) {
-                error_log('invalid payment method: '.$orderId);
-                return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen");
+                error_log('invalid payment method: ' . $orderId);
+
+                return $this->redirect($this->getParameter('frontend_url') . "/fizetes/bankkartyas-fizetes/sikertelen");
                 //return $this->container->get('response_handler')->errorHandler("invalid_payment_method_id", "Invalid parameters", 422);
             }
             $objPayment->setPaymentMethod($objPaymentMethod);
@@ -474,8 +638,8 @@ class FinanceController extends Controller
 
         $entityManager->persist($objPayment);
         $entityManager->flush();
-        
-        return $this->redirect($this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikeres");
+
+        return $this->redirect($this->getParameter('frontend_url') . "/fizetes/bankkartyas-fizetes/sikeres");
     }
 
     public function initBorgunPaymentAction(Request $request)
@@ -506,10 +670,10 @@ class FinanceController extends Controller
 
             $objBill = $objBill[0];
             $tblItems[] = [
-                'Itemdescription_'.$key => $objBill->getDetails(),
-                'Itemcount_'.$key => 1,
-                'Itemunitamount_'.$key => $objBill->getAmount(),
-                'Itemamount_'.$key => $objBill->getAmount(),
+                'Itemdescription_' . $key => $objBill->getDetails(),
+                'Itemcount_' . $key => 1,
+                'Itemunitamount_' . $key => $objBill->getAmount(),
+                'Itemamount_' . $key => $objBill->getAmount(),
             ];
             $numSumAmount += (int)$objBill->getAmount();
         }
@@ -549,7 +713,7 @@ class FinanceController extends Controller
         $merchantID = $this->getParameter('borgun_merchantid');
         $paymentGatewayID = $this->getParameter('borgun_paymentgatewayid');
         $successURL = $this->getParameter('borgun_returnurlsuccess');
-        $successAPIURL =$this->getParameter('borgun_returnurlsuccessserver');
+        $successAPIURL = $this->getParameter('borgun_returnurlsuccessserver');
         $cancelURL = $this->getParameter('borgun_returnurlcancel');
         $errorURL = $this->getParameter('borgun_returnurlerror');
         $secretKey = $this->getParameter('borgun_secret');
@@ -588,19 +752,22 @@ class FinanceController extends Controller
             //'items' => $tblItems,
         ];
         foreach ($tblItems as $key => $item) {
-            foreach($item as $billKey => $billItem) {
+            foreach ($item as $billKey => $billItem) {
                 $response[$billKey] = $billItem;
             }
         }
+
         return $this->container->get('response_handler')->successHandler($response, []);
     }
 
     public function unsuccessBorgunPaymentAction(Request $request)
     {
         $params = $request->getContent();
-        $baseUrl = $this->getParameter('frontend_url')."/fizetes/bankkartyas-fizetes/sikertelen";
-        if($params)
-            $baseUrl .= "?".$params;
+        $baseUrl = $this->getParameter('frontend_url') . "/fizetes/bankkartyas-fizetes/sikertelen";
+        if ($params) {
+            $baseUrl .= "?" . $params;
+        }
+
         return $this->redirect($baseUrl);
     }
 }

@@ -16,4 +16,5 @@
 /vendor/
 /web/bundles/
 web/images/identicon
+web/documents/
 /.idea/

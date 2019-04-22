@@ -89,8 +89,9 @@ class SocialEntityController extends Controller
             $reactionTypes = [];
             $postReactions = $socialEntity->getReactions();
             foreach ($postReactions as $reaction) {
-                if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+                if (get_class($reaction) !== "AppBundle\Entity\Post" && !in_array($reaction->getReactionTypeName(), $reactionTypes)) {
                     $reactionTypes[] = $reaction->getReactionTypeName();
+                }
             }
             $comments = [];
             foreach ($post->getComments() as $comment) {
@@ -98,34 +99,36 @@ class SocialEntityController extends Controller
 
                 $commentReactionTypes = [];
                 foreach ($comment->getReactions() as $reaction) {
-                if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
-                    $commentReactionTypes[] = $reaction->getReactionTypeName();
+                    if (get_class($reaction) !== "AppBundle\Entity\Comment" && !in_array($reaction->getReactionTypeName(), $commentReactionTypes)) {
+                        $commentReactionTypes[] = $reaction->getReactionTypeName();
+                    }
                 }
                 $comments[] = [
                     'id' => $comment->getId(),
-                    'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                    'name' => $commentUser->getLastName() . " " . $commentUser->getFirstName(),
                     'userId' => $commentUser->getId(),
                     'content' => $comment->getContent(),
                     'when' => $comment->getWhenCreated(),
-                    'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                    'image' => "/assets/images/profile/" . $commentUser->getProfileImage(),
                     'reactionTypes' => $commentReactionTypes,
-                    'reactionCount' => $comment->getReactions()->count()
+                    'reactionCount' => $comment->getReactions()->count(),
                 ];
             }
             $returnData[] = [
                 'id' => $post->getId(),
                 'content' => $post->getContent(),
                 'createdAt' => $post->getWhenCreated(),
-                'userName' => $objUser->getLastName()." ".$objUser->getFirstName(),
+                'userName' => $objUser->getLastName() . " " . $objUser->getFirstName(),
                 'userId' => $objUser->getId(),
                 'isUrgent' => $post->getIsUrgent(),
                 'comments' => $comments,
                 'reactionTypes' => $reactionTypes,
                 'reactionCount' => $post->getReactions()->count(),
-                'posterImage' => "/assets/images/profile/".$objUser->getProfileImage(),
+                'posterImage' => "/assets/images/profile/" . $objUser->getProfileImage(),
                 'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
             ];
         }
+
         return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
@@ -140,23 +143,23 @@ class SocialEntityController extends Controller
         if (!$objHouse) {
             return $this->container->get('response_handler')->errorHandler("house_not_exists", "Not found", 404);
         }
-        
+
         $objMalfunction = $objHouse->getMalfunctions();
-        
+
         if (!$objMalfunction) {
             return $this->container->get('response_handler')->errorHandler("malfunction_not_exists", "Not found", 404);
         }
         $returnData = [];
-        foreach($objMalfunction as $malfunction) {
+        foreach ($objMalfunction as $malfunction) {
             $returnData[] = [
                 'id' => $malfunction->getId(),
                 'status' => $malfunction->getStatus(),
                 'subject' => $malfunction->getSubject(),
                 'content' => $malfunction->getContent(),
-                'createdAt' => $malfunction->getCreatedAt()->format('Y.m.d')
+                'createdAt' => $malfunction->getCreatedAt()->format('Y.m.d'),
             ];
         }
-        
+
         return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
@@ -171,7 +174,7 @@ class SocialEntityController extends Controller
         if ($type !== "post") {
             return $this->container->get('response_handler')->errorHandler("no_valid_type_provided", "Invalid parameters", 422);
         }
-        
+
         if (!$request->get('subject') || !$request->get('content') || !$request->get('house_id') || !$request->get('user_id')) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
@@ -193,13 +196,13 @@ class SocialEntityController extends Controller
         $objPost->setDeletedAt(NULL);
 
         $file = $request->files->get('file');
-        if($file) {
+        if ($file) {
             $image = new Image();
             $image->setSocialEntity($objPost);
-            $image->setFilename('/assets/images/post/'.$file->getFilename().'.'.$file->guessExtension());
-            
+            $image->setFilename('/assets/images/post/' . $file->getFilename() . '.' . $file->guessExtension());
+
             try {
-                $file->move($this->getParameter('assets_path').'images/post/', $file->getFilename().'.'.$file->guessExtension() );
+                $file->move($this->getParameter('assets_path') . 'images/post/', $file->getFilename() . '.' . $file->guessExtension());
             } catch (\Throwable $th) {
                 return $this->container->get('response_handler')->errorHandler("cannot_move_image", $th->getMessage(), 500);
             }
@@ -227,8 +230,9 @@ class SocialEntityController extends Controller
             $socialEntity = $this->getDoctrine()->getRepository(SocialEntity::class)->find($post->getId());
             $reactionTypes = [];
             foreach ($post->getReactions() as $reaction) {
-                if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+                if (get_class($reaction) !== "AppBundle\Entity\Post" && !in_array($reaction->getReactionTypeName(), $reactionTypes)) {
                     $reactionTypes[] = $reaction->getReactionTypeName();
+                }
             }
             $comments = [];
             foreach ($post->getComments() as $comment) {
@@ -236,34 +240,36 @@ class SocialEntityController extends Controller
 
                 $commentReactionTypes = [];
                 foreach ($comment->getReactions() as $reaction) {
-                if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
-                    $commentReactionTypes[] = $reaction->getReactionTypeName();
+                    if (get_class($reaction) !== "AppBundle\Entity\Comment" && !in_array($reaction->getReactionTypeName(), $commentReactionTypes)) {
+                        $commentReactionTypes[] = $reaction->getReactionTypeName();
+                    }
                 }
 
                 $comments[] = [
                     'id' => $comment->getId(),
-                    'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                    'name' => $commentUser->getLastName() . " " . $commentUser->getFirstName(),
                     'content' => $comment->getContent(),
                     'when' => $comment->getWhenCreated(),
-                    'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                    'image' => "/assets/images/profile/" . $commentUser->getProfileImage(),
                     'reactionTypes' => $commentReactionTypes,
-                    'reactionCount' => $comment->getReactions()->count()
+                    'reactionCount' => $comment->getReactions()->count(),
                 ];
             }
             $returnData[] = [
                 'id' => $post->getId(),
                 'content' => $post->getContent(),
                 'createdAt' => $post->getWhenCreated(),
-                'userName' => $user->getLastName()." ".$user->getFirstName(),
+                'userName' => $user->getLastName() . " " . $user->getFirstName(),
                 'userId' => $user->getId(),
                 'isUrgent' => $post->getIsUrgent(),
                 'comments' => $comments,
                 'reactionTypes' => $reactionTypes,
                 'reactionCount' => $post->getReactions()->count(),
-                'posterImage' => "/assets/images/profile/".$user->getProfileImage(),
+                'posterImage' => "/assets/images/profile/" . $user->getProfileImage(),
                 'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
             ];
         }
+
         return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
@@ -313,7 +319,7 @@ class SocialEntityController extends Controller
         }
 
         $type = $request->get('type');
-        
+
         if ($type !== "comment") {
             return $this->container->get('response_handler')->errorHandler("no_valid_type_provided", "Invalid parameters", 422);
         }
@@ -350,8 +356,9 @@ class SocialEntityController extends Controller
 
         $reactionTypes = [];
         foreach ($post->getReactions() as $reaction) {
-            if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+            if (get_class($reaction) !== "AppBundle\Entity\Post" && !in_array($reaction->getReactionTypeName(), $reactionTypes)) {
                 $reactionTypes[] = $reaction->getReactionTypeName();
+            }
         }
         $comments = [];
         foreach ($post->getComments() as $comment) {
@@ -359,33 +366,34 @@ class SocialEntityController extends Controller
 
             $commentReactionTypes = [];
             foreach ($comment->getReactions() as $reaction) {
-            if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
-                $commentReactionTypes[] = $reaction->getReactionTypeName();
+                if (get_class($reaction) !== "AppBundle\Entity\Comment" && !in_array($reaction->getReactionTypeName(), $commentReactionTypes)) {
+                    $commentReactionTypes[] = $reaction->getReactionTypeName();
+                }
             }
 
 
             $comments[] = [
                 'id' => $comment->getId(),
-                'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                'name' => $commentUser->getLastName() . " " . $commentUser->getFirstName(),
                 'userId' => $commentUser->getId(),
                 'content' => $comment->getContent(),
                 'when' => $comment->getWhenCreated(),
-                'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                'image' => "/assets/images/profile/" . $commentUser->getProfileImage(),
                 'reactionTypes' => $commentReactionTypes,
-                'reactionCount' => $comment->getReactions()->count()
+                'reactionCount' => $comment->getReactions()->count(),
             ];
         }
         $returnData = [
             'id' => $post->getId(),
             'content' => $post->getContent(),
             'createdAt' => $post->getWhenCreated(),
-            'userName' => $postUser->getLastName()." ".$postUser->getFirstName(),
+            'userName' => $postUser->getLastName() . " " . $postUser->getFirstName(),
             'userId' => $postUser->getId(),
             'isUrgent' => $post->getIsUrgent(),
             'comments' => $comments,
             'reactionTypes' => $reactionTypes,
             'reactionCount' => $post->getReactions()->count(),
-            'posterImage' => "/assets/images/profile/".$postUser->getProfileImage(),
+            'posterImage' => "/assets/images/profile/" . $postUser->getProfileImage(),
             'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
         ];
 
@@ -410,12 +418,14 @@ class SocialEntityController extends Controller
 
         $allReactions = Reaction::getReactionTypes();
         $reactionType = array_search($request->get('reaction_type'), $allReactions);
-        if(!$reactionType) {
+        if (!$reactionType) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
 
-        $reaction = $this->getDoctrine()->getRepository(Reaction::class)->findOneBy(['userId' => $userId, 'socialEntityId' => $request->get('social_entity_id')]);
-        if(!$reaction) {
+        $reaction = $this->getDoctrine()->getRepository(Reaction::class)->findOneBy(
+            ['userId' => $userId, 'socialEntityId' => $request->get('social_entity_id')]
+        );
+        if (!$reaction) {
             $reaction = new Reaction();
         }
         $reaction->setReactionType($reactionType);
@@ -441,8 +451,9 @@ class SocialEntityController extends Controller
         $socialEntity = $objSocialEntity;
         $reactionTypes = [];
         foreach ($post->getReactions() as $reaction) {
-            if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+            if (get_class($reaction) !== "AppBundle\Entity\Post" && !in_array($reaction->getReactionTypeName(), $reactionTypes)) {
                 $reactionTypes[] = $reaction->getReactionTypeName();
+            }
         }
         $comments = [];
         foreach ($post->getComments() as $comment) {
@@ -450,35 +461,36 @@ class SocialEntityController extends Controller
 
             $commentReactionTypes = [];
             foreach ($comment->getReactions() as $reaction) {
-            if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
-                $commentReactionTypes[] = $reaction->getReactionTypeName();
+                if (get_class($reaction) !== "AppBundle\Entity\Comment" && !in_array($reaction->getReactionTypeName(), $commentReactionTypes)) {
+                    $commentReactionTypes[] = $reaction->getReactionTypeName();
+                }
             }
             $comments[] = [
                 'id' => $comment->getId(),
-                'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                'name' => $commentUser->getLastName() . " " . $commentUser->getFirstName(),
                 'content' => $comment->getContent(),
                 'when' => $comment->getWhenCreated(),
-                'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                'image' => "/assets/images/profile/" . $commentUser->getProfileImage(),
                 'reactionTypes' => $commentReactionTypes,
-                'reactionCount' => $comment->getReactions()->count()
+                'reactionCount' => $comment->getReactions()->count(),
             ];
         }
         $returnData = [
             'id' => $post->getId(),
             'content' => $post->getContent(),
             'createdAt' => $post->getWhenCreated(),
-            'userName' => $postUser->getLastName()." ".$postUser->getFirstName(),
+            'userName' => $postUser->getLastName() . " " . $postUser->getFirstName(),
             'userId' => $postUser->getId(),
             'isUrgent' => $post->getIsUrgent(),
             'comments' => $comments,
             'reactionTypes' => $reactionTypes,
             'reactionCount' => $post->getReactions()->count(),
-            'posterImage' => "/assets/images/profile/".$postUser->getProfileImage(),
+            'posterImage' => "/assets/images/profile/" . $postUser->getProfileImage(),
             'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
         ];
 
         return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
-    
+
     }
 
 
@@ -500,12 +512,14 @@ class SocialEntityController extends Controller
 
         $allReactions = Reaction::getReactionTypes();
         $reactionType = array_search($request->get('reaction_type'), $allReactions);
-        if(!$reactionType) {
+        if (!$reactionType) {
             return $this->container->get('response_handler')->errorHandler("no_valid_data_provided", "Invalid parameters", 422);
         }
 
-        $reaction = $this->getDoctrine()->getRepository(Reaction::class)->findOneBy(['userId' => $userId, 'socialEntityId' => $request->get('social_entity_id')]);
-        if(!$reaction) {
+        $reaction = $this->getDoctrine()->getRepository(Reaction::class)->findOneBy(
+            ['userId' => $userId, 'socialEntityId' => $request->get('social_entity_id')]
+        );
+        if (!$reaction) {
             $reaction = new Reaction();
         }
         $reaction->setReactionType($reactionType);
@@ -531,8 +545,9 @@ class SocialEntityController extends Controller
         $socialEntity = $objSocialEntity;
         $reactionTypes = [];
         foreach ($post->getReactions() as $reaction) {
-            if(get_class($reaction) !== "AppBundle\Entity\Post" &&  !in_array($reaction->getReactionTypeName(), $reactionTypes))
+            if (get_class($reaction) !== "AppBundle\Entity\Post" && !in_array($reaction->getReactionTypeName(), $reactionTypes)) {
                 $reactionTypes[] = $reaction->getReactionTypeName();
+            }
         }
         $comments = [];
         foreach ($post->getComments() as $comment) {
@@ -540,35 +555,36 @@ class SocialEntityController extends Controller
 
             $commentReactionTypes = [];
             foreach ($comment->getReactions() as $reaction) {
-            if(get_class($reaction) !== "AppBundle\Entity\Comment" &&  !in_array($reaction->getReactionTypeName(), $commentReactionTypes))
-                $commentReactionTypes[] = $reaction->getReactionTypeName();
+                if (get_class($reaction) !== "AppBundle\Entity\Comment" && !in_array($reaction->getReactionTypeName(), $commentReactionTypes)) {
+                    $commentReactionTypes[] = $reaction->getReactionTypeName();
+                }
             }
             $comments[] = [
                 'id' => $comment->getId(),
-                'name' => $commentUser->getLastName()." ".$commentUser->getFirstName(),
+                'name' => $commentUser->getLastName() . " " . $commentUser->getFirstName(),
                 'content' => $comment->getContent(),
                 'when' => $comment->getWhenCreated(),
-                'image' => "/assets/images/profile/".$commentUser->getProfileImage(),
+                'image' => "/assets/images/profile/" . $commentUser->getProfileImage(),
                 'reactionTypes' => $commentReactionTypes,
-                'reactionCount' => $comment->getReactions()->count()
+                'reactionCount' => $comment->getReactions()->count(),
             ];
         }
         $returnData = [
             'id' => $post->getId(),
             'content' => $post->getContent(),
             'createdAt' => $post->getWhenCreated(),
-            'userName' => $postUser->getLastName()." ".$postUser->getFirstName(),
+            'userName' => $postUser->getLastName() . " " . $postUser->getFirstName(),
             'userId' => $postUser->getId(),
             'isUrgent' => $post->getIsUrgent(),
             'comments' => $comments,
             'reactionTypes' => $reactionTypes,
             'reactionCount' => $post->getReactions()->count(),
-            'posterImage' => "/assets/images/profile/".$postUser->getProfileImage(),
+            'posterImage' => "/assets/images/profile/" . $postUser->getProfileImage(),
             'image' => $post->getImages()->first() ? $post->getImages()->first()->getFilename() : '',
         ];
 
         return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
-    
+
     }
 
 
@@ -629,40 +645,9 @@ class SocialEntityController extends Controller
         }
 
         $entityManager = $this->getDoctrine()->getManager();
-        /*$objDocument = new Document();
-        if ($request->get('user_id')) {
-            $numUserID = $request->get("user_id");
-            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
-            if (!$objUser) {
-                return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
-            }
-            $objDocument->setUser($objUser);
-        }
-        if ($request->get('house_id')) {
-            $numHouseID = $request->get("house_id");
-            $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
-            if (!$objHouse) {
-                return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
-            }
-            $objDocument->setHouse($objHouse);
-        }
-        if ($request->get('document_type_id')) {
-            $numTypeID = $request->get('document_type_id');
-            $objDocumentType = $this->getDoctrine()->getRepository(DocumentType::class)->find($numTypeID);
-            if (!$objDocumentType) {
-                return $this->container->get('response_handler')->errorHandler("invalid_document_type", "Invalid parameters", 422);
-            }
-            $objDocument->setDocumentType($objDocumentType);
-        }
-        $objDocument->setName($request->get('name'));
-        $objDocument->setFilename($request->get('filename'));
-        $objDocument->setCreatedAt(new \DateTime('now'));
-        $objDocument->setUpdatedAt(new \DateTime('now'));
 
-        $entityManager->persist($objDocument);*/
         $objDocument = new ImportedDocument();
         $objDocument->setName($request->get('name'));
-        $objDocument->setFilename($request->get('filename'));
         $objDocument->setHouseId($request->get('house_id'));
         $objDocument->setUserId($request->get('user_id'));
         $objDocument->setImportedAt(new \DateTime('now'));
@@ -670,12 +655,101 @@ class SocialEntityController extends Controller
         $objDocument->setIsAccepted(0);
         $objDocument->setImportSource($objImportSource);
 
-        $entityManager->persist($objDocument);
-        $entityManager->flush();
+        try {
+            $datetime = new \Datetime('now');
+            $file = $request->files->get('file');
+            $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($request->get('filename'), 0, 64)) . "_" . $datetime->format(
+                    'Y-m-d_H-i-s'
+                ) . "." . $file->guessExtension();
+            $objDocument->setFilename($filename);
+
+            $file->move($this->getParameter('doc_uploads_dir'), $filename);
+
+            $entityManager->persist($objDocument);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('file_error', 'File hiba', 400);
+        }
 
         return $this->container->get('response_handler')->successHandler(
             "Document has been imported!",
             $request->query->all()
+        );
+    }
+
+    public function postBulkImportDocumentAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'type' => 'required',
+                    'user_id' => 'required|numeric',
+                    'document_type_id' => 'required|numeric',
+                    'house_id' => 'required|numeric',
+                    'name' => 'required',
+                    'filename' => 'required',
+                    'id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedDocument::class)->findBy(['externalId' => $rowPayload['id'], 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objDocument = new ImportedDocument();
+            $objDocument->setName($rowPayload['name']);
+            $objDocument->setFilename($rowPayload['filename']);
+            $objDocument->setHouseId($rowPayload['house_id']);
+            $objDocument->setUserId($rowPayload['user_id']);
+            $objDocument->setImportedAt(new \DateTime('now'));
+            $objDocument->setExternalId($rowPayload['id']);
+            $objDocument->setIsAccepted(0);
+            $objDocument->setImportSource($objImportSource);
+
+            try {
+                $datetime = new \Datetime('now');
+                $file = $request->files->get($rowPayload['filename']);
+                $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($rowPayload['filename'], 0, 64)) . "_" . $datetime->format(
+                        'Y-m-d_H-i-s'
+                    ) . "." . $file->guessExtension();
+                $objDocument->setFilename($filename);
+
+                $file->move($this->getParameter('doc_uploads_dir'), $filename);
+
+                $entityManager->persist($objDocument);
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                return $this->container->get('response_handler')->errorHandler('file_error', 'File hiba', 400);
+            }
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Dokumentum név: " . $rowPayload["name"] . ", Dokumentum fájlnév: " . $rowPayload["filename"] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
         );
     }
 }

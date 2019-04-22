@@ -58,24 +58,25 @@ class UserController extends Controller
 
         $returnData = [
             'actives' => [],
-            'inactives' => ""
+            'inactives' => "",
         ];
         $inactives = [];
-        foreach($objHouseUsers as $houseUser) {
-            if($user = $houseUser->getUser()) {
+        foreach ($objHouseUsers as $houseUser) {
+            if ($user = $houseUser->getUser()) {
                 $returnData['actives'][] = [
                     'id' => $user->getId(),
-                    'image' => "/assets/images/profile/".$user->getProfileImage(),
+                    'image' => "/assets/images/profile/" . $user->getProfileImage(),
                     'fullName' => $houseUser->getFullname(),
                     'unit' => "A. ép. 3. em. 12.",
-                    'titles' => [ ['success', 'szv'], ['info', 'a'] ] //first is the color of badge, second is the text of the badge
+                    'titles' => [['success', 'szv'], ['info', 'a']] //first is the color of badge, second is the text of the badge
                 ];
             } else {
-                $inactives[] = $houseUser->getFullname().' <span class="help">(A. ép. 3. em. 12.)</span>';
+                $inactives[] = $houseUser->getFullname() . ' <span class="help">(A. ép. 3. em. 12.)</span>';
             }
         }
         $returnData['inactivesCount'] = count($inactives);
-        $returnData['inactives'] = implode( ', ' , $inactives );
+        $returnData['inactives'] = implode(', ', $inactives);
+
         return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
@@ -124,24 +125,24 @@ class UserController extends Controller
         $units = [];
         $houseUsers = $objUser->getHouseUsers();
         foreach ($houseUsers as $houseUser) {
-            if($houseUser) {
+            if ($houseUser) {
                 $house = $houseUser->getHouse();
                 $tenant = $houseUser->getUnitTenant();
-                if($tenant) {
+                if ($tenant) {
                     foreach ($tenant->getUnits() as $unit) {
                         $units[] = [
                             'id' => $unit->getId(),
-                            'address' => $unit->getBuilding().". ".$unit->getFloor()." em. ".$unit->getDoor()." ajtó",
-                            'type' => $unit->getType()
+                            'address' => $unit->getBuilding() . ". " . $unit->getFloor() . " em. " . $unit->getDoor() . " ajtó",
+                            'type' => $unit->getType(),
                         ];
                     }
                 }
                 $userData['houses'][] = [
                     'id' => $house->getId(),
-                    'address' => $house->getPostalCode(). " ".$house->getCity().", ".$house->getStreet()." ".$house->getBuilding(),
-                    'units' => $units
+                    'address' => $house->getPostalCode() . " " . $house->getCity() . ", " . $house->getStreet() . " " . $house->getBuilding(),
+                    'units' => $units,
                 ];
-                
+
             }
         }
 
@@ -159,8 +160,9 @@ class UserController extends Controller
             'twitter' => $objUser->getTwitter(),
             'instagram' => $objUser->getInstagram(),
             'units' => $units,
-            'profileImage' => "/assets/images/profile/".$objUser->getProfileImage()
+            'profileImage' => "/assets/images/profile/" . $objUser->getProfileImage(),
         ];
+
         return $this->container->get('response_handler')->successHandler($returnData, $request->query->all());
     }
 
@@ -475,7 +477,7 @@ class UserController extends Controller
         if (!$objUser) {
             return $this->container->get('response_handler')->errorHandler("invalid_token", "Invalid parameters", 422);
         }
-        
+
         $objUser->setFirstName($request->get('firstName'));
         $objUser->setLastName($request->get('lastName'));
         $objUser->setPhoneNumber($request->get('phoneNumber'));
@@ -490,11 +492,227 @@ class UserController extends Controller
         $entityManager->persist($objUser);
         $entityManager->flush();
         $response = [
-            'success' => true,
-            'message' => 'Elmentve'
+            'success' => TRUE,
+            'message' => 'Elmentve',
         ];
+
         return $this->container->get('response_handler')->successHandler($response, []);
     }
 
+    public function postBulkImportHouseUserAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
 
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'email' => 'required',
+                    'mailing_address' => 'required',
+                    'phone_number' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'company_name' => 'required',
+                    'company_address' => 'required',
+                    'company_tax_number' => 'required',
+                    'local_contact_number' => 'required',
+                    'house_user_type' => 'required',
+                    'id' => 'required|numeric',
+                    'house_id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedHouseUser::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objHouseUser = new ImportedHouseUser();
+            $objHouseUser->setEmail($rowPayload['email']);
+            $objHouseUser->setMailingAddress($rowPayload['mailing_address']);
+            $objHouseUser->setPhoneNumber($rowPayload['phone_number']);
+            $objHouseUser->setFirstName($rowPayload['first_name']);
+            $objHouseUser->setLastName($rowPayload['last_name']);
+            $objHouseUser->setCompanyName($rowPayload['company_name']);
+            $objHouseUser->setCompanyAddress($rowPayload['company_address']);
+            $objHouseUser->setCompanyTaxNumber($rowPayload['company_tax_number']);
+            $objHouseUser->setLocalContactNumber($rowPayload['local_contact_number']);
+            $objHouseUser->setImportedAt(new \DateTime('now'));
+            $objHouseUser->setExternalId($rowPayload['id']);
+            $objHouseUser->setIsAccepted(0);
+            $objHouseUser->setImportSource($objImportSource);
+
+            $entityManager->persist($objHouseUser);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Email: " . $rowPayload["email"] . ", Név: " . $rowPayload["first_name"] . " " . $rowPayload['last_name'] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function postBulkImportManagerAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'email' => 'required',
+                    'mailing_address' => 'required',
+                    'phone_number' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'company_name' => 'required',
+                    'company_address' => 'required',
+                    'company_tax_number' => 'required',
+                    'website' => 'required',
+                    'logo_image' => 'required',
+                    'house_user_type' => 'required',
+                    'id' => 'required|numeric',
+                    'house_id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedHouseUser::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objHouseUser = new ImportedHouseUser();
+            $objHouseUser->setEmail($rowPayload['email']);
+            $objHouseUser->setMailingAddress($rowPayload['mailing_address']);
+            $objHouseUser->setPhoneNumber($rowPayload['phone_number']);
+            $objHouseUser->setFirstName($rowPayload['first_name']);
+            $objHouseUser->setLastName($rowPayload['last_name']);
+            $objHouseUser->setCompanyName($rowPayload['company_name']);
+            $objHouseUser->setCompanyAddress($rowPayload['company_address']);
+            $objHouseUser->setCompanyTaxNumber($rowPayload['company_tax_number']);
+            $objHouseUser->setWebsite($rowPayload['website']);
+            $objHouseUser->setLogoImage($rowPayload['logo_image']);
+            $objHouseUser->setImportedAt(new \DateTime('now'));
+            $objHouseUser->setExternalId($rowPayload['id']);
+            $objHouseUser->setIsAccepted(0);
+            $objHouseUser->setImportSource($objImportSource);
+
+            $entityManager->persist($objHouseUser);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Email: " . $rowPayload["email"] . ", Név: " . $rowPayload["first_name"] . " " . $rowPayload['last_name'] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function postBulkImportUserAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'date_of_birth' => 'required|date',
+                    'place_of_birth' => 'required',
+                    'phone_number' => 'required',
+                    'local_phone_number' => 'required',
+                    'id_number' => 'required',
+                    'official_address' => 'required',
+                    'current_location' => 'required',
+                    'id' => 'required|numeric',
+                    //'join_token' => 'required',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $isAlreadyAdded = $this->getDoctrine()->getRepository(ImportedUser::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+            if ($isAlreadyAdded) {
+                return $this->container->get('response_handler')->errorHandler('duplication', 'Already imported!', 400);
+            }
+
+            $objUser = new ImportedUser();
+            $objUser->setPhoneNumber($rowPayload['phone_number']);
+            $objUser->setFirstName($rowPayload['first_name']);
+            $objUser->setLastName($rowPayload['last_name']);
+            $objUser->setDateOfBirth(new \DateTime($rowPayload['date_of_birth']));
+            $objUser->setPlaceOfBirth($rowPayload['place_of_birth']);
+            $objUser->setLocalPhoneNumber($rowPayload['local_phone_number']);
+            $objUser->setIdNumber($rowPayload['id_number']);
+            $objUser->setOfficialAddress($rowPayload['official_address']);
+            $objUser->setCurrentLocation($rowPayload['current_location']);
+            $objUser->setImportedAt(new \DateTime('now'));
+            $objUser->setExternalId($rowPayload['id']);
+            $objUser->setIsAccepted(0);
+            $objUser->setImportSource($objImportSource);
+
+            $entityManager->persist($objUser);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", SzigSzám: " . $rowPayload["id_number"] . ", Név: " . $rowPayload["first_name"] . " " . $rowPayload['last_name'] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
 }

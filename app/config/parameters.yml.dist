@@ -33,3 +33,5 @@ parameters:
     borgun_default_curreny: HUF
     borgun_default_language: HU
     admin_domain: admin.hazfal.hu
+    web_dir: "%kernel.project_dir%/web"
+    doc_uploads_dir: "%kernel.project_dir%/web/documents/uploads"
