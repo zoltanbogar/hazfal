@@ -341,4 +341,18 @@ class Bill
     {
         return $this->unitId;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Bill
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

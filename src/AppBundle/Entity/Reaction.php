@@ -128,4 +128,52 @@ class Reaction extends SocialEntity
     {
         return $this->socialEntity;
     }
+
+    /**
+     * Set userId.
+     *
+     * @param int $userId
+     *
+     * @return Reaction
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
+
+    /**
+     * Get userId.
+     *
+     * @return int
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set socialEntityId.
+     *
+     * @param int $socialEntityId
+     *
+     * @return Reaction
+     */
+    public function setSocialEntityId($socialEntityId)
+    {
+        $this->socialEntityId = $socialEntityId;
+
+        return $this;
+    }
+
+    /**
+     * Get socialEntityId.
+     *
+     * @return int
+     */
+    public function getSocialEntityId()
+    {
+        return $this->socialEntityId;
+    }
 }

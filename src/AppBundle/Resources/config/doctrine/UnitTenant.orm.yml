@@ -1,44 +1,46 @@
 AppBundle\Entity\UnitTenant:
-    type: entity
-    table: unit_tenant
-    repositoryClass: AppBundle\Repository\UnitTenantRepository
+  type: entity
+  table: unit_tenant
+  repositoryClass: AppBundle\Repository\UnitTenantRepository
+  id:
     id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
-    fields:
-        unitTenantType:
-            type: smallint
-            nullable: true
-        ownershipShare:
-            type: string
-            length: 255
-            column: ownership_share
-            nullable: true
-        status:
-            type: smallint
-        deletedAt:
-            type: datetime
-            nullable: true
-            column: deleted_at
-        createdAt:
-            type: datetime
-            column: created_at
-        updatedAt:
-            type: datetime
-            column: updated_at
-            nullable: true
-    oneToMany:
-        units:
-            targetEntity: Unit
-            mappedBy: unitTenant
-    manyToOne:
-        tenant:
-            targetEntity: Tenant
-            inversedBy: unitTenant
-            joinColumn:
-                name: tenant_id
-                referencedColumnName: id
-    lifecycleCallbacks: {  }
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    unitTenantType:
+      type: smallint
+      nullable: true
+    ownershipShare:
+      type: string
+      length: 255
+      column: ownership_share
+      nullable: true
+    status:
+      type: smallint
+    deletedAt:
+      type: datetime
+      nullable: true
+      column: deleted_at
+    createdAt:
+      type: datetime
+      column: created_at
+    updatedAt:
+      type: datetime
+      column: updated_at
+      nullable: true
+  manyToOne:
+    tenant:
+      targetEntity: Tenant
+      inversedBy: unitTenant
+      joinColumn:
+        name: tenant_id
+        referencedColumnName: id
+    unit:
+      targetEntity: Unit
+      inversedBy: tenants
+      joinColumn:
+        name: unit_id
+        referencedColumnName: id
+  lifecycleCallbacks: {  }

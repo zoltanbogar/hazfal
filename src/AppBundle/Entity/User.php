@@ -1155,4 +1155,40 @@ class User extends BaseUser// implements UserInterface
         return $this->reactions;
     }
 
+
+    /**
+     * Add post.
+     *
+     * @param \AppBundle\Entity\Post $post
+     *
+     * @return User
+     */
+    public function addPost(\AppBundle\Entity\Post $post)
+    {
+        $this->posts[] = $post;
+
+        return $this;
+    }
+
+    /**
+     * Remove post.
+     *
+     * @param \AppBundle\Entity\Post $post
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removePost(\AppBundle\Entity\Post $post)
+    {
+        return $this->posts->removeElement($post);
+    }
+
+    /**
+     * Get posts.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
 }
