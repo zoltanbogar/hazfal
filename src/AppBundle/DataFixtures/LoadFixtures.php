@@ -142,6 +142,15 @@ class LoadFixtures extends Fixture
         $objImportSource->setApiKey('MDU5ZjY4NDExMjVjZDA1MzYzN2RmYjk2Yzg5MzJmNDczYjllNDgyYw==');
         $manager->persist($objImportSource);
 
+        $objImportSource = new ImportSource();
+        $objImportSource->setIsActive(1);
+        $objImportSource->setName('KöltségSQL - Desktop verzió');
+        $objImportSource->setEmail('info@koltsegsql.hu');
+        $objImportSource->setUsername('koltsegsql_desktop');
+        $objImportSource->setSlug('koltsegsql_desktop');
+        $objImportSource->setApiKey('MGNhM2RlZmNhMTNlYTlkZWE3YTM1Yjc0NzJhYWM1YzFhMDM1MjE1Mw==');
+        $manager->persist($objImportSource);
+
         $objPaymentMethod = new PaymentMethod();
         $objPaymentMethod->setName('Csoportos beszedés');
         $objPaymentMethod->setSlug('csopbesz');

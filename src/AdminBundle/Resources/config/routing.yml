@@ -319,6 +319,48 @@ admin_get_import_document_delete:
   methods: GET
   host: %admin_domain%
 #-----------------------------------------------------------------
+#ImportSources
+admin_get_system_import_sources:
+  path: /admin/import-sources
+  defaults: { _controller: AdminBundle:System:getImportSources }
+  methods: GET
+  host: %admin_domain%
+admin_get_system_import_sources_read:
+  path: /admin/import-sources/{importSourceId}/read
+  defaults: { _controller: AdminBundle:System:getImportSourceRead }
+  methods: GET
+  host: %admin_domain%
+admin_get_system_import_sources_edit:
+  path: /admin/import-sources/{importSourceId}/edit
+  defaults: { _controller: AdminBundle:System:getImportSourceEdit }
+  methods: GET
+  host: %admin_domain%
+admin_get_system_import_sources_delete:
+  path: /admin/import-sources/{importSourceId}/delete
+  defaults: { _controller: AdminBundle:System:getImportSourceDelete }
+  methods: GET
+  host: %admin_domain%
+admin_get_system_import_sources_add:
+  path: /admin/import-sources/add
+  defaults: { _controller: AdminBundle:System:getImportSourceAdd }
+  methods: GET
+  host: %admin_domain%
+admin_post_system_import_sources_edit:
+  path: /admin/import-sources/{importSourceId}/edit
+  defaults: { _controller: AdminBundle:System:postImportSourceEdit }
+  methods: POST
+  host: %admin_domain%
+admin_post_system_import_sources_add:
+  path: /admin/import-sources/add
+  defaults: { _controller: AdminBundle:System:postImportSourceAdd }
+  methods: POST
+  host: %admin_domain%
+admin_get_system_generate_api_key:
+  path: /admin/system/generate-api-key
+  defaults: { _controller: AdminBundle:System:getGenerateApiKey }
+  methods: GET
+  host: %admin_domain%
+#-----------------------------------------------------------------
 admin_get_navigate:
   path: /admin/{pageName}
   defaults: { _controller: AdminBundle:Dashboard:navigate }

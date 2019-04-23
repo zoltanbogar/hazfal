@@ -1,0 +1,138 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.strParameter }} - {{ error.errorText }}
+                </div>
+                <br/>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    Sikeres mentés!
+                </div>
+                <br/>
+            {% endif %}
+            <form action="{{ isNew ? path('admin_post_system_import_sources_add') : path('admin_post_system_import_sources_edit', {'importSourceId': objImportSource.id}) }}"
+                  method="post">
+                <div class="row gap-20 masonry pos-r">
+                    <div class="masonry-sizer col-md-6"></div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Általános</h6>
+                            <div class="mT-30">
+                                {% if isNew == FALSE %}
+                                    <div class="form-group">
+                                        <label for="inputId">Id</label>
+                                        <input type="text" class="form-control" name="inputId" id="inputId"
+                                               aria-describedby="inputId" value="{{ objImportSource.id }}" disabled>
+                                    </div>
+                                    {% if isEditable == FALSE %}
+                                        <div class="form-group">
+                                            <label for="inputStatus">Státusz</label>
+                                            <input type="text" class="form-control" id="inputStatus" name="inputStatus"
+                                                   aria-describedby="inputStatus"
+                                                   value="{{ objImportSource.isActive ? 'Aktív' : 'Inaktív' }}" {{ isEditable ?: 'disabled' }}>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                                <div class="form-group">
+                                    <label for="inputName">Név</label>
+                                    <input type="text" class="form-control" id="inputName" name="inputName"
+                                           aria-describedby="inputName"
+                                           value="{{ objImportSource.name }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUsername">Felhasználónév</label>
+                                    <input type="text" class="form-control" id="inputUsername" name="inputUsername"
+                                           aria-describedby="inputUsername"
+                                           value="{{ objImportSource.username }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEmail">E-mail</label>
+                                    <input type="text" class="form-control" id="inputEmail" name="inputEmail"
+                                           aria-describedby="inputEmail"
+                                           value="{{ objImportSource.email }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputSlug">Slug</label>
+                                    <input type="text" class="form-control" id="inputSlug"
+                                           name="inputSlug"
+                                           value="{{ objImportSource.slug }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="masonry-item col-md-6">
+                        <div class="bgc-white p-20 bd">
+                            <h6 class="c-grey-900">Általános</h6>
+                            <div class="mT-30">
+                                <div class="form-group">
+                                    <label for="inputApiKey">Api kulcs</label>
+                                    <input type="text" class="form-control" id="inputApiKey" name="inputApiKey"
+                                           aria-describedby="inputApiKey"
+                                           value="{{ objImportSource.apikey }}" disabled>
+                                </div>
+                                {% if isEditable == TRUE %}
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary generateApiKey">
+                                            Új kulcsot generálok
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if isEditable == TRUE %}
+                        <div class="masonry-item col-md-6">
+                            <div class="bgc-white p-20 bd">
+                                <div class="mT-30">
+                                    <input type="submit"
+                                           class="btn btn-primary" value="{{ isNew ? 'Mentés' : 'Módosítás' }}"/>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <input type="hidden" id="apiKey" name="apiKey" value="{{ objImportSource.apikey }}"/>
+                <input type="hidden" id="sourceId" name="sourceId" value="{{ objImportSource.id }}"/>
+            </form>
+        </div>
+    </main>
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.generateApiKey').on('click', () => {
+            generateApikey();
+        });
+
+        var generateApikey = () => {
+            $.ajax({
+                dataType: 'json',
+                url: '{{ path('admin_get_system_generate_api_key') }}',
+                type: 'GET',
+                data: {},
+                success: function (response) {
+                    $('#inputApiKey').val(response);
+                    $('#apiKey').val(response);
+                },
+                error: function () {
+                }
+            });
+        };
+
+        {% if isNew == TRUE %}
+        $('#inputName').on('keyup', el => {
+            var inputNameValue = $(el.target).val();
+            var inputNameValueLower = inputNameValue.toLowerCase();
+            var inputNameValueLowerWithUnderscores = inputNameValueLower.split(" ").join("_");
+            $('#inputSlug').val(inputNameValueLowerWithUnderscores);
+        });
+        {% endif %}
+    </script>
+{% endblock %}
+
