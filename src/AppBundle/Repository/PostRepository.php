@@ -10,4 +10,14 @@ namespace AppBundle\Repository;
  */
 class PostRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findLatestPostsInHouseById($numHouseId)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.house', 'h')
+            ->andWhere('h.id = :house_id')
+            ->setParameter('house_id', $numHouseId)
+            ->orderBy('p.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

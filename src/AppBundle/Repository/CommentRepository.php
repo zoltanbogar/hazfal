@@ -10,4 +10,14 @@ namespace AppBundle\Repository;
  */
 class CommentRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findLatestCommentsByPostId($numPostId)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.parentSocialEntity', 'p')
+            ->andWhere('p.id = :post_id')
+            ->setParameter('post_id', $numPostId)
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
