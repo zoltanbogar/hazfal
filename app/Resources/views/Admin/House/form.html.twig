@@ -123,6 +123,23 @@
                                                value="{{ objHouse.gpsLatitude }}" {{ isEditable ?: 'disabled' }}>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="inputTaxNumber">Adószám</label>
+                                    <input type="text" class="form-control" id="inputTaxNumber" name="inputTaxNumber"
+                                           value="{{ objHouse.taxNumber }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputBankAccountNumber">Bankszámlaszám</label>
+                                    <input type="text" class="form-control" id="inputBankAccountNumber"
+                                           name="inputBankAccountNumber"
+                                           value="{{ objHouse.bankAccountNumber }}" {{ isEditable ?: 'disabled' }}>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputFoundingDate">Létrehozva</label>
+                                    <input type="text" class="form-control" id="inputFoundingDate"
+                                           aria-describedby="inputFoundingDate"
+                                           value="{{ objHouse.foundingDate|date("Y. m. d.") }}" disabled>
+                                </div>
                             </div>
                         </div>
                     </div>

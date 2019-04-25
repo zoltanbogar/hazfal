@@ -123,6 +123,11 @@ class BuildingController extends Controller
             $objHouse->setLotNumber($request->get('inputLotNumber'));
             $objHouse->setGpsLatitude($request->get('inputLatitude'));
             $objHouse->setGpsLongitude($request->get('inputLongitude'));
+            $objHouse->setTaxNumber($request->get('inputTaxNumber'));
+            $objHouse->setFoundingDate(new \DateTime($request->get('inputFoundingDate')));
+            $objHouse->setBankAccountNumber($request->get('inputBankAccountNumber'));
+            $objHouse->setOwnershipSum($request->get('ownership_sum'));
+
             //$objHouse->setStatus(1);
             $objHouse->setUpdatedAt(new \DateTime('now'));
             $objManager = $this->getDoctrine()->getRepository(Manager::class)->find($request->get('inputHouseManager'));

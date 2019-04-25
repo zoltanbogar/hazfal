@@ -222,7 +222,6 @@ class UserController extends Controller
     {
         $validator = $this->container->get('validation_handler')->inputValidationHandler(
             [
-                'email' => 'required',
                 'mailing_address' => 'required',
                 'phone_number' => 'required',
                 'first_name' => 'required',
@@ -515,7 +514,6 @@ class UserController extends Controller
         foreach ($arrPayload as $rowPayload) {
             $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
                 [
-                    'email' => 'required',
                     'mailing_address' => 'required',
                     'phone_number' => 'required',
                     'first_name' => 'required',

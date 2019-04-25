@@ -109,15 +109,11 @@ class BuildingController extends Controller
         $validator = $this->container->get('validation_handler')->inputValidationHandler(
             [
                 'name' => 'required',
-                'region' => 'required',
                 'postal_code' => 'required|numeric',
                 'city' => 'required',
                 'street' => 'required',
-                'building' => 'required',
                 'unit' => 'required',
                 'lot_number' => 'required|numeric',
-                'gps_latitude' => 'required|numeric',
-                'gps_longitude' => 'required|numeric',
                 'id' => 'required|numeric',
             ],
             $request
@@ -152,6 +148,10 @@ class BuildingController extends Controller
         $objHouse->setLotNumber($request->get('lot_number'));
         $objHouse->setGpsLatitude($request->get('gps_latitude'));
         $objHouse->setGpsLongitude($request->get('gps_longitude'));
+        $objHouse->setTaxNumber($request->get('tax_number'));
+        $objHouse->setFoundingDate(new \DateTime($request->get('founding_date')));
+        $objHouse->setBankAccountNumber($request->get('bank_account_number'));
+        $objHouse->setOwnershipSum($request->get('ownership_sum'));
         $objHouse->setImportedAt(new \DateTime('now'));
         $objHouse->setExternalId($request->get('id'));
         $objHouse->setIsAccepted(0);
@@ -266,15 +266,11 @@ class BuildingController extends Controller
             $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
                 [
                     'name' => 'required',
-                    'region' => 'required',
-                    'building' => 'required',
                     'postal_code' => 'required|numeric',
                     'city' => 'required',
                     'street' => 'required',
                     'unit' => 'required',
                     'lot_number' => 'required|numeric',
-                    'gps_latitude' => 'required|numeric',
-                    'gps_longitude' => 'required|numeric',
                     'id' => 'required|numeric',
                 ],
                 $rowPayload
@@ -302,6 +298,10 @@ class BuildingController extends Controller
             $objHouse->setLotNumber($rowPayload['lot_number']);
             $objHouse->setGpsLatitude($rowPayload['gps_latitude']);
             $objHouse->setGpsLongitude($rowPayload['gps_longitude']);
+            $objHouse->setTaxNumber($rowPayload['tax_number']);
+            $objHouse->setFoundingDate(new \DateTime($rowPayload['founding_date']));
+            $objHouse->setBankAccountNumber($rowPayload['bank_account_number']);
+            $objHouse->setOwnershipSum($rowPayload['ownership_sum']);
             $objHouse->setImportedAt(new \DateTime('now'));
             $objHouse->setExternalId($rowPayload['id']);
             $objHouse->setIsAccepted(0);

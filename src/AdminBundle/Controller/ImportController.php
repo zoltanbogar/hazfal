@@ -243,6 +243,10 @@ class ImportController extends Controller
             $objHouse->setLotNumber($objImportedHouse->getLotNumber());
             $objHouse->setGpsLatitude($objImportedHouse->getGpsLatitude());
             $objHouse->setGpsLongitude($objImportedHouse->getGpsLongitude());
+            $objHouse->setTaxNumber($objImportedHouse->getTaxNumber());
+            $objHouse->setFoundingDate($objImportedHouse->getFoundingDate());
+            $objHouse->setBankAccountNumber($objImportedHouse->getBankAccountNumber());
+            $objHouse->setOwnershipSum($objImportedHouse->getOwnershipSum());
             $objHouse->setStatus(1);
             $objHouse->setCreatedAt(new \DateTime('now'));
             $objHouse->setUpdatedAt(new \DateTime('now'));

@@ -801,4 +801,91 @@ class House
 
         return $numCountRegisteredUsers / $numCountHouseUsers * 100 . "%";
     }
+    /**
+     * @var string|null
+     */
+    private $taxNumber;
+
+    /**
+     * @var \DateTime|null
+     */
+    private $foundingDate;
+
+    /**
+     * @var string|null
+     */
+    private $bankAccountNumber;
+
+
+    /**
+     * Set taxNumber.
+     *
+     * @param string|null $taxNumber
+     *
+     * @return House
+     */
+    public function setTaxNumber($taxNumber = null)
+    {
+        $this->taxNumber = $taxNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get taxNumber.
+     *
+     * @return string|null
+     */
+    public function getTaxNumber()
+    {
+        return $this->taxNumber;
+    }
+
+    /**
+     * Set foundingDate.
+     *
+     * @param \DateTime|null $foundingDate
+     *
+     * @return House
+     */
+    public function setFoundingDate($foundingDate = null)
+    {
+        $this->foundingDate = $foundingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get foundingDate.
+     *
+     * @return \DateTime|null
+     */
+    public function getFoundingDate()
+    {
+        return $this->foundingDate;
+    }
+
+    /**
+     * Set bankAccountNumber.
+     *
+     * @param string|null $bankAccountNumber
+     *
+     * @return House
+     */
+    public function setBankAccountNumber($bankAccountNumber = null)
+    {
+        $this->bankAccountNumber = $bankAccountNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get bankAccountNumber.
+     *
+     * @return string|null
+     */
+    public function getBankAccountNumber()
+    {
+        return $this->bankAccountNumber;
+    }
 }
