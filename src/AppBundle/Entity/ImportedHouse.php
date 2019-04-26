@@ -326,6 +326,7 @@ class ImportedHouse extends ImportedEntity
     {
         return $this->gpsLongitude;
     }
+
     /**
      * @var \AppBundle\Entity\House
      */
@@ -339,7 +340,7 @@ class ImportedHouse extends ImportedEntity
      *
      * @return ImportedHouse
      */
-    public function setHouse(\AppBundle\Entity\House $house = null)
+    public function setHouse(\AppBundle\Entity\House $house = NULL)
     {
         $this->house = $house;
 
@@ -355,6 +356,7 @@ class ImportedHouse extends ImportedEntity
     {
         return $this->house;
     }
+
     /**
      * @var string|null
      */
@@ -378,7 +380,7 @@ class ImportedHouse extends ImportedEntity
      *
      * @return ImportedHouse
      */
-    public function setTaxNumber($taxNumber = null)
+    public function setTaxNumber($taxNumber = NULL)
     {
         $this->taxNumber = $taxNumber;
 
@@ -402,7 +404,7 @@ class ImportedHouse extends ImportedEntity
      *
      * @return ImportedHouse
      */
-    public function setFoundingDate($foundingDate = null)
+    public function setFoundingDate($foundingDate = NULL)
     {
         $this->foundingDate = $foundingDate;
 
@@ -426,7 +428,7 @@ class ImportedHouse extends ImportedEntity
      *
      * @return ImportedHouse
      */
-    public function setBankAccountNumber($bankAccountNumber = null)
+    public function setBankAccountNumber($bankAccountNumber = NULL)
     {
         $this->bankAccountNumber = $bankAccountNumber;
 
@@ -441,5 +443,35 @@ class ImportedHouse extends ImportedEntity
     public function getBankAccountNumber()
     {
         return $this->bankAccountNumber;
+    }
+
+    /**
+     * @var float|null
+     */
+    private $ownershipSum;
+
+
+    /**
+     * Set ownershipSum.
+     *
+     * @param float|null $ownershipSum
+     *
+     * @return ImportedHouse
+     */
+    public function setOwnershipSum($ownershipSum = NULL)
+    {
+        $this->ownershipSum = $ownershipSum;
+
+        return $this;
+    }
+
+    /**
+     * Get ownershipSum.
+     *
+     * @return float|null
+     */
+    public function getOwnershipSum()
+    {
+        return $this->ownershipSum;
     }
 }

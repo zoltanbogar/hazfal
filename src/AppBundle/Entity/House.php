@@ -801,6 +801,7 @@ class House
 
         return $numCountRegisteredUsers / $numCountHouseUsers * 100 . "%";
     }
+
     /**
      * @var string|null
      */
@@ -824,7 +825,7 @@ class House
      *
      * @return House
      */
-    public function setTaxNumber($taxNumber = null)
+    public function setTaxNumber($taxNumber = NULL)
     {
         $this->taxNumber = $taxNumber;
 
@@ -848,7 +849,7 @@ class House
      *
      * @return House
      */
-    public function setFoundingDate($foundingDate = null)
+    public function setFoundingDate($foundingDate = NULL)
     {
         $this->foundingDate = $foundingDate;
 
@@ -872,7 +873,7 @@ class House
      *
      * @return House
      */
-    public function setBankAccountNumber($bankAccountNumber = null)
+    public function setBankAccountNumber($bankAccountNumber = NULL)
     {
         $this->bankAccountNumber = $bankAccountNumber;
 
@@ -887,5 +888,35 @@ class House
     public function getBankAccountNumber()
     {
         return $this->bankAccountNumber;
+    }
+
+    /**
+     * @var float|null
+     */
+    private $ownershipSum;
+
+
+    /**
+     * Set ownershipSum.
+     *
+     * @param float|null $ownershipSum
+     *
+     * @return House
+     */
+    public function setOwnershipSum($ownershipSum = NULL)
+    {
+        $this->ownershipSum = $ownershipSum;
+
+        return $this;
+    }
+
+    /**
+     * Get ownershipSum.
+     *
+     * @return float|null
+     */
+    public function getOwnershipSum()
+    {
+        return $this->ownershipSum;
     }
 }
