@@ -390,4 +390,100 @@ class BuildingController extends Controller
             []
         );
     }
+
+    public function deleteHouseAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'api_key' => 'required',
+                'id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $objImportedHouse = $this->getDoctrine()->getRepository(ImportedHouse::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if (!$objImportedHouse || count($objImportedHouse) > 1) {
+            return $this->container->get('response_handler')->errorHandler('house_not_found', 'House not found, nothing to delete!', 404);
+        }
+
+        $objImportedHouse = $objImportedHouse[0];
+
+        $objHouse = $objImportedHouse->getHouse();
+        if (!$objHouse) {
+            return $this->container->get('response_handler')->errorHandler('house_not_found', 'House not found, nothing to delete!', 404);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        try {
+            $entityManager->remove($objHouse);
+            $entityManager->remove($objImportedHouse);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('house_cannot_be_deleted', $e->getMessage(), 401);
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            "Ház törölve!",
+            []
+        );
+    }
+
+    public function deleteUnitAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'api_key' => 'required',
+                'id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $objImportedUnit = $this->getDoctrine()->getRepository(ImportedUnit::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if (!$objImportedUnit || count($objImportedUnit) > 1) {
+            return $this->container->get('response_handler')->errorHandler('unit_not_found', 'Unit not found, nothing to delete!', 404);
+        }
+
+        $objImportedUnit = $objImportedUnit[0];
+
+        $objUnit = $objImportedUnit->getUnit();
+        if (!$objUnit) {
+            return $this->container->get('response_handler')->errorHandler('unit_not_found', 'Unit not found, nothing to delete!', 404);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        try {
+            $entityManager->remove($objUnit);
+            $entityManager->remove($objImportedUnit);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('unit_cannot_be_deleted', $e->getMessage(), 401);
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            "Albetét törölve!",
+            []
+        );
+    }
 }

@@ -442,4 +442,33 @@ class ImportedHouse extends ImportedEntity
     {
         return $this->bankAccountNumber;
     }
+    /**
+     * @var float|null
+     */
+    private $ownershipSum;
+
+
+    /**
+     * Set ownershipSum.
+     *
+     * @param float|null $ownershipSum
+     *
+     * @return ImportedHouse
+     */
+    public function setOwnershipSum($ownershipSum = null)
+    {
+        $this->ownershipSum = $ownershipSum;
+
+        return $this;
+    }
+
+    /**
+     * Get ownershipSum.
+     *
+     * @return float|null
+     */
+    public function getOwnershipSum()
+    {
+        return $this->ownershipSum;
+    }
 }

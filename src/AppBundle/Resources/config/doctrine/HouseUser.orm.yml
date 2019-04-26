@@ -89,4 +89,11 @@ AppBundle\Entity\HouseUser:
       joinColumn:
         name: user_id
         referencedColumnName: id
+  oneToOne:
+    importedHouseUser:
+      targetEntity: ImportedHouseUser
+      inversedBy: houseUser
+      joinColumn:
+        name: imported_house_user_id
+        referencedColumnName: id
   lifecycleCallbacks: {  }

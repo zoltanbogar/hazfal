@@ -823,6 +823,7 @@ class ImportController extends Controller
             $objDocument->setFilename($objImportedDocument->getFilename());
             $objDocument->setCreatedAt(new \DateTime('now'));
             $objDocument->setUpdatedAt(new \DateTime('now'));
+            $objDocument->setImportedDocument($objImportedDocument);
 
             $entityManager->persist($objDocument);
 

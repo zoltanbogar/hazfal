@@ -174,6 +174,31 @@ api_post_bulk_import_payment:
   defaults: { _controller: ApiBundle:Finance:postBulkImportPayment }
   methods: POST
 
+api_delete_house:
+  path: /house/delete
+  defaults: { _controller: ApiBundle:Building:deleteHouse }
+  methods: DELETE
+api_delete_unit:
+  path: /unit/delete
+  defaults: { _controller: ApiBundle:Building:deleteUnit }
+  methods: DELETE
+api_delete_tenant:
+  path: /house-user/delete
+  defaults: { _controller: ApiBundle:User:deleteHouseUser }
+  methods: DELETE
+api_delete_document:
+  path: /document/delete
+  defaults: { _controller: ApiBundle:SocialEntity:deleteDocument }
+  methods: DELETE
+api_delete_bill:
+  path: /bill/delete
+  defaults: { _controller: ApiBundle:Finance:deleteBill }
+  methods: DELETE
+api_delete_payment:
+  path: /payment/delete
+  defaults: { _controller: ApiBundle:Finance:deletePayment }
+  methods: DELETE
+
 api_payments_borgun_success:
   path: /payments/borgun/success
   defaults: { _controller: ApiBundle:Finance:successfulBorgunPayment }

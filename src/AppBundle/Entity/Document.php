@@ -244,4 +244,33 @@ class Document extends SocialEntity
      * @var int
      */
     private $id;
+    /**
+     * @var \AppBundle\Entity\ImportedDocument
+     */
+    private $importedDocument;
+
+
+    /**
+     * Set importedDocument.
+     *
+     * @param \AppBundle\Entity\ImportedDocument|null $importedDocument
+     *
+     * @return Document
+     */
+    public function setImportedDocument(\AppBundle\Entity\ImportedDocument $importedDocument = null)
+    {
+        $this->importedDocument = $importedDocument;
+
+        return $this;
+    }
+
+    /**
+     * Get importedDocument.
+     *
+     * @return \AppBundle\Entity\ImportedDocument|null
+     */
+    public function getImportedDocument()
+    {
+        return $this->importedDocument;
+    }
 }

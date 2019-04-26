@@ -752,4 +752,52 @@ class SocialEntityController extends Controller
             []
         );
     }
+
+    public function deleteDocumentAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'api_key' => 'required',
+                'id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $objImportedDocument = $this->getDoctrine()->getRepository(ImportedDocument::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if (!$objImportedDocument || count($objImportedDocument) > 1) {
+            return $this->container->get('response_handler')->errorHandler('document_not_found', 'Document not found, nothing to delete!', 404);
+        }
+
+        $objImportedDocument = $objImportedDocument[0];
+
+        $objDocument = $objImportedDocument->getDocument();
+        if (!$objDocument) {
+            return $this->container->get('response_handler')->errorHandler('document_not_found', 'Document not found, nothing to delete!', 404);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        try {
+            $entityManager->remove($objDocument);
+            $entityManager->remove($objImportedDocument);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('document_cannot_be_deleted', $e->getMessage(), 401);
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            "Dokumentum törölve!",
+            []
+        );
+    }
 }
