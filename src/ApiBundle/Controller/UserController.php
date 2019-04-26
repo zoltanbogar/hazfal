@@ -10,6 +10,7 @@ use AppBundle\Entity\Document;
 use AppBundle\Entity\DocumentType;
 use AppBundle\Entity\House;
 use AppBundle\Entity\HouseUser;
+use AppBundle\Entity\ImportedHouse;
 use AppBundle\Entity\ImportedHouseUser;
 use AppBundle\Entity\ImportedUnit;
 use AppBundle\Entity\ImportedUser;
@@ -710,6 +711,54 @@ class UserController extends Controller
 
         return $this->container->get('response_handler')->successHandler(
             $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function deleteHouseUserAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'api_key' => 'required',
+                'id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $objImportedHouseUser = $this->getDoctrine()->getRepository(ImportedHouseUser::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if (!$objImportedHouseUser || count($objImportedHouseUser) > 1) {
+            return $this->container->get('response_handler')->errorHandler('house_user_not_found', 'HouseUser not found, nothing to delete!', 404);
+        }
+
+        $objImportedHouseUser = $objImportedHouseUser[0];
+
+        $objHouseUser = $objImportedHouseUser->getHouseUser();
+        if (!$objHouseUser) {
+            return $this->container->get('response_handler')->errorHandler('house_user_not_found', 'HouseUser not found, nothing to delete!', 404);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        try {
+            $entityManager->remove($objHouseUser);
+            $entityManager->remove($objImportedHouseUser);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('house_user_cannot_be_deleted', $e->getMessage(), 401);
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            "Technikai felhasználó törölve!",
             []
         );
     }

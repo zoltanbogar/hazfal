@@ -504,4 +504,33 @@ class ImportedHouseUser extends ImportedEntity
      * @var \DateTime|null
      */
     private $deletedAt;
+    /**
+     * @var \AppBundle\Entity\HouseUser
+     */
+    private $houseUser;
+
+
+    /**
+     * Set houseUser.
+     *
+     * @param \AppBundle\Entity\HouseUser|null $houseUser
+     *
+     * @return ImportedHouseUser
+     */
+    public function setHouseUser(\AppBundle\Entity\HouseUser $houseUser = null)
+    {
+        $this->houseUser = $houseUser;
+
+        return $this;
+    }
+
+    /**
+     * Get houseUser.
+     *
+     * @return \AppBundle\Entity\HouseUser|null
+     */
+    public function getHouseUser()
+    {
+        return $this->houseUser;
+    }
 }

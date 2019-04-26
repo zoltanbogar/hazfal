@@ -552,4 +552,33 @@ class HouseUser
     {
         return $this->getLastName(). " " . $this->getFirstName();
     }
+    /**
+     * @var \AppBundle\Entity\ImportedHouseUser
+     */
+    private $importedHouseUser;
+
+
+    /**
+     * Set importedHouseUser.
+     *
+     * @param \AppBundle\Entity\ImportedHouseUser|null $importedHouseUser
+     *
+     * @return HouseUser
+     */
+    public function setImportedHouseUser(\AppBundle\Entity\ImportedHouseUser $importedHouseUser = null)
+    {
+        $this->importedHouseUser = $importedHouseUser;
+
+        return $this;
+    }
+
+    /**
+     * Get importedHouseUser.
+     *
+     * @return \AppBundle\Entity\ImportedHouseUser|null
+     */
+    public function getImportedHouseUser()
+    {
+        return $this->importedHouseUser;
+    }
 }

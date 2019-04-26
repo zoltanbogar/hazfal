@@ -152,4 +152,33 @@ class ImportedDocument extends ImportedEntity
     {
         return $this->filename;
     }
+    /**
+     * @var \AppBundle\Entity\Document
+     */
+    private $document;
+
+
+    /**
+     * Set document.
+     *
+     * @param \AppBundle\Entity\Document|null $document
+     *
+     * @return ImportedDocument
+     */
+    public function setDocument(\AppBundle\Entity\Document $document = null)
+    {
+        $this->document = $document;
+
+        return $this;
+    }
+
+    /**
+     * Get document.
+     *
+     * @return \AppBundle\Entity\Document|null
+     */
+    public function getDocument()
+    {
+        return $this->document;
+    }
 }
