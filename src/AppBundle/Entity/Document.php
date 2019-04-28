@@ -273,4 +273,33 @@ class Document extends SocialEntity
     {
         return $this->importedDocument;
     }
+    /**
+     * @var string|null
+     */
+    private $url;
+
+
+    /**
+     * Set url.
+     *
+     * @param string|null $url
+     *
+     * @return Document
+     */
+    public function setUrl($url = null)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url.
+     *
+     * @return string|null
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }

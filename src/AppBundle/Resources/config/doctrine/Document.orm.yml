@@ -9,6 +9,11 @@ AppBundle\Entity\Document:
     filename:
       type: string
       length: 255
+      nullable: true
+    url:
+      type: text
+      column: url
+      nullable: true
   manyToOne:
     user:
       targetEntity: User

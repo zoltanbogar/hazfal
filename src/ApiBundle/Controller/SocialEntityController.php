@@ -619,7 +619,6 @@ class SocialEntityController extends Controller
                 'document_type_id' => 'required|numeric',
                 'house_id' => 'required|numeric',
                 'name' => 'required',
-                'filename' => 'required',
                 'id' => 'required|numeric',
             ],
             $request
@@ -658,12 +657,16 @@ class SocialEntityController extends Controller
         try {
             $datetime = new \Datetime('now');
             $file = $request->files->get('file');
-            $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($request->get('filename'), 0, 64)) . "_" . $datetime->format(
-                    'Y-m-d_H-i-s'
-                ) . "." . $file->guessExtension();
-            $objDocument->setFilename($filename);
+            if ($file) {
+                $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($request->get('filename'), 0, 64)) . "_" . $datetime->format(
+                        'Y-m-d_H-i-s'
+                    ) . "." . $file->guessExtension();
+                $objDocument->setFilename($filename);
 
-            $file->move($this->getParameter('doc_uploads_dir'), $filename);
+                $file->move($this->getParameter('doc_uploads_dir'), $filename);
+            } else {
+                $objDocument->setUrl($request->get('url'));
+            }
 
             $entityManager->persist($objDocument);
             $entityManager->flush();
@@ -699,7 +702,6 @@ class SocialEntityController extends Controller
                     'document_type_id' => 'required|numeric',
                     'house_id' => 'required|numeric',
                     'name' => 'required',
-                    'filename' => 'required',
                     'id' => 'required|numeric',
                 ],
                 $rowPayload
@@ -728,12 +730,16 @@ class SocialEntityController extends Controller
             try {
                 $datetime = new \Datetime('now');
                 $file = $request->files->get($rowPayload['filename']);
-                $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($rowPayload['filename'], 0, 64)) . "_" . $datetime->format(
-                        'Y-m-d_H-i-s'
-                    ) . "." . $file->guessExtension();
-                $objDocument->setFilename($filename);
+                if ($file) {
+                    $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($rowPayload['filename'], 0, 64)) . "_" . $datetime->format(
+                            'Y-m-d_H-i-s'
+                        ) . "." . $file->guessExtension();
+                    $objDocument->setFilename($filename);
 
-                $file->move($this->getParameter('doc_uploads_dir'), $filename);
+                    $file->move($this->getParameter('doc_uploads_dir'), $filename);
+                } else {
+                    $objDocument->setUrl($rowPayload['url']);
+                }
 
                 $entityManager->persist($objDocument);
                 $entityManager->flush();
@@ -742,7 +748,7 @@ class SocialEntityController extends Controller
             }
 
             $arrSuccessMSG[] = [
-                "msg" => "ID: " . $rowPayload["id"] . ", Dokumentum név: " . $rowPayload["name"] . ", Dokumentum fájlnév: " . $rowPayload["filename"] . ". importálva!",
+                "msg" => "ID: " . $rowPayload["id"] . ", Dokumentum név: " . $rowPayload["name"] . ($rowPayload["filename"] ? ", Dokumentum fájlnév: " . $rowPayload["filename"] : "") . ". importálva!",
                 "id" => $rowPayload["id"],
             ];
         }
@@ -797,6 +803,153 @@ class SocialEntityController extends Controller
 
         return $this->container->get('response_handler')->successHandler(
             "Dokumentum törölve!",
+            []
+        );
+    }
+
+    public function postForceImportDocumentAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'type' => 'required',
+                'user_id' => 'required|numeric',
+                'document_type_id' => 'required|numeric',
+                'house_id' => 'required|numeric',
+                'name' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        if ($request->get('type') !== 'document') {
+            return $this->container->get('response_handler')->errorHandler("invalid_entity_type", "Invalid parameters", 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objDocument = new Document();
+        $objDocument->setName($request->get('name'));
+        $objDocument->setHouseId($request->get('house_id'));
+        $objDocument->setUserId($request->get('user_id'));
+        $objDocument->setCreatedAt(new \DateTime('now'));
+        $objDocument->setUpdatedAt(new \DateTime('now'));
+
+        try {
+            $datetime = new \Datetime('now');
+            $file = $request->files->get('file');
+            if ($file) {
+                $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($request->get('filename'), 0, 64)) . "_" . $datetime->format(
+                        'Y-m-d_H-i-s'
+                    ) . "." . $file->guessExtension();
+                $objDocument->setFilename($filename);
+
+                $file->move($this->getParameter('doc_uploads_dir'), $filename);
+            } else {
+                $objDocument->setUrl($request->get('url'));
+            }
+
+            $entityManager->persist($objDocument);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('file_error', $e->getMessage(), 400);
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            "Document has been imported!",
+            $request->query->all()
+        );
+    }
+
+    public function postBulkForceImportDocumentAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'type' => 'required',
+                    'user_id' => 'required|numeric',
+                    'document_type_id' => 'required|numeric',
+                    'house_id' => 'required|numeric',
+                    'name' => 'required',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $objDocument = new Document();
+            $objDocument->setName($rowPayload['name']);
+            if ($rowPayload['house_id']) {
+                $numHouseID = $rowPayload['house_id'];
+                $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+                if (!$objHouse) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+                }
+                $objDocument->setHouse($objHouse);
+            }
+            if ($rowPayload['user_id']) {
+                $numUserID = $rowPayload['user_id'];
+                $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+                if (!$objUser) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+                }
+                $objDocument->setUser($objUser);
+            }
+            $objDocument->setCreatedAt(new \DateTime('now'));
+            $objDocument->setUpdatedAt(new \DateTime('now'));
+
+            try {
+                $datetime = new \Datetime('now');
+                $file = $request->files->get($rowPayload['filename']);
+                if ($file) {
+                    $filename = $request->get('user_id') . "_" . str_replace(" ", "_", substr($rowPayload['filename'], 0, 64)) . "_" . $datetime->format(
+                            'Y-m-d_H-i-s'
+                        ) . "." . $file->guessExtension();
+                    $objDocument->setFilename($filename);
+
+                    $file->move($this->getParameter('doc_uploads_dir'), $filename);
+                } else {
+                    $objDocument->setUrl($rowPayload['url']);
+                }
+
+                $entityManager->persist($objDocument);
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                return $this->container->get('response_handler')->errorHandler('file_error', 'File hiba', 400);
+            }
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Dokumentum név: " . $rowPayload["name"] . ($rowPayload["filename"] ? ", Dokumentum fájlnév: " . $rowPayload["filename"] : "") . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
             []
         );
     }

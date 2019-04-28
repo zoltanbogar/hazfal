@@ -104,6 +104,8 @@ api_get_payment_methods:
   path: /payment-methods
   defaults: { _controller: ApiBundle:Finance:getPaymentMethods }
   methods: GET
+
+#IMPORT SINGLE
 api_post_import_house:
   path: /import/house
   defaults: { _controller: ApiBundle:Building:postImportHouse }
@@ -140,7 +142,7 @@ api_get_export_payments:
   path: /export/payments
   defaults: { _controller: ApiBundle:Finance:getExportPayments }
   methods: GET
-
+#IMPORT BULK
 api_post_bulk_import_house:
   path: /bulk-import/house
   defaults: { _controller: ApiBundle:Building:postBulkImportHouse }
@@ -173,7 +175,7 @@ api_post_bulk_import_payment:
   path: /bulk-import/payment
   defaults: { _controller: ApiBundle:Finance:postBulkImportPayment }
   methods: POST
-
+#DELETE ENDPOINTS
 api_delete_house:
   path: /house/delete
   defaults: { _controller: ApiBundle:Building:deleteHouse }
@@ -198,6 +200,64 @@ api_delete_payment:
   path: /payment/delete
   defaults: { _controller: ApiBundle:Finance:deletePayment }
   methods: DELETE
+#FORCE-IMPORT
+api_post_force_import_house:
+  path: /import-force/house
+  defaults: { _controller: ApiBundle:Building:postForceImportHouse }
+  methods: POST
+api_post_force_import_unit:
+  path: /import-force/unit
+  defaults: { _controller: ApiBundle:Building:postForceImportUnit }
+  methods: POST
+api_post_force_import_document:
+  path: /import-force/document
+  defaults: { _controller: ApiBundle:SocialEntity:postForceImportDocument }
+  methods: POST
+api_post_force_import_bill:
+  path: /import-force/bill
+  defaults: { _controller: ApiBundle:Finance:postForceImportBill }
+  methods: POST
+api_post_force_import_payment:
+  path: /import-force/payment
+  defaults: { _controller: ApiBundle:Finance:postForceImportPayment }
+  methods: POST
+api_post_force_import_house_user:
+  path: /import-force/house-user
+  defaults: { _controller: ApiBundle:User:postForceImportHouseUser }
+  methods: POST
+api_post_force_import_manager:
+  path: /import-force/manager
+  defaults: { _controller: ApiBundle:User:postForceImportManager }
+  methods: POST
+#FORCE-BULK-IMPORT
+api_post_bulk_force_import_unit:
+  path: /bulk-import-force/unit
+  defaults: { _controller: ApiBundle:Building:postBulkForceImportUnit }
+  methods: POST
+api_post_bulk_force_import_house:
+  path: /bulk-import-force/house
+  defaults: { _controller: ApiBundle:Building:postBulkForceImportHouse }
+  methods: POST
+api_post_bulk_force_import_document:
+  path: /bulk-import-force/document
+  defaults: { _controller: ApiBundle:SocialEntity:postBulkForceImportDocument }
+  methods: POST
+api_post_bulk_force_import_bill:
+  path: /bulk-import-force/bill
+  defaults: { _controller: ApiBundle:Finance:postBulkForceImportBill }
+  methods: POST
+api_post_bulk_force_import_payment:
+  path: /bulk-import-force/payment
+  defaults: { _controller: ApiBundle:Finance:postBulkForceImportPayment }
+  methods: POST
+api_post_bulk_force_import_house_user:
+  path: /bulk-import-force/house-user
+  defaults: { _controller: ApiBundle:User:postBulkForceImportHouseUser }
+  methods: POST
+api_post_bulk_force_import_manager:
+  path: /bulk-import-force/manager
+  defaults: { _controller: ApiBundle:User:postBulkForceImportManager }
+  methods: POST
 
 api_payments_borgun_success:
   path: /payments/borgun/success
@@ -229,6 +289,11 @@ api_get_confirm_registration:
   path: confirm-registration/{hash}
   defaults: { _controller: ApiBundle:Security:getConfirmRegistration }
   methods: GET
+
+api_post_set_unit_tenant_ownership:
+  path: /unit-tenant/set-ownership
+  defaults: { _controller: ApiBundle:User:postSetUnitOwnershipShare }
+  methods: POST
 
 api_confirm_user:
   path: /registration/user/confirm

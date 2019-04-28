@@ -341,4 +341,33 @@ class Payment
     {
         return $this->houseUser;
     }
+    /**
+     * @var \AppBundle\Entity\ImportedPayment
+     */
+    private $importedPayment;
+
+
+    /**
+     * Set importedPayment.
+     *
+     * @param \AppBundle\Entity\ImportedPayment|null $importedPayment
+     *
+     * @return Payment
+     */
+    public function setImportedPayment(\AppBundle\Entity\ImportedPayment $importedPayment = null)
+    {
+        $this->importedPayment = $importedPayment;
+
+        return $this;
+    }
+
+    /**
+     * Get importedPayment.
+     *
+     * @return \AppBundle\Entity\ImportedPayment|null
+     */
+    public function getImportedPayment()
+    {
+        return $this->importedPayment;
+    }
 }

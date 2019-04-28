@@ -19,6 +19,11 @@ AppBundle\Entity\ImportedDocument:
     filename:
       type: string
       length: 255
+      nullable: true
+    url:
+      type: text
+      column: url
+      nullable: true
   oneToOne:
     document:
       targetEntity: Document

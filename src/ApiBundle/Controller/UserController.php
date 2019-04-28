@@ -762,4 +762,371 @@ class UserController extends Controller
             []
         );
     }
+
+    public function postForceImportHouseUserAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'mailing_address' => 'required',
+                'phone_number' => 'required',
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'company_name' => 'required',
+                'company_address' => 'required',
+                'company_tax_number' => 'required',
+                'local_contact_number' => 'required',
+                'house_user_type' => 'required',
+                'house_id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objHouseUser = new Tenant();
+        if ($request->get('user_id')) {
+            $numUserID = $request->get("user_id");
+            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+            if (!$objUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setUser($objUser);
+        }
+        if ($request->get('house_id')) {
+            $numHouseID = $request->get("house_id");
+            $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+            if (!$objHouse) {
+                return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setHouse($objHouse);
+        }
+        $objHouseUser->setEmail($request->get('email'));
+        $objHouseUser->setMailingAddress($request->get('mailing_address'));
+        $objHouseUser->setPhoneNumber($request->get('phone_number'));
+        $objHouseUser->setFirstName($request->get('first_name'));
+        $objHouseUser->setLastName($request->get('last_name'));
+        $objHouseUser->setCompanyName($request->get('company_name'));
+        $objHouseUser->setCompanyAddress($request->get('company_address'));
+        $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setCreatedAt(new \DateTime('now'));
+        $objHouseUser->setUpdatedAt(new \DateTime('now'));
+        $objHouseUser->setLocalContactNumber($request->get('local_contact_number'));
+
+        $entityManager->persist($objHouseUser);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "House User has been imported!",
+            $request->query->all()
+        );
+    }
+
+    public function postForceImportManagerAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'email' => 'required',
+                'mailing_address' => 'required',
+                'phone_number' => 'required',
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'company_name' => 'required',
+                'company_address' => 'required',
+                'company_tax_number' => 'required',
+                'website' => 'required',
+                'logo_image' => 'required',
+                'house_user_type' => 'required',
+                'house_id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objHouseUser = new Manager();
+        if ($request->get('user_id')) {
+            $numUserID = $request->get("user_id");
+            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+            if (!$objUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setUser($objUser);
+        }
+        if ($request->get('house_id')) {
+            $numHouseID = $request->get("house_id");
+            $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+            if (!$objHouse) {
+                return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+            }
+            $objHouseUser->setHouse($objHouse);
+        }
+        $objHouseUser->setEmail($request->get('email'));
+        $objHouseUser->setMailingAddress($request->get('mailing_address'));
+        $objHouseUser->setPhoneNumber($request->get('phone_number'));
+        $objHouseUser->setFirstName($request->get('first_name'));
+        $objHouseUser->setLastName($request->get('last_name'));
+        $objHouseUser->setCompanyName($request->get('company_name'));
+        $objHouseUser->setCompanyAddress($request->get('company_address'));
+        $objHouseUser->setCompanyTaxNumber($request->get('company_tax_number'));
+        $objHouseUser->setCreatedAt(new \DateTime('now'));
+        $objHouseUser->setUpdatedAt(new \DateTime('now'));
+        $objHouseUser->setWebsite($request->get('website'));
+        $objHouseUser->setLogoImage($request->get('logo_image'));
+
+        $entityManager->persist($objHouseUser);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "House User has been imported!",
+            $request->query->all()
+        );
+    }
+
+    public function postBulkForceImportHouseUserAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'mailing_address' => 'required',
+                    'phone_number' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'company_name' => 'required',
+                    'company_address' => 'required',
+                    'company_tax_number' => 'required',
+                    'local_contact_number' => 'required',
+                    'house_user_type' => 'required',
+                    'house_id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $objHouseUser = new Tenant();
+            if ($rowPayload['user_id']) {
+                $numUserID = $rowPayload['user_id'];
+                $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+                if (!$objUser) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+                }
+                $objHouseUser->setUser($objUser);
+            }
+            if ($rowPayload['house_id']) {
+                $numHouseID = $rowPayload['house_id'];
+                $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+                if (!$objHouse) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+                }
+                $objHouseUser->setHouse($objHouse);
+            }
+            $objHouseUser->setEmail($rowPayload['email']);
+            $objHouseUser->setMailingAddress($rowPayload['mailing_address']);
+            $objHouseUser->setPhoneNumber($rowPayload['phone_number']);
+            $objHouseUser->setFirstName($rowPayload['first_name']);
+            $objHouseUser->setLastName($rowPayload['last_name']);
+            $objHouseUser->setCompanyName($rowPayload['company_name']);
+            $objHouseUser->setCompanyAddress($rowPayload['company_address']);
+            $objHouseUser->setCompanyTaxNumber($rowPayload['company_tax_number']);
+            $objHouseUser->setCreatedAt(new \DateTime('now'));
+            $objHouseUser->setUpdatedAt(new \DateTime('now'));
+            $objHouseUser->setLocalContactNumber($rowPayload['local_contact_number']);
+
+            $entityManager->persist($objHouseUser);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Email: " . $rowPayload["email"] . ", Név: " . $rowPayload["first_name"] . " " . $rowPayload['last_name'] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function postBulkForceImportManagerAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'email' => 'required',
+                    'mailing_address' => 'required',
+                    'phone_number' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'company_name' => 'required',
+                    'company_address' => 'required',
+                    'company_tax_number' => 'required',
+                    'website' => 'required',
+                    'logo_image' => 'required',
+                    'house_user_type' => 'required',
+                    'house_id' => 'required|numeric',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $objHouseUser = new Manager();
+            if ($rowPayload['user_id']) {
+                $numUserID = $rowPayload['user_id'];
+                $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+                if (!$objUser) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+                }
+                $objHouseUser->setUser($objUser);
+            }
+            if ($rowPayload['house_id']) {
+                $numHouseID = $rowPayload['house_id'];
+                $objHouse = $this->getDoctrine()->getRepository(House::class)->find($numHouseID);
+                if (!$objHouse) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_house_id", "Invalid parameters", 422);
+                }
+                $objHouseUser->setHouse($objHouse);
+            }
+            $objHouseUser->setEmail($rowPayload['email']);
+            $objHouseUser->setMailingAddress($rowPayload['mailing_address']);
+            $objHouseUser->setPhoneNumber($rowPayload['phone_number']);
+            $objHouseUser->setFirstName($rowPayload['first_name']);
+            $objHouseUser->setLastName($rowPayload['last_name']);
+            $objHouseUser->setCompanyName($rowPayload['company_name']);
+            $objHouseUser->setCompanyAddress($rowPayload['company_address']);
+            $objHouseUser->setCompanyTaxNumber($rowPayload['company_tax_number']);
+            $objHouseUser->setWebsite($rowPayload['website']);
+            $objHouseUser->setLogoImage($rowPayload['logo_image']);
+            $objHouseUser->setCreatedAt(new \DateTime('now'));
+            $objHouseUser->setUpdatedAt(new \DateTime('now'));
+
+            $entityManager->persist($objHouseUser);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Email: " . $rowPayload["email"] . ", Név: " . $rowPayload["first_name"] . " " . $rowPayload['last_name'] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function postSetUnitOwnershipShareAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'house_user_id' => 'required|numeric',
+                'unit_id' => 'required|numeric',
+                'ownership_share' => 'required|numeric',
+                'api_key' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objUnitTenant = $this->getDoctrine()->getRepository(UnitTenant::class)->findByUnitIdAndTenantId(
+            $request->get('unit_id'),
+            $request->get('house_user_id')
+        );
+
+        $numOwnershipShare = $request->get('ownership_share');
+        if ($numOwnershipShare > 1) {
+            $numOwnershipShare = $numOwnershipShare / 100;
+        }
+        if (!$objUnitTenant) {
+            $objUnitTenant = new UnitTenant();
+            if ($request->get('unit_id')) {
+                $numUnitID = $request->get("unit_id");
+                $objUser = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+                if (!$objUser) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+                }
+                $objUnitTenant->setUnit($objUser);
+            }
+            if ($request->get('house_user_id')) {
+                $numHouseUserID = $request->get("house_user_id");
+                $objHouseUser = $this->getDoctrine()->getRepository(HouseUser::class)->find($numHouseUserID);
+                if (!$objHouseUser) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_house_user_id", "Invalid parameters", 422);
+                }
+                $objUnitTenant->setTenant($objHouseUser);
+            }
+            $objUnitTenant->setStatus(1);
+            $objUnitTenant->setCreatedAt(new \DateTime('now'));
+        }
+
+        $objUnitTenant->setOwnershipShare($numOwnershipShare);
+        $objUnitTenant->setUpdatedAt(new \DateTime('now'));
+
+        $entityManager->persist($objUnitTenant);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Ownership share has been set!",
+            $request->query->all()
+        );
+    }
 }

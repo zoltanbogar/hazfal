@@ -10,4 +10,14 @@ namespace AppBundle\Repository;
  */
 class UnitTenantRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByUnitIdAndTenantId($numUnitID, $numHouseUserID)
+    {
+        return $this->createQueryBuilder('ut')
+            ->andWhere('ut.tenant = :tenant_id')
+            ->andWhere('ut.unit = :unit_id')
+            ->setParameter('tenant_id', $numHouseUserID)
+            ->setParameter('unit_id', $numUnitID)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

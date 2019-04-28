@@ -268,4 +268,33 @@ class ImportedBill extends ImportedEntity
     {
         return $this->unitId;
     }
+    /**
+     * @var \AppBundle\Entity\Bill
+     */
+    private $bill;
+
+
+    /**
+     * Set bill.
+     *
+     * @param \AppBundle\Entity\Bill|null $bill
+     *
+     * @return ImportedBill
+     */
+    public function setBill(\AppBundle\Entity\Bill $bill = null)
+    {
+        $this->bill = $bill;
+
+        return $this;
+    }
+
+    /**
+     * Get bill.
+     *
+     * @return \AppBundle\Entity\Bill|null
+     */
+    public function getBill()
+    {
+        return $this->bill;
+    }
 }

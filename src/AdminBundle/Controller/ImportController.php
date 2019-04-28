@@ -530,22 +530,6 @@ class ImportController extends Controller
                 $objPaymentMethod = $this->getDoctrine()->getRepository(PaymentMethod::class)->find(1);
                 $objPayment->setPaymentMethod($objPaymentMethod);
             }
-            if ($objImportedPayment->getUserId()) {
-                $numUserID = $objImportedPayment->getUserId();
-                $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
-                if (!$objUser) {
-                    return $this->redirectToRoute(
-                        'admin_get_import_payments',
-                        [
-                            'error' => $error = [
-                                'errorTitle' => 'Felhasználó hiba',
-                                'errorText' => 'Nem megfelelő azonosító',
-                            ],
-                        ]
-                    );
-                }
-                $objPayment->setUser($objUser);
-            }
             if ($objImportedPayment->getHouseUserId()) {
                 $numHouseUserID = $objImportedPayment->getHouseUserId();
                 $objHouseUser = $this->getDoctrine()->getRepository(HouseUser::class)->find($numHouseUserID);
@@ -567,6 +551,7 @@ class ImportController extends Controller
             $objPayment->setReceiptNumber($objImportedPayment->getReceiptNumber());
             $objPayment->setAmount($objImportedPayment->getAmount());
             $objPayment->setStatus(1);
+            $objPayment->setImportedPayment($objImportedPayment);
 
             $entityManager->persist($objPayment);
 
@@ -680,6 +665,7 @@ class ImportController extends Controller
             $objBill->setDueDate($objImportedBill->getDueDate());
             $objBill->setReceiptNumber($objImportedBill->getReceiptNumber());
             $objBill->setIssuedForMonth($objImportedBill->getIssuedForMonth());
+            $objBill->setImportedBill($objImportedBill);
 
             $entityManager->persist($objBill);
 
@@ -821,6 +807,7 @@ class ImportController extends Controller
             }
             $objDocument->setName($objImportedDocument->getName());
             $objDocument->setFilename($objImportedDocument->getFilename());
+            $objDocument->setUrl($objImportedDocument->getUrl());
             $objDocument->setCreatedAt(new \DateTime('now'));
             $objDocument->setUpdatedAt(new \DateTime('now'));
             $objDocument->setImportedDocument($objImportedDocument);

@@ -355,4 +355,33 @@ class Bill
 
         return $this;
     }
+    /**
+     * @var \AppBundle\Entity\ImportedBill
+     */
+    private $importedBill;
+
+
+    /**
+     * Set importedBill.
+     *
+     * @param \AppBundle\Entity\ImportedBill|null $importedBill
+     *
+     * @return Bill
+     */
+    public function setImportedBill(\AppBundle\Entity\ImportedBill $importedBill = null)
+    {
+        $this->importedBill = $importedBill;
+
+        return $this;
+    }
+
+    /**
+     * Get importedBill.
+     *
+     * @return \AppBundle\Entity\ImportedBill|null
+     */
+    public function getImportedBill()
+    {
+        return $this->importedBill;
+    }
 }

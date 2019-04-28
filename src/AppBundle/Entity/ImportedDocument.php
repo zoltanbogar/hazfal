@@ -181,4 +181,33 @@ class ImportedDocument extends ImportedEntity
     {
         return $this->document;
     }
+    /**
+     * @var string|null
+     */
+    private $url;
+
+
+    /**
+     * Set url.
+     *
+     * @param string|null $url
+     *
+     * @return ImportedDocument
+     */
+    public function setUrl($url = null)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url.
+     *
+     * @return string|null
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }

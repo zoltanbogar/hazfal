@@ -297,4 +297,33 @@ class ImportedPayment extends ImportedEntity
     {
         return $this->userId;
     }
+    /**
+     * @var \AppBundle\Entity\Payment
+     */
+    private $payment;
+
+
+    /**
+     * Set payment.
+     *
+     * @param \AppBundle\Entity\Payment|null $payment
+     *
+     * @return ImportedPayment
+     */
+    public function setPayment(\AppBundle\Entity\Payment $payment = null)
+    {
+        $this->payment = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Get payment.
+     *
+     * @return \AppBundle\Entity\Payment|null
+     */
+    public function getPayment()
+    {
+        return $this->payment;
+    }
 }

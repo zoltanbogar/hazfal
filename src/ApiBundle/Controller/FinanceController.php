@@ -770,4 +770,378 @@ class FinanceController extends Controller
 
         return $this->redirect($baseUrl);
     }
+
+    public function deleteBillAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'api_key' => 'required',
+                'id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $objImportedBill = $this->getDoctrine()->getRepository(ImportedBill::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if (!$objImportedBill || count($objImportedBill) > 1) {
+            return $this->container->get('response_handler')->errorHandler('bill_not_found', 'Bill not found, nothing to delete!', 404);
+        }
+
+        $objImportedBill = $objImportedBill[0];
+
+        $objBill = $objImportedBill->getBill();
+        if (!$objBill) {
+            return $this->container->get('response_handler')->errorHandler('bill_not_found', 'Bill not found, nothing to delete!', 404);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        try {
+            $entityManager->remove($objBill);
+            $entityManager->remove($objImportedBill);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('bill_cannot_be_deleted', $e->getMessage(), 401);
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            "Számla törölve!",
+            []
+        );
+    }
+
+    public function deletePaymentAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'api_key' => 'required',
+                'id' => 'required|numeric',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $objImportedPayment = $this->getDoctrine()->getRepository(ImportedPayment::class)->findBy(['externalId' => $request->get('id'), 'isAccepted' => 1]);
+
+        if (!$objImportedPayment || count($objImportedPayment) > 1) {
+            return $this->container->get('response_handler')->errorHandler('payment_not_found', 'Payment not found, nothing to delete!', 404);
+        }
+
+        $objImportedPayment = $objImportedPayment[0];
+
+        $objPayment = $objImportedPayment->getBill();
+        if (!$objPayment) {
+            return $this->container->get('response_handler')->errorHandler('payment_not_found', 'Payment not found, nothing to delete!', 404);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        try {
+            $entityManager->remove($objPayment);
+            $entityManager->remove($objImportedPayment);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->container->get('response_handler')->errorHandler('payment_cannot_be_deleted', $e->getMessage(), 401);
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            "Befizetés törölve!",
+            []
+        );
+    }
+
+    public function postForceImportBillAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'unit_id' => 'required|numeric',
+                'amount' => 'required|numeric',
+                'receipt_number' => 'required|numeric',
+                'issued_for_month' => 'required|numeric',
+                'bill_category' => 'required',
+                'details' => 'required',
+                'issued_at' => 'required|date',
+                'due_date' => 'required|date',
+                'api_key' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $objBill = new Bill();
+        if ($request->get('unit_id')) {
+            $numUnitID = $request->get("unit_id");
+            $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+            if (!$objUnit) {
+                return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+            }
+            $objBill->setUnit($objUnit);
+        }
+        $objBill->setAmount($request->get('amount'));
+        $objBill->setBillCategory($request->get('bill_category'));
+        $objBill->setStatus(1);
+        $objBill->setDetails($request->get('details'));
+        $objBill->setReceiptNumber($request->get('receipt_number'));
+        $objBill->setIssuedForMonth($request->get('issued_for_month'));
+        $objBill->setCreatedAt(new \DateTime('now'));
+        $objBill->setIssuedAt(new \DateTime($request->get('issued_at')));
+        $objBill->setDueDate(new \DateTime($request->get('due_date')));
+
+        $entityManager->persist($objBill);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Bill has been imported!",
+            $request->query->all()
+        );
+    }
+
+    public function postForceImportPaymentAction(Request $request)
+    {
+        $validator = $this->container->get('validation_handler')->inputValidationHandler(
+            [
+                'unit_id' => 'required|numeric',
+                'user_id' => 'required|numeric',
+                'house_user_id' => 'required|numeric',
+                'payment_date' => 'required|date',
+                'booking_date' => 'required|date',
+                'receipt_number' => 'required|numeric',
+                'amount' => 'required|numeric',
+                'api_key' => 'required',
+            ],
+            $request
+        );
+
+        if ($validator['hasError']) {
+            return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $objPayment = new Payment();
+        $objPayment->setUnitId($request->get('unit_id'));
+        if ($request->get('unit_id')) {
+            $numUnitID = $request->get("unit_id");
+            $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+            if (!$objUnit) {
+                return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+            }
+            $objPayment->setUnit($objUnit);
+        }
+        $objPayment->setAmount($request->get('amount'));
+        $objPayment->setReceiptNumber($request->get('receipt_number'));
+        $objPayment->setBookingDate(new \DateTime($request->get('booking_date')));
+        $objPayment->setPaymentDate(new \DateTime($request->get('payment_date')));
+        if ($request->get('house_user_id')) {
+            $numHouseUserID = $request->get("house_user_id");
+            $objHouseUser = $this->getDoctrine()->getRepository(HouseUser::class)->find($numHouseUserID);
+            if (!$objHouseUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_house_user_id", "Invalid parameters", 422);
+            }
+            $objPayment->setHouseUser($objHouseUser);
+        }
+        if ($request->get('user_id')) {
+            $numUserID = $request->get("user_id");
+            $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+            if (!$objUser) {
+                return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+            }
+            $objPayment->setUser($objUser);
+        }
+        $objPayment->setStatus(1);
+
+        $entityManager->persist($objPayment);
+        $entityManager->flush();
+
+        return $this->container->get('response_handler')->successHandler(
+            "Payment has been imported!",
+            $request->query->all()
+        );
+    }
+
+    public function postBulkForceImportBillAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'unit_id' => 'required|numeric',
+                    'amount' => 'required|numeric',
+                    'receipt_number' => 'required|numeric',
+                    'issued_for_month' => 'required|numeric',
+                    'bill_category' => 'required',
+                    'details' => 'required',
+                    'issued_at' => 'required|date',
+                    'due_date' => 'required|date',
+                    'api_key' => 'required',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $objBill = new Bill();
+            if ($rowPayload['unit_id']) {
+                $numUnitID = $rowPayload['unit_id'];
+                $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+                if (!$objUnit) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+                }
+                $objBill->setUnit($objUnit);
+            }
+            $objBill->setAmount($rowPayload['amount']);
+            $objBill->setBillCategory($rowPayload['bill_category']);
+            $objBill->setStatus(1);
+            $objBill->setDetails($rowPayload['details']);
+            $objBill->setReceiptNumber($rowPayload['receipt_number']);
+            $objBill->setIssuedForMonth($rowPayload['issued_for_month']);
+            $objBill->setCreatedAt(new \DateTime('now'));
+            $objBill->setIssuedAt(new \DateTime($rowPayload['issued_at']));
+            $objBill->setDueDate(new \DateTime($rowPayload['due_date']));
+
+            $entityManager->persist($objBill);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Számla azonosító: " . $rowPayload["receipt_number"] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
+
+    public function postBulkForceImportPaymentAction(Request $request)
+    {
+        if (!$request->get('payload')) {
+            return $this->container->get('response_handler')->errorHandler('empty_payload', 'Empty Payload!', 404);
+        }
+        $arrPayload = json_decode($request->get('payload'), TRUE);
+        if (!$arrPayload) {
+            return $this->container->get('response_handler')->errorHandler('invalid_payload', 'Invalid Payload!', 400);
+        }
+
+        $objImportSource = $this->container->get('validation_handler')->importSourceValidationHandler($request);
+        if ($objImportSource === FALSE) {
+            return $this->container->get('response_handler')->errorHandler('invalid_api_key', 'Invalid Api Key!', 422);
+        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $arrSuccessMSG = [];
+
+        foreach ($arrPayload as $rowPayload) {
+            $validator = $this->container->get('validation_handler')->inputValidationHandlerArray(
+                [
+                    'unit_id' => 'required|numeric',
+                    //'payment_method_id' => 'required|numeric',
+                    'user_id' => 'required|numeric',
+                    'house_user_id' => 'required|numeric',
+                    'payment_date' => 'required|date',
+                    'booking_date' => 'required|date',
+                    'receipt_number' => 'required|numeric',
+                    'amount' => 'required|numeric',
+                    'api_key' => 'required',
+                ],
+                $rowPayload
+            );
+
+            if ($validator['hasError']) {
+                return $this->container->get('response_handler')->errorHandler($validator['errorLabel'], $validator['errorText'], $validator['errorCode']);
+            }
+
+            $objPayment = new Payment();
+            $objPayment->setUnitId($request->get('unit_id'));
+            if ($rowPayload['unit_id']) {
+                $numUnitID = $rowPayload['unit_id'];
+                $objUnit = $this->getDoctrine()->getRepository(Unit::class)->find($numUnitID);
+                if (!$objUnit) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_unit_id", "Invalid parameters", 422);
+                }
+                $objPayment->setUnit($objUnit);
+            }
+            $objPayment->setAmount($rowPayload['amount']);
+            $objPayment->setReceiptNumber($rowPayload['receipt_number']);
+            $objPayment->setBookingDate(new \DateTime($rowPayload['booking_date']));
+            $objPayment->setPaymentDate(new \DateTime($rowPayload['payment_date']));
+            if ($rowPayload['house_user_id']) {
+                $numHouseUserID = $rowPayload['house_user_id'];
+                $objHouseUser = $this->getDoctrine()->getRepository(HouseUser::class)->find($numHouseUserID);
+                if (!$objHouseUser) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_house_user_id", "Invalid parameters", 422);
+                }
+                $objPayment->setHouseUser($objHouseUser);
+            }
+            if ($rowPayload['user_id']) {
+                $numUserID = $rowPayload['user_id'];
+                $objUser = $this->getDoctrine()->getRepository(User::class)->find($numUserID);
+                if (!$objUser) {
+                    return $this->container->get('response_handler')->errorHandler("invalid_user_id", "Invalid parameters", 422);
+                }
+                $objPayment->setUser($objUser);
+            }
+            $objPayment->setStatus(1);
+
+            $entityManager->persist($objPayment);
+            $entityManager->flush();
+
+            $arrSuccessMSG[] = [
+                "msg" => "ID: " . $rowPayload["id"] . ", Számla azonosító: " . $rowPayload["receipt_number"] . ". importálva!",
+                "id" => $rowPayload["id"],
+            ];
+        }
+
+        return $this->container->get('response_handler')->successHandler(
+            $arrSuccessMSG,
+            []
+        );
+    }
 }

@@ -35,3 +35,10 @@ parameters:
     admin_domain: admin.hazfal.hu
     web_dir: "%kernel.project_dir%/web"
     doc_uploads_dir: "%kernel.project_dir%/web/documents/uploads"
+    force_import: true
+    unit_types:
+        1: 'Lakás'
+        2: 'Tároló'
+        3: 'Garázs'
+        4: 'Parkoló'
+        5: 'Tetőtér'
